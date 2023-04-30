@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <div><img src="{{ URL('public/logo.png') }}" style="width: 20%;"></div>
+
+    <h1>Hi {{ $Name }}! Book your rent a car with Nucleuz</h1>
+
+    <p>Click below to register your details</p>
+
+    <a href="{{ $Link }}"><button>Regiter Now</button></a>
+
+  </body>
+</html>

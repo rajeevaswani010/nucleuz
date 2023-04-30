@@ -1,0 +1,158 @@
+@media (max-width: 400px) {
+    img#bookingLogo {
+		margin-left: 0px !important;
+	}
+}
+
+.fc-event{
+    cursor: pointer;
+}
+h1, h2 {
+	font-family: "open sans" !important;
+	font-weight: bold;
+}
+body
+{
+	font-family: "open sans" !important;
+}
+
+span.tableType {
+	padding: 3px;
+	text-align:center;
+	display:inline-table;
+}
+
+span.tableType div.block {
+	width:20px;
+	height:20px;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+span.table {
+	position:absolute;
+	cursor: pointer;
+	text-align: center;
+	font-weight:bold;
+	font-size:16px;
+	color: grey !important;
+	font-family: courier new;
+}
+
+span.table.s8 {
+	border-radius: 30px;
+	border: 0.5px solid grey;
+}
+
+
+span.table.s6 {
+	border-radius: 30px;
+	border: 0.5px solid grey;
+}
+
+span.table.s4  {
+	border-radius: 20px;
+	border: 0.5px solid grey;
+}
+
+span.table.s2  {
+	border-radius: 30px;
+	border: 0.5px solid grey;
+}
+
+
+span.seat {
+	position:absolute;
+	cursor: pointer;
+	text-align: center;
+	font-weight:bold;
+	font-size: 14px;
+	color: white;
+	line-height:10px;
+	border: 0.5px solid grey;
+}
+
+span.seat.s6,
+span.seat.s8 {
+	height:10px;
+	width:15px;
+}
+
+span.seat.s4,
+span.seat.s2 {
+	width: 12px;
+	height: 12px;
+}
+
+span.table.pre-booked {
+	color: white;
+	background-color: grey !important;
+}
+
+span.seat.pre-booked {
+	color: white;
+	background-color: grey !important;
+}
+
+/* @todo: Do we really need this? */
+.selector-for-some-widget {
+  box-sizing: content-box;
+}
+
+div.dataTable-top {
+	padding: 0px !important;
+	margin: 0px !important;
+}
+
+td.fitwidth {
+    width: 1px ;
+    white-space: nowrap;
+}
+
+#tblRes {
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+#tblRes tr,
+#tblRes td 
+{
+	padding: 0.5px;
+}
+
+@media only screen and (max-width: 600px) {
+	#tblRes tr,
+	#tblRes td 
+	{
+		padding: 5px;
+	}
+}
+
+
+#frmSendMails div.dataTable-search,
+#frmSendMails input.dataTable-input {
+	width: 100%;
+}
+
+#tblEmails td,
+#tblEmails tr {
+	padding: 1px;
+}
+
+
+
+
+ul.navbar-nav > li.nav-item .nav-link.active .icon {
+	background-image: none!important;
+	background: #9090ff !important;
+}
+
+span.fas {
+	/* color: white !important; */
+	/* background-color: black !important; */
+}
+
+img.car-image {
+	max-width: 200px;
+	/* max-width: 100%; */
+}
