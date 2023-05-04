@@ -547,7 +547,7 @@
       ],
       datasets: [{
         label: 'Sale Status',
-        data: [{{ $MonthArray["Jan"] }}, {{ $MonthArray["Feb"] }}, {{ $MonthArray["March"] }}, {{ $MonthArray["April"] }}, {{ $MonthArray["May"] }}, {{ $MonthArray["June"] }}, {{ $MonthArray["July"] }}, {{ $MonthArray["Aug"] }}, {{ $MonthArray["Sep"] }}, {{ $MonthArray["Oct"] }}, {{ $MonthArray["Nov"] }}, {{ $MonthArray["Dec"] }}],
+        data: [{{ $MonthArray["Jan"] }}, {{ $MonthArray["Feb"] }}, {{ $MonthArray["Mar"] }}, {{ $MonthArray["Apr"] }}, {{ $MonthArray["May"] }}, {{ $MonthArray["Jun"] }}, {{ $MonthArray["Jul"] }}, {{ $MonthArray["Aug"] }}, {{ $MonthArray["Sep"] }}, {{ $MonthArray["Oct"] }}, {{ $MonthArray["Nov"] }}, {{ $MonthArray["Dec"] }}],
         fill: true,
         borderColor: '#2196f3',
         backgroundColor: '#FFF', // Add custom color background (Points and Fill)

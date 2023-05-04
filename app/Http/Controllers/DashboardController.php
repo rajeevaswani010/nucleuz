@@ -45,11 +45,11 @@ class DashboardController extends Controller
 
 		$MonthArray["Jan"] = 0;
 		$MonthArray["Feb"] = 0;
-		$MonthArray["March"] = 0;
-		$MonthArray["April"] = 0;
+		$MonthArray["Mar"] = 0;
+		$MonthArray["Apr"] = 0;
 		$MonthArray["May"] = 0;
-		$MonthArray["June"] = 0;
-		$MonthArray["July"] = 0;
+		$MonthArray["Jun"] = 0;
+		$MonthArray["Jul"] = 0;
 		$MonthArray["Aug"] = 0;
 		$MonthArray["Sep"] = 0;
 		$MonthArray["Oct"] = 0;
