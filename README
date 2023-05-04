@@ -1,0 +1,8 @@
+NUCLEUZ
+========
+
+
+.env file is required to deploy laravel project..  run below command in home dir
+$ cp env .env
+
+.env file is with default laravel configuration.. make changes as per your requirement.. Never commit this to git.

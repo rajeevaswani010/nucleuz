@@ -51,5 +51,8 @@ $app->singleton(
 | from the actual running of the application and sending responses.
 |
 */
-
+//below code is required as of now.. some public path issue. Need to be checked and fixed.
+$app->bind('path.public',function(){
+	return base_path();
+});
 return $app;
