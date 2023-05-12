@@ -30,7 +30,7 @@ php artisan vendor:publish --tag=ultimate-support-config
 
 Contains methods for working with IP addresses.
 
-`use LaravelReady\UltimateSupport\Support\IpSupport;`
+`use LaravelReady\UltimateSupport\Supports\IpSupport;`
 
 | Method | Description | Result |
 | ------ | ----------- | ------ |
@@ -41,7 +41,7 @@ Contains methods for working with IP addresses.
 ### getIpAddress Result
 ```php
 [
-  "is_local" => true, // Is client from localhost
+  "is_local" => true, // is client from localhost
   "base_ip" => "127.0.0.1", // laravel's request()->ip()
   "ip_address" => "111.111.111.111", // real client ip
 ]
@@ -49,9 +49,7 @@ Contains methods for working with IP addresses.
 
 > **Warning** `getPublicIp` is uses [ipify.org](https://api.ipify.org/?format=json) service and caching results for 1 day.
 
-
-- The `getLocalhostPublicIp` method is useful for checking if the client is from localhost. Uses https://api.ipify.org/?format=json endpoint.
-- In laravel native way you can use `Request::ip()` method but this method is cover all cases. For example cloudflare, nginx, etc. Also see this stackoverflow [question](https://stackoverflow.com/q/13646690/6940144).
+> **Note** In laravel native way you can use `Request::ip()` method but this method is cover all cases. For example cloudflare, nginx, etc. Also see this stackoverflow [question](https://stackoverflow.com/q/13646690/6940144).
 
 
 [badge_downloads]:      https://img.shields.io/packagist/dt/laravel-ready/ultimate-support.svg?style=flat-square

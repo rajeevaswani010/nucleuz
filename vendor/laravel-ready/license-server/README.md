@@ -16,13 +16,18 @@ This package requires [license-connector](https://github.com/laravel-ready/licen
 ## 📋 Requirements
 
 ### PHP
-- PHP 8.x
+
+This package requires PHP 8.0 or higher. Also these extesnions are required:
+
 - [intl extension](https://secure.php.net/manual/en/book.intl.php)
 - [json extension](https://secure.php.net/manual/en/book.json.php)
 - [filter extension](https://secure.php.net/manual/en/book.filter.php)
 
+If the above extensions already installed, you can enable them with `php.ini`.
+
 ### Laravel
-- Laravel 8.x or 9.x version
+
+This package requires Laravel 8.x or higher. Other versions are ignored.
 
 ## 📦 Installation (for Host App)
 

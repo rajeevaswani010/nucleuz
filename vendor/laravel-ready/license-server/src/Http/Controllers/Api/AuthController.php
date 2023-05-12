@@ -5,7 +5,7 @@ namespace LaravelReady\LicenseServer\Http\Controllers\Api;
 use Illuminate\Http\Request;
 
 use LaravelReady\LicenseServer\Models\IpAddress;
-use LaravelReady\UltimateSupport\Support\IpSupport;
+use LaravelReady\UltimateSupport\Supports\IpSupport;
 use LaravelReady\LicenseServer\Services\LicenseService;
 use LaravelReady\LicenseServer\Http\Controllers\BaseController;
 
@@ -32,16 +32,16 @@ class AuthController extends BaseController
             $license->tokens()->where('name', $domain)->delete();
 
             $ipAddress = IpAddress::where('license_id', $license->id)->first();
-            $serverIpAddress = IpSupport::getIP();
+            $serverIpAddress = IpSupport::getIpAddress();
 
             if (!$ipAddress) {
                 $ipAddress = IpAddress::create([
                     'license_id' => $license->id,
-                    'ip_address' => $serverIpAddress,
+                    'ip_address' => $serverIpAddress['ip_address'],
                 ]);
             }
 
-            if ($ipAddress && $ipAddress->ip_address == $serverIpAddress) {
+            if ($ipAddress && $ipAddress->ip_address == $serverIpAddress['ip_address']) {
                 $licenseAccessToken = $license->createToken($domain, ['license-access']);
 
                 return [
