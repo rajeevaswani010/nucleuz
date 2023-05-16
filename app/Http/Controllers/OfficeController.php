@@ -57,6 +57,12 @@ class OfficeController extends Controller
         }
         
         $Input = $request->all();
+
+         $request->validate([
+            'name' => 'required|unique:offices'
+            ],
+            [ 'name.unique'      => 'Sorry, This Company Name Is Already Used. Please Try With Different One, Thank You.']);
+
         unset($Input["lang"]);
         $Office = Office::create($Input);
         return redirect("office");

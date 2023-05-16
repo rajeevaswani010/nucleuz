@@ -54,6 +54,12 @@ class BrandController extends Controller
         }
         
         $Input = $request->all();
+
+        $request->validate([
+            'name' => 'required|unique:brands'
+            ],
+            [ 'name.unique'      => 'Sorry, This Brand Name Is Already Used. Please Try With Different One, Thank You.']);
+
         Brand::create($Input);
         return redirect("brand");
     }

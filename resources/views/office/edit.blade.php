@@ -46,6 +46,7 @@
 
                         <div class="modal-footer">
                             <input name="lang" type="hidden" value="en">
+                            <a href="{{url()->previous()}}" class="btn btn-default btn-light">Cancel</a>
                             <input class="btn btn-xs btn-primary" type="submit" value="Save">
                         </div>
                         {!! Form::close() !!}

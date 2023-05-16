@@ -57,6 +57,12 @@ class ProductController extends Controller
         }
         
         $Input = $request->all();
+
+        $request->validate([
+            'name' => 'required|unique:products'
+            ],
+            [ 'name.unique'      => 'Sorry, This Product Name Is Already Used. Please Try With Different One, Thank You.']);
+
         $Office = Product::create($Input);
         return redirect("product");
     }
