@@ -2,24 +2,30 @@ NUCLEUZ
 ========
 
 
+
+### Important instructions to deploy project after cloning laravel repository first time
+
 .env file is required to deploy laravel project..  run below command in home dir
+
 $ cp env .env
 
 .env file is with default laravel configuration.. make changes as per your requirement.. Never commit this to git.
 
 
-*****************************************************************
+Vendor folder is not part of git. When first time you clone project.. kindly run below commands after creating env file.
 
-
-Vendor folder is not part of git.
-==================================
-When first time you clone project.. kindly run below commands after creating env file.
 
 $ composer update
 
 $ composer install
 
 Above two commands will create the vendor folder and autoload.php for app to start.
+
+
+update database credentials in config/database.php
+
+$vim config/database.php 
+<< Verify database name, user and password are correct >>>
 
 Test with serve command is server is coming up.
 
