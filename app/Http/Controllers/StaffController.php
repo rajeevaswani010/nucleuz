@@ -26,17 +26,10 @@ class StaffController extends Controller
             return redirect("/");
         }
 
-        // $adminArr=Admin::where('admin_id',session("AdminID"))->first();
-        // echo '<pre>';print_r($adminArr);echo '</pre>';die();
-
-        // if($adminArr->role==2){
-        //     $Data = Staff::latest()->get();
-        // }
-        // else{
-            $Data = Staff::where("company_id", session("CompanyLinkID"))->latest()->get();
-        // }
-        
-        
+        $Data=Admin::where([
+            ['company_id','=',session("CompanyLinkID")],
+            ['role',3]
+            ])->get();
         $ActiveAction = "staff";
         return view('staff.view', compact("Data", "ActiveAction"));
     }
@@ -52,7 +45,7 @@ class StaffController extends Controller
         }
 
         $Offices = Office::get();
-        $ActiveAction = "staff";
+        $ActiveAction = "Admin";
         return view('staff.add', compact("ActiveAction", "Offices"));
     }
 
@@ -79,11 +72,12 @@ class StaffController extends Controller
             return redirect()->back()->withInput();
         }else{
             $Input["company_id"] = session("CompanyLinkID");
-            $Office = Staff::create($Input);
+            $Input["admin_id"] = session("AdminID");
+           // $Office = Admin::create($Input);
             $Password = Str::random($strlentgh = 16);
             $AdminObj = new Admin();
             $AdminObj->name = $Input["name"];
-            $AdminObj->link_id = $Office->id;
+            $AdminObj->link_id = $Input["admin_id"];
             $AdminObj->company_id = $Input["company_id"];
             $AdminObj->email = $Input["email"];
             $AdminObj->mobile = $Input["mobile"];
@@ -124,8 +118,9 @@ class StaffController extends Controller
             return redirect("/");
         }
         
-        $Data = Staff::find($id);
-        $ActiveAction = "staff";
+        $Data = Admin::find($id);
+        $ActiveAction = "Admin";
+        // echo $Data; die;
         return view('staff.edit', compact("Data", "ActiveAction"));
     }
 
@@ -144,7 +139,7 @@ class StaffController extends Controller
         $Input = $request->all();
         unset($Input["_method"]);
         unset($Input["_token"]);
-        Staff::where('id', $id)->update($Input);
+        Admin::where('admin_id', $id)->update($Input);
         return redirect("staff");
     }
 

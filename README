@@ -6,3 +6,23 @@ NUCLEUZ
 $ cp env .env
 
 .env file is with default laravel configuration.. make changes as per your requirement.. Never commit this to git.
+
+
+*****************************************************************
+
+
+Vendor folder is not part of git.
+==================================
+When first time you clone project.. kindly run below commands after creating env file.
+
+$ composer update
+
+$ composer install
+
+Above two commands will create the vendor folder and autoload.php for app to start.
+
+Test with serve command is server is coming up.
+
+$ php artisan serve
+
+

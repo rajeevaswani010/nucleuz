@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "blade-ui-kit/blade-icons": "^1.5",
         "guzzlehttp/guzzle": "^7.2",
         "joedixon/laravel-translation": "^2.1",
         "laravel-ready/license-server": "^1.2",

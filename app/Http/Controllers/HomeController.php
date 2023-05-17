@@ -47,90 +47,150 @@ class HomeController extends Controller
 		// }
 		return view('welcome');
     }
-	
-	public function DoLogin(Request $request){
 
+	public function DoLogin(Request $request){
 		$CheckAdmin = Admin::where('email', $request->Username)->count();
 
-		// echo $CheckAdmin; echo '<br />';
-		// $GetAdmin = Admin::where('email', $request->Username)->first();
-		// echo  '<pre>';print_r($request->input());echo '</pre>';
-        // die();
-
-		if($CheckAdmin > 0){
-
-			
+		if( $CheckAdmin > 0 )
+		{
 			$GetAdmin = Admin::where('email', $request->Username)->first();
+			$admin = $GetAdmin->admin_id; 
+
+			if($GetAdmin->role!=1){
+
+				if($GetAdmin->role==3)  //staff user
+					$admin = $GetAdmin->link_id;   // 
+				
+				$licensecount=License::where('user_id',$admin)->count();
+				if($licensecount==0){
+					Session::flash('Danger', "License is not found.Please contact to admin for buying license");
+					return redirect()->back();
+				}
+				$licenseArr=License::where('user_id',$admin)->first();
+				if($licenseArr->status=='inactive'){
+					Session::flash('Danger', "Your License is Inactive");
+					return redirect()->back();
+				}
+
+				if($licenseArr->status=='suspended'){
+					Session::flash('Danger', "Your License is Suspended");
+					return redirect()->back();
+				}
+				
+				if(time() > strtotime($licenseArr->expiration_date)){
+					//=====update admin status====//
+					$adminObj=Admin::find($GetAdmin->admin_id);
+					$adminObj->status=0;
+					$adminObj->save();	
+					//===update license status====//
+					$LicenseObj=License::find($licenseArr->id);
+					$LicenseObj->status='inactive';
+					$LicenseObj->save();
+
+					Session::flash('Danger', "Your License is Expired");
+					return redirect()->back();
+				}
+
+			}
 
 			if($GetAdmin->temp_password == 1){
 				// echo 'ddddd';die();
 				return redirect("SetPassword/".encrypt($request->Username));
 			}
 
-
-			$HashedPass = $GetAdmin->admin_password;
-// 			echo $request->Password;
-// echo '<br />';
-// echo $HashedPass;
-// die();
-			if(password_verify($request->Password, $HashedPass)){
-
-				if($GetAdmin->role!=1)
-				{
-					$licensecount=License::where('user_id',$GetAdmin->admin_id)->count();
-					if($licensecount==0){
-						Session::flash('Danger', "License is not found.Please contact to admin for buying license");
-						return redirect()->back();
-					}
-
-					//echo '<pre>';print_r($licenseArr);echo '</pre>';die();
-					$licenseArr=License::where('user_id',$GetAdmin->admin_id)->first();
-					if($licenseArr->status=='inactive'){
-						Session::flash('Danger', "Your License is Inactive");
-						return redirect()->back();
-					}
-
-
-					if($licenseArr->status=='suspended'){
-						Session::flash('Danger', "Your License is Suspended");
-						return redirect()->back();
-					}
-
-					if(time() > strtotime($licenseArr->expiration_date)){
-						//=====update admin status====//
-						$adminObj=Admin::find($GetAdmin->admin_id);
-						$adminObj->status=0;
-						$adminObj->save();	
-						//===update license status====//
-						$LicenseObj=License::find($licenseArr->id);
-						$LicenseObj->status='inactive';
-						$LicenseObj->save();
-
-						Session::flash('Danger', "Your License is Expired");
-						return redirect()->back();
-					}
-			    }
-
-				// if($GetAdmin->status == 0){
-				//     Session::flash('Danger', "License Expired");
-				//     return redirect()->back();
-				// }
-				
-				session(['AdminID' => $GetAdmin->admin_id]);
-				session(['AdminRole' => $GetAdmin->role]);
-				session(['CompanyLinkID' => $GetAdmin->company_id]);
-				session(['AdminName' => $GetAdmin->name]);
-				session(['AdminImage' => $GetAdmin->image]);
-				return redirect('dashboard');
-			}else{
-				Session::flash('Danger', "Email or password incorrect");
-				return redirect()->back();
-			}
-		}else{
+			session(['AdminID' => $GetAdmin->admin_id]);
+			session(['AdminRole' => $GetAdmin->role]);
+			session(['CompanyLinkID' => $GetAdmin->company_id]);
+			session(['AdminName' => $GetAdmin->name]);
+			session(['AdminImage' => $GetAdmin->image]);
+			session(['Admin' => $admin]);
+			return redirect('dashboard');
+		} else {
 			Session::flash('Danger', "Invalid Email");
 			return redirect()->back();
-		}
-    }
+		}	
+	}
+
+//below is old function..  refactored and written above.
+	// public function DoLogin(Request $request){
+
+	// 	$CheckAdmin = Admin::where('email', $request->Username)->count();
+
+	// 	// echo $CheckAdmin; echo '<br />';
+	// 	// $GetAdmin = Admin::where('email', $request->Username)->first();
+	// 	// echo  '<pre>';print_r($request->input());echo '</pre>';
+    //     // die();
+
+	// 	if($CheckAdmin > 0){
+
+			
+	// 		$GetAdmin = Admin::where('email', $request->Username)->first();
+
+	// 		if($GetAdmin->temp_password == 1){
+	// 			// echo 'ddddd';die();
+	// 			return redirect("SetPassword/".encrypt($request->Username));
+	// 		}
+
+
+	// 		$HashedPass = $GetAdmin->admin_password;
+	// 		if(password_verify($request->Password, $HashedPass)){
+
+	// 			if($GetAdmin->role!=1)
+	// 			{
+	// 				$licensecount=License::where('user_id',$GetAdmin->admin_id)->count();
+	// 				if($licensecount==0){
+	// 					Session::flash('Danger', "License is not found.Please contact to admin for buying license");
+	// 					return redirect()->back();
+	// 				}
+
+	// 				//echo '<pre>';print_r($licenseArr);echo '</pre>';die();
+	// 				$licenseArr=License::where('user_id',$GetAdmin->admin_id)->first();
+	// 				if($licenseArr->status=='inactive'){
+	// 					Session::flash('Danger', "Your License is Inactive");
+	// 					return redirect()->back();
+	// 				}
+
+
+	// 				if($licenseArr->status=='suspended'){
+	// 					Session::flash('Danger', "Your License is Suspended");
+	// 					return redirect()->back();
+	// 				}
+
+	// 				if(time() > strtotime($licenseArr->expiration_date)){
+	// 					//=====update admin status====//
+	// 					$adminObj=Admin::find($GetAdmin->admin_id);
+	// 					$adminObj->status=0;
+	// 					$adminObj->save();	
+	// 					//===update license status====//
+	// 					$LicenseObj=License::find($licenseArr->id);
+	// 					$LicenseObj->status='inactive';
+	// 					$LicenseObj->save();
+
+	// 					Session::flash('Danger', "Your License is Expired");
+	// 					return redirect()->back();
+	// 				}
+	// 		    }
+
+	// 			// if($GetAdmin->status == 0){
+	// 			//     Session::flash('Danger', "License Expired");
+	// 			//     return redirect()->back();
+	// 			// }
+				
+	// 			session(['AdminID' => $GetAdmin->admin_id]);
+	// 			session(['AdminRole' => $GetAdmin->role]);
+	// 			session(['CompanyLinkID' => $GetAdmin->company_id]);
+	// 			session(['AdminName' => $GetAdmin->name]);
+	// 			session(['AdminImage' => $GetAdmin->image]);
+	// 			return redirect('dashboard');
+	// 		}else{
+	// 			Session::flash('Danger', "Email or password incorrect");
+	// 			return redirect()->back();
+	// 		}
+	// 	}else{
+	// 		Session::flash('Danger', "Invalid Email");
+	// 		return redirect()->back();
+	// 	}
+    // }
 
     public function DoReset(Request $request){
     	$CheckAdmin = Admin::where('email', $request->Username)->count();

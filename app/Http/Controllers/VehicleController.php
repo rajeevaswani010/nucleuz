@@ -26,6 +26,7 @@ class VehicleController extends Controller
         }
         
         $Data = Vehicle::where("company_id", session("CompanyLinkID"))->latest()->get();
+        // echo $Data; die;
         $ActiveAction = "vehicle";
         return view('vehicle.view', compact("Data", "ActiveAction"));
     }

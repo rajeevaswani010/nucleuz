@@ -93,9 +93,9 @@
                             
                             <input type="radio" name="user_type" @if($admininfo->user_type == "1") checked @endif id="UserTypeAdmin" onclick="ShowNo(true)" checked value="1"> {{ __("Admin") }} &nbsp;&nbsp;
 
-                            <div id="UserTypeStaffDiv">
+                            <!-- <div id="UserTypeStaffDiv">
                                 <input @if($admininfo->user_type == "2") checked @endif type="radio" name="user_type" onclick="ShowNo(false)" id="UserTypeStaff" value="2"> {{ __("Staff") }}
-                            </div>
+                            </div> -->
 
 
 

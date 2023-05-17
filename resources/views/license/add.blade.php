@@ -88,7 +88,7 @@
                         <div class="form-group col-4">
                             <label for="subject" class="col-form-label text-dark">User Type</label>
                             <input type="radio"  name="user_type" id="UserTypeAdmin" onclick="ShowNo(true)" checked value="1"> {{ __("Admin") }}
-                            <input type="radio"  name="user_type" onclick="ShowNo(false)" id="UserTypeStaff" value="2"> {{ __("Staff") }}
+                            <!-- <input type="radio"  name="user_type" onclick="ShowNo(false)" id="UserTypeStaff" value="2"> {{ __("Staff") }} -->
                         </div>
 
 

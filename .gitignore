@@ -1,5 +1,7 @@
-**/.env
-**/.env-example
-**/storage/logs
-**/license-server
-**/vendor
+/.env
+/.env-example
+/storage
+/storage/*.key
+/vendor
+/node_modules
+/license-server

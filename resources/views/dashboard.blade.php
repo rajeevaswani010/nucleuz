@@ -12,7 +12,7 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <div class="page-header-title">
-                            <h4 class="m-b-10">    Dashboard</h4>
+                            <h4 class="m-b-10">Dashboard</h4>
                         </div>
                         <ul class="breadcrumb">
                         </ul>
@@ -35,7 +35,7 @@
 
                         <div class="d-flex align-items-center mb-3 mt-3">
                             <div class="theme-avtar bg-primary">
-                                <i class="ti ti-users"></i>
+                                <i class="fa fa-angle-right"></i>
                             </div>
                             <div class="ms-3 mb-3 mt-3">
                                 <h6 class="ml-4">On Rent</h6>
@@ -61,7 +61,7 @@
 
                         <div class="d-flex align-items-center mb-3 mt-3">
                             <div class="theme-avtar bg-primary">
-                                <i class="ti ti-users"></i>
+                                <i class="fa fa-angle-right"></i>
                             </div>
                             <div class="ms-3 mb-3 mt-3">
                                 <h6 class="ml-4">Reservation</h6>
@@ -88,7 +88,7 @@
 
                         <div class="d-flex align-items-center mb-3 mt-3">
                             <div class="theme-avtar bg-primary">
-                                <i class="ti ti-users"></i>
+                                <i class="fa fa-angle-right"></i>
                             </div>
                             <div class="ms-3 mb-3 mt-3">
                                 <h6 class="ml-4">Return</h6>
@@ -114,7 +114,7 @@
 
                         <div class="d-flex align-items-center mb-3 mt-3">
                             <div class="theme-avtar bg-primary">
-                                <i class="ti ti-users"></i>
+                                <i class="fa fa-angle-right"></i>
                             </div>
                             <div class="ms-3 mb-3 mt-3">
                                 <h6 class="ml-4">Available</h6>
@@ -140,7 +140,7 @@
 
                         <div class="d-flex align-items-center mb-3 mt-3">
                             <div class="theme-avtar bg-primary">
-                                <i class="ti ti-users"></i>
+                                <i class="fa fa-angle-right"></i>
                             </div>
                             <div class="ms-3 mb-3 mt-3">
                                 <h6 class="ml-4">Pick Up Today</h6>
@@ -164,7 +164,7 @@
 
                         <div class="d-flex align-items-center mb-3 mt-3">
                             <div class="theme-avtar bg-primary">
-                                <i class="ti ti-users"></i>
+                                <i class="fa fa-angle-right"></i>
                             </div>
                             <div class="ms-3 mb-3 mt-3">
                                 <h6 class="ml-4">Pick Up Tomorrow</h6>

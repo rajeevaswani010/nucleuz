@@ -2,6 +2,10 @@
 
 @section("content")
 
+@php
+    $additionalFeatureColRenderer["yes"] = '<span><i class="fa fa-check"></i></span>';
+    $additionalFeatureColRenderer["no"] = '<span><i class="fa fa-cross"></i></span>';
+@endphp
 
 <!-- [ Main Content ] start -->
 <div class="dash-container">
@@ -16,7 +20,7 @@
 <ul class="breadcrumb">
 <li class="breadcrumb-item">
 <a href="{{ URL('dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item">View Vehicle</li>
+<li class="breadcrumb-item">View Vehicle Details</li>
 </ul>
 </div>
 <div class="col">
@@ -60,9 +64,12 @@
 <table class="table datatable">
 <thead>
 <tr>
-<th>Car Detail</th>
-<th>Chasis</th>
-<th>Reg. No</th>
+<th>Type</th>
+<th>Make</th>
+<th>Model</th>
+<th>Mfg. Year</th>
+<th>Reg. No.</th>
+<th>Additional Features</th>
 <th>Action</th>
 </tr>
 </thead>
@@ -75,6 +82,9 @@
     <td>{{ $DT->car_type }}</td>
     <td>{{ $DT->make }}</td>
     <td>{{ $DT->model }}</td>
+    <td>{{ $DT->variant }}</td>
+    <td>{{ $DT->reg_no }}</td>
+    <td>AC:{{ $DT->ac }} | Audio:{{ $DT->Audio }} | GPS:{{ $DT->gps }} </td>
     
     <td class="Action">
         <span>

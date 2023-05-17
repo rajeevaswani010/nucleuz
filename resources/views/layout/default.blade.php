@@ -76,12 +76,17 @@
         </a>
     </li>
 
+    <li class="dash-item dash-hasmenu @if($ActiveAction == 'license') active @endif">
+        <a href="{{ URL('license') }}" class="dash-link">
+            <span class="dash-micon"><i class="ti ti-clipboard"></i></span><span class="dash-mtext">Licenses</span>
+        </a>
+    </li>
+
     <li class="dash-item dash-hasmenu @if($ActiveAction == 'product') active @endif">
         <a href="{{ URL('product') }}" class="dash-link">
             <span class="dash-micon"><i class="ti ti-shopping-cart"></i></span><span class="dash-mtext">Products</span>
         </a>
     </li>
-
 
     <li class="dash-item dash-hasmenu @if($ActiveAction == 'brand') active @endif">
         <a href="{{ URL('brand') }}" class="dash-link">
@@ -91,7 +96,6 @@
     @endif
 
     @if(session("AdminRole") == 2 || session("AdminRole") == 3)
-        @if(session("AdminRole") == 2)
 
         <li class="dash-item dash-hasmenu @if($ActiveAction == 'vehicle') active @endif">
         <a href="{{ URL('vehicle') }}" class="dash-link">
@@ -100,31 +104,38 @@
         </a>
       </li>
 
-      <li class="dash-item dash-hasmenu @if($ActiveAction == 'pricing') active @endif">
-        <a href="{{ URL('pricing') }}" class="dash-link">
+      @if(session("AdminRole") == 2)
+      <li class="dash-item dash-hasmenu @if($ActiveAction == 'staff') active @endif">
+        <a href="{{ URL('staff') }}" class="dash-link">
             <span class="dash-micon">
-                <i class="ti ti-user-check"></i></span><span class="dash-mtext">Pricing Master</span>
+                <i class="fa fa-user-circle"></i></span><span class="dash-mtext">Staff</span>
         </a>
       </li>
 
+      <li class="dash-item dash-hasmenu @if($ActiveAction == 'pricing') active @endif">
+        <a href="{{ URL('pricing') }}" class="dash-link">
+            <span class="dash-micon">
+                <i class="fa fa-compress"></i></span><span class="dash-mtext">Pricing Master</span>
+        </a>
+      </li>
+      @endif
   
         <li class="dash-item dash-hasmenu @if($ActiveAction == 'booking') active @endif">
         <a href="{{ URL('booking') }}" class="dash-link">
             <span class="dash-micon">
-                <i class="ti ti-user-check"></i></span><span class="dash-mtext">Car Rental Bookings</span>
+                <i class="fa fa-car"></i></span><span class="dash-mtext">Car Rental Bookings</span>
         </a>
        </li>
-        @endif
 
         <li class="dash-item dash-hasmenu @if($ActiveAction == 'booking-invite') active @endif">
         <a href="{{ URL('booking-invite') }}" class="dash-link">
-            <span class="dash-micon"><i class="ti ti-layers-difference"></i></span><span class="dash-mtext">Invite Customer</span>
+            <span class="dash-micon"><i class="fa fa-users"></i></span><span class="dash-mtext">Invite Customer</span>
         </a>
       </li>
     @endif
 
     <!--------------------- Start Account ----------------------------------->
-
+    @if(session("AdminRole") == 2)
     <li class="dash-item dash-hasmenu
                 ">
                 <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-box"></i></span><span class="dash-mtext">Accounting System 
@@ -224,7 +235,8 @@
             
         </ul>
     </li>
-                    
+    @endif
+          
 <!--------------------- End Account ----------------------------------->
 
 
@@ -241,13 +253,6 @@
             <span class="dash-micon"><i class="ti ti-users"></i></span><span class="dash-mtext">Customer</span>
         </a>
       </li>--}}
-
-
-      {{--<li class="dash-item dash-hasmenu @if($ActiveAction == 'staff') active @endif">
-                            <a href="{{ URL('staff') }}" class="dash-link">
-                                <span class="dash-micon"><i class="ti ti-settings"></i></span><span class="dash-mtext">Staff</span>
-                            </a>
-                        </li>--}}
 
     @endif
 
