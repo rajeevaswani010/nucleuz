@@ -17,9 +17,12 @@ use App\Models\Pricing;
 use App\Models\Office;
 use App\Export\CustomerExport;
 
+use Log;
 
 class CustomerController extends Controller
 {
+    protected $logger ;
+
     public function register($id){
         $Email = base64_decode($id);
         $CheckInvite = BookingInvite::where("email", $Email)->where("status", 0)->count();
@@ -27,12 +30,23 @@ class CustomerController extends Controller
             return redirect("404");
         }else{
             $InviteObj = BookingInvite::where("email", $Email)->where("status", 0)->first();
+            $CustomerIfExits = Customer::where("email", $Email )->where("company_id",session("CompanyLinkID"))->count();
+            if( $CustomerIfExits > 0 )
+                $Customer = Customer::where("email", $Email)->where("company_id",session("CompanyLinkID"))->first();
+            else {
+                $Customer = new Customer();
+                $Customer->company_id = session("CompanyLinkID");
+                $Customer->email = $Email;
+            }
+
             $Conuntry = Country::orderBy("name")->get();
-            return view("CustomerRegister", compact("InviteObj", "Conuntry"));
+            return view("CustomerRegister", compact("InviteObj", "Customer" , "Conuntry"));
         }
     }
 
     public function registerPost(Request $request){
+        Log::info('first log ***************************** Request:'.json_encode($request));
+
         $Input = $request->all();
         $CustomerID = "";
         
@@ -130,6 +144,7 @@ class CustomerController extends Controller
 
             $CustObj->save();
             $CustomerID = $CustObj->id;
+            Log::info('customer id: '.$CustomerID);
 
             if(isset($InviteObj->status)){
                 $UserData = Admin::find($InviteObj->user_id);
@@ -198,8 +213,10 @@ class CustomerController extends Controller
                 $BookingObj->grand_total = $Amount;
                 $BookingObj->tarrif_amount = $BasePrice;
                 $BookingObj->save();
-                
-                
+
+                $InviteObj->booking_id = $BookingObj->id;
+                $InviteObj->save();
+
                 $NotiObj = new Notification();
                 $NotiObj->title = "New Customer Registration";
                 $NotiObj->desp = $Input["first_name"]." is register from your invite link";

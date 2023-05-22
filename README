@@ -32,3 +32,19 @@ Test with serve command is server is coming up.
 $ php artisan serve
 
 
+
+Database versioning
+===================
+Fixes will require database schema changes sometime.. to track that db_version table is created and will be maintained. check current database version using below command.
+
+$ USER=root; PASSWORD=root;DB=table_car_rental; mysql -u $USER -p$PASSWORD $DB -e "select * from db_version order by db_id DESC limit 1 ;"
+
+Every time update sql file is created dont forget to update this table also.. 
+
+
+Creating package   (below command will create pkg.zip in one step outside current directory)
+=======================================
+$ zip -r ../pkg.zip *
+
+Copy abpve pkg.zip to public_html folder on host server.
+Uncompress it. 

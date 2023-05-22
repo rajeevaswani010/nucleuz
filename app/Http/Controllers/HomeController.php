@@ -54,19 +54,20 @@ class HomeController extends Controller
 		if( $CheckAdmin > 0 )
 		{
 			$GetAdmin = Admin::where('email', $request->Username)->first();
-			$admin = $GetAdmin->admin_id; 
+			$license_id = $GetAdmin->link_id; 
+			$company_id = $GetAdmin->company_id;
 
 			if($GetAdmin->role!=1){
 
-				if($GetAdmin->role==3)  //staff user
-					$admin = $GetAdmin->link_id;   // 
+				// if($GetAdmin->role==3)  //staff user
+				// 	$admin = $GetAdmin->link_id;   // 
 				
-				$licensecount=License::where('user_id',$admin)->count();
+				$licensecount=License::where('id',$license_id)->count();
 				if($licensecount==0){
 					Session::flash('Danger', "License is not found.Please contact to admin for buying license");
 					return redirect()->back();
 				}
-				$licenseArr=License::where('user_id',$admin)->first();
+				$licenseArr=License::where('id',$license_id)->first();
 				if($licenseArr->status=='inactive'){
 					Session::flash('Danger', "Your License is Inactive");
 					return redirect()->back();
@@ -103,7 +104,8 @@ class HomeController extends Controller
 			session(['CompanyLinkID' => $GetAdmin->company_id]);
 			session(['AdminName' => $GetAdmin->name]);
 			session(['AdminImage' => $GetAdmin->image]);
-			session(['Admin' => $admin]);
+			// session(['Admin' => $admin]);
+			session(['Link_Id' => $GetAdmin->link_id]);
 			return redirect('dashboard');
 		} else {
 			Session::flash('Danger', "Invalid Email");

@@ -19,6 +19,8 @@ use App\Models\BookingInvite;
 use App\Models\Customer;
 use App\Models\Office;
 
+use Log;
+
 class BookingController extends Controller
 {
     /**
@@ -27,6 +29,7 @@ class BookingController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request){
+        Log::info('first log ***************************** Request:'.json_encode($request));
         if(session("AdminID") == ""){
             return redirect("/");
         }

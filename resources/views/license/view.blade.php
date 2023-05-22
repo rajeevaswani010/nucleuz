@@ -39,14 +39,18 @@
 <table class="table datatable">
 <thead>
 <tr>
+<th>License Key</th>
 <th>Product Name</th>
 <th>License Expiry</th>
-<th>Client Name</th>
-<th>Mobile</th>
-<th>Email</th>
+<th>Company</th>
 <th>Status</th>
-<th>Date</th>
+<th>Created By</th>
+<th>Creation Date</th>
+<th>Updation Date</th>
 <th>Action</th>
+<!-- <th>Client Name</th> -->
+<!-- <th>Mobile</th>
+<th>Email</th> -->
 </tr>
 </thead>
 
@@ -55,17 +59,27 @@
     @foreach($Data as $DT)
     <?php
     $productArr=DB::table('products')->where('id',$DT->license_module)->first();
+    $company=DB::table('offices')->where('id',$DT->user_id)->first();
     ?>
     <tr class="font-style">
+    <td>{{ $DT->license_key }}</td>
     <td>{{ $productArr->name }}</td>
     <td>{{ date('d F Y', strtotime($DT->expiration_date)) }}</td>
-    <td>{{ $DT->name }}</td>
-    <td>{{ $DT->mobile }}</td>
-    <td>{{ $DT->email }}</td>
+    
+    @if(is_null($company))
+    <td> --- </td>
+    @else
+    <td>{{ $company->name }}</td>
+    @endif  
+    
     <td>{{ ucfirst($DT->status) }}</td>
+    <td>{{ $DT->created_by }}</td>
+    <td>{{ date('d F Y', strtotime($DT->created_at)) }}</td>
     <td>{{ date('d F Y', strtotime($DT->updated_at)) }}</td>
     <td class="Action">
-        <span>
+    <!-- <td>{{ $DT->mobile }}</td>
+    <td>{{ $DT->email }}</td> -->
+    <span>
 
     <div class="action-btn bg-primary ms-2">
             <a href="{{ URL('license') }}/{{ $DT->id }}/edit" class="mx-3 btn btn-sm align-items-center" data-url="{{ URL('license') }}/{{ $DT->id }}/edit" data-ajax-popup="true" data-title="Edit Coupon" data-bs-toggle="tooltip"  title="Edit" data-original-title="Edit">

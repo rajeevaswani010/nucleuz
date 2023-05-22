@@ -32,8 +32,9 @@ class LicenseController extends Controller
 
         
         // $Data = License::latest()->get();
-        $Data=DB::table('admin')->join('ls_licenses','ls_licenses.user_id','=','admin.admin_id')->get();
-        // echo '<pre>';print_r($Data);echo '</pre>';die();
+        //$Data=DB::table('ls_licenses')->join('admin','ls_licenses.user_id','=','admin.company_id')->get();
+        $Data = License::get();
+        //echo '<pre>';print_r($Data);echo '</pre>';die();
         $ActiveAction = "license";
         return view('license.view', compact("Data", "ActiveAction"));
     }
@@ -99,6 +100,7 @@ class LicenseController extends Controller
 
             //Create user license 
             $user_id=$AdminObj->admin_id;
+            $company_id=$AdminObj->company_id;  //changing to company id..  as license can be used by multiple users.
             $created_by=session("AdminID");
             $domain="nucleuz.app";
             $license_key=(string) Str::uuid();
@@ -108,7 +110,8 @@ class LicenseController extends Controller
             $is_lifetime=0;
             $total_employee=isset($Input["total_employee"]) ? $Input["total_employee"] : 0;
             $LicenseObj = new License();
-            $LicenseObj->user_id=$user_id;
+            //$LicenseObj->user_id=$user_id;  
+            $LicenseObj->user_id=$company_id;  // this is company id now. as per change in implementation.
             $LicenseObj->created_by=$created_by;
             $LicenseObj->domain=$domain;
             $LicenseObj->license_key=$Input["license_key"];

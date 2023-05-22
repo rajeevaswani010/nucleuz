@@ -73,11 +73,13 @@ class StaffController extends Controller
         }else{
             $Input["company_id"] = session("CompanyLinkID");
             $Input["admin_id"] = session("AdminID");
+            $Input["link_id"] = session("Link_Id");
            // $Office = Admin::create($Input);
             $Password = Str::random($strlentgh = 16);
             $AdminObj = new Admin();
             $AdminObj->name = $Input["name"];
-            $AdminObj->link_id = $Input["admin_id"];
+            //$AdminObj->link_id = $Input["admin_id"];
+            $AdminObj->link_id = $Input["link_id"];
             $AdminObj->company_id = $Input["company_id"];
             $AdminObj->email = $Input["email"];
             $AdminObj->mobile = $Input["mobile"];

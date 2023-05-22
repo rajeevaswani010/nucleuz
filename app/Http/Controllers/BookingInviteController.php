@@ -24,6 +24,7 @@ class BookingInviteController extends Controller
         }
         
         $Data = BookingInvite::where("company_id", session("CompanyLinkID"))->where("user_id", session("AdminID"))->latest()->get();
+        //$Data = BookingInvite::where("company_id", session("CompanyLinkID"))->latest()->get();
         $ActiveAction = "booking-invite";
         return view('booking-invite.view', compact("Data", "ActiveAction"));
     }

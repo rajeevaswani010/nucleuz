@@ -44,31 +44,31 @@
 
                 <div class="col-lg-3 mb-4">
                     <label>First Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required>
+                    <input type="text" class="form-control" name="first_name" value="{{ $Customer->first_name }}" required>
                 </div>
 
                 <div class="col-lg-3 mb-4">
                     <label>Middle Name</label>
-                    <input type="text" class="form-control" name="middle_name" value="{{ old('middle_name') }}">
+                    <input type="text" class="form-control" name="middle_name" value="{{ $Customer->middle_name }}">
                 </div>
 
                 <div class="col-lg-3 mb-4">
                     <label>Last Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required>
+                    <input type="text" class="form-control" name="last_name" value="{{ $Customer->last_name }}" required>
                 </div>
 
                 <div class="col-lg-4 mb-4">
                     <label>Gender <span class="text-danger">*</span></label>
                     <select class="form-control" name="gender" required>
                         <option value="">Select</option>
-                        <option>Male</option>
-                        <option>Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
                     </select>
                 </div>
 
                 <div class="col-lg-4 mb-4">
                     <label>Date of Birth <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" name="dob" value="{{ old('dob') }}" required>
+                    <input type="date" class="form-control" name="dob" value="{{ $Customer->dob }}" required>
                 </div>
 
                 <div class="col-lg-4 mb-4">
@@ -83,7 +83,7 @@
 
                 <div class="col-lg-3 mb-4">
                     <label>Email <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="email" value="{{ $InviteObj->email }}" required readonly>
+                    <input type="text" class="form-control" name="email" value="{{ $Customer->email }}" required readonly>
                 </div>
 
                 <div class="col-lg-3 mb-4">
@@ -98,34 +98,34 @@
 
                 <div class="col-lg-3 mb-4">
                     <label>Mobile <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="mobile" value="{{ old('mobile') }}" required>
+                    <input type="text" class="form-control" name="mobile" value="{{ $Customer->mobile }}" required>
                 </div>
 
                 <div class="col-lg-3 mb-4">
                     <label>Insurance Details</label>
-                    <input type="text" class="form-control" name="insurance" value="{{ old('insurance') }}">
+                    <input type="text" class="form-control" name="insurance" value="{{ $Customer->insurance }}">
                 </div>
 
                 <div class="col-lg-6 mb-4">
                     <label>Permanent Address <span class="text-danger">*</span></label>
-                    <textarea type="text" class="form-control" name="permanent_address" required>{{ old('permanent_address') }}</textarea>
+                    <textarea type="text" class="form-control" name="permanent_address"  required>{{ $Customer->permanent_address }}</textarea>
                 </div>
 
                 <div class="col-lg-6 mb-4">
                     <label>Temp Address</label>
-                    <textarea type="text" class="form-control" name="temp_address">{{ old('temp_address') }}</textarea>
+                    <textarea type="text" class="form-control" name="temp_address">{{ $Customer->temp_address }}</textarea>
                 </div>
                 
                 <div class="col-lg-6">
                     <div class="row">
                         <div class="col-lg-5 mb-4">
                             <label>Resident Card Details</label>
-                            <input type="file" class="form-control" name="residency_card" value="{{ old('residency_card') }}">
+                            <input type="file" class="form-control" name="residency_card" value="{{ $Customer->residency_card }}">
                         </div>
                         <div class="col-lg-2">or</div>
                         <div class="col-lg-5 mb-4">
                             <label>Passport Details</label>
-                            <input type="file" class="form-control" name="passport_detail" value="{{ old('passport_detail') }}">
+                            <input type="file" class="form-control" name="passport_detail" value="{{ $Customer->passport_detail }}">
                         </div>
                     </div>
                 </div>
@@ -177,7 +177,7 @@
 
                 <div class="col-lg-6 mb-4">
                     <label>Date of Pickup <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" required name="PickupDate">
+                    <input type="date" class="form-control" required name="PickupDate" min="{{ date('Y-m-d') }}">
                 </div>
 
                 <div class="col-lg-6 mb-4">
