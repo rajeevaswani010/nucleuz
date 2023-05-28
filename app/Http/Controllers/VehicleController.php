@@ -59,6 +59,12 @@ class VehicleController extends Controller
         }
         
         $Input = $request->all();
+
+        $request->validate([
+            'reg_no' => 'required|unique:vehicles'
+            ],
+            [ 'reg_no.unique'      => 'Sorry, This Registration Number Is Already Used. Please Try With Different One, Thank You.']);
+
         $Input["company_id"] = session("CompanyLinkID");
 
         if($request->file('car_image') != null){
