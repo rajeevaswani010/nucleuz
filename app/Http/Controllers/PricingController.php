@@ -82,7 +82,8 @@ class PricingController extends Controller
         }
         
         $Data = Pricing::find($id);
-        
+        // echo '<pre>';print_r($Data); echo '</pre>';die();
+
         $ActiveAction = "pricing";
         return view('pricing.edit', compact("Data", "ActiveAction"));
     }

@@ -25,8 +25,8 @@ class DashboardController extends Controller
 		$VhIDs = Vehicle::select("id")->where("company_id", session("CompanyLinkID"))->whereNotIn("id", $GetBooking)->count();
 		$VehicleAvaialble = $VhIDs;
 
-		$OnRentVehicle = Booking::where("company_id", session("CompanyLinkID"))->where("pickup_date_time", "<=", date("Y-m-d")." 00:00:00")->where("status", 0)->count();
-		$Return = Booking::where("company_id", session("CompanyLinkID"))->where("pickup_date_time", "<=", date("Y-m-d")." 00:00:00")->where("status", 1)->count();
+		$OnRentVehicle = Booking::where("company_id", session("CompanyLinkID"))->where("pickup_date_time", "<=", date("Y-m-d")." 00:00:00")->where("status", 1)->count();
+		$Return = Booking::where("company_id", session("CompanyLinkID"))->where("pickup_date_time", "<=", date("Y-m-d")." 00:00:00")->where("status", 2)->count();
 
 		$Invite = Customer::where("company_id", session("CompanyLinkID"))->count();
 		$ToalBooking = Booking::where("company_id", session("CompanyLinkID"))->count();

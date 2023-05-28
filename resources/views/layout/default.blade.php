@@ -136,6 +136,11 @@
 
     <!--------------------- Start Account ----------------------------------->
     @if(session("AdminRole") == 2)
+    <li class="dash-item dash-hasmenu @if($ActiveAction == 'reports') active @endif">
+        <a href="{{ URL('reports') }}" class="dash-link">
+            <span class="dash-micon"><i class="ti ti-share"></i></span><span class="dash-mtext">Reports</span>
+        </a>
+    </li>
     <li class="dash-item dash-hasmenu
                 ">
                 <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-box"></i></span><span class="dash-mtext">Accounting System 
@@ -241,12 +246,6 @@
 
 
     @if(session("AdminRole") == 2)
-
-    <li class="dash-item dash-hasmenu @if($ActiveAction == 'reports') active @endif">
-        <a href="{{ URL('reports') }}" class="dash-link">
-            <span class="dash-micon"><i class="ti ti-share"></i></span><span class="dash-mtext">Reports</span>
-        </a>
-      </li>
 
       {{--<li class="dash-item dash-hasmenu @if($ActiveAction == 'customer') active @endif">
         <a href="{{ URL('customer') }}" class="dash-link">

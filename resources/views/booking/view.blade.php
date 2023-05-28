@@ -60,6 +60,16 @@
                         <label>{{ __("Pickup To Date") }}</label>
                         <input type="date" class="form-control" name="to_date" value="{{ @$_GET['to_date'] }}">
                     </div>
+                    <div class="col">
+                        <label>{{ __("Status") }}</label>
+                        <select class="form-control" name="status">
+                            <option value="">{{ __("All") }}</option>
+                            <option @if(@$_GET['status'] == 1) selected @endif value=1>Assigned</option>
+                            <option @if(@$_GET['status'] == 2) selected @endif value=2>Delivered</option>
+                            <option @if(@$_GET['status'] == 3) selected @endif value=3>Completed</option>
+                            <option @if(@$_GET['status'] == 4) selected @endif value=4>Cancelled</option>
+                        </select>
+                    </div>
                     <div class="col"><button class="btn btn-primary" role="button"><i class="material-icons">search</i></button></div>
                     <div class="col"><button class="btn btn-primary" role="button" name="export" value="Export">{{ __("Export") }}</button></div>
                 </div>
@@ -93,7 +103,6 @@
 <tbody>
     
     @foreach($Data as $DT)
-
     <tr class="font-style">
     <td>B000{{ $DT->id }}</td>
     <td><div class="d-flex flex-column">
@@ -107,6 +116,7 @@
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->car_type }}</strong></p>
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ @$DT->vehicle->make }}</strong></p>
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ @$DT->vehicle->model }}</strong></p>
+        <p class="mb-0"><strong class="js-lists-values-employee-name">{{ @$DT->vehicle->reg_no }}</strong></p>
     </div>
     </td>
 
