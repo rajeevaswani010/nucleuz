@@ -33,7 +33,7 @@
                     <div class="row">
 
                         <div class="form-group col-md-4">
-                            <label for="from" class="col-form-label text-dark">Car Type</label>
+                            <label for="from" class="col-form-label text-dark">Car Type<span class="text-danger">*</span></label>
                             <select class="form-control font-style" name="car_type" required>
                             <option value="">{{ __("Select") }}</option>
                             <option value="Hatchback">{{ __("Hatchback") }}</option>
@@ -47,7 +47,7 @@
                         </div>
 
                         <div class="form-group col-md-4">
-                            <label for="from" class="col-form-label text-dark">Make</label>
+                            <label for="from" class="col-form-label text-dark">Make<span class="text-danger">*</span></label>
                             <select class="form-control font-style" name="make" required>
                             <option value="">{{ __("Select") }}</option>
                             @foreach($AllBrands as $Brnd)
@@ -57,20 +57,20 @@
                         </div>
 
                         <div class="form-group col-4">
-                            <label for="subject" class="col-form-label text-dark">Model</label>
+                            <label for="subject" class="col-form-label text-dark">Model<span class="text-danger">*</span></label>
                             <input class="form-control font-style" required name="model" value="{{ old('model') }}" type="text"  />
                         </div>
 
 
                         <div class="form-group col-4">
-                            <label for="subject" class="col-form-label text-dark">Variant</label>
+                            <label for="subject" class="col-form-label text-dark">Variant<span class="text-danger">*</span></label>
                             <input class="form-control font-style" required name="variant" value="{{ old('variant') }}" type="text"  />
                         </div>
 
 
                         <div class="form-group col-4">
-                            <label for="subject" class="col-form-label text-dark">Chasis Number</label>
-                            <input class="form-control font-style"  name="chasis_no" value="{{ old('chasis_no') }}" type="text"  />
+                            <label for="subject" class="col-form-label text-dark">Chasis Number<span class="text-danger">*</span></label>
+                            <input class="form-control font-style" required name="chasis_no" value="{{ old('chasis_no') }}" type="text"  />
                         </div>
 
 
@@ -83,14 +83,14 @@
 
 
                         <div class="form-group col-4">
-                            <label for="subject" class="col-form-label text-dark">Registration Number</label>
-                            <input class="form-control font-style"  name="reg_no" value="{{ old('reg_no') }}" type="text"  />
+                            <label for="subject" class="col-form-label text-dark">Registration Number<span class="text-danger">*</span></label>
+                            <input class="form-control font-style" required name="reg_no" value="{{ old('reg_no') }}" type="text"  />
                         </div>
 
 
                         <div class="form-group col-4">
-                            <label for="subject" class="col-form-label text-dark">KM Reading</label>
-                            <input class="form-control font-style"  name="km_reading" value="{{ old('km_reading') }}" type="text"  />
+                            <label for="subject" class="col-form-label text-dark">KM Reading <span class="text-danger">*</span></label>
+                            <input class="form-control font-style" required name="km_reading" value="{{ old('km_reading') }}" type="text"  />
                         </div>
 
 
@@ -108,7 +108,7 @@
 
                         <div class="form-group col-4">
                             <label for="subject" class="col-form-label text-dark">AC</label>
-                            <input class="form-control font-style"  name="km_reading" name="ac" value="{{ old('ac') }}" type="text"  />
+                            <input class="form-control font-style"  name="ac" name="ac" value="{{ old('ac') }}" type="text"  />
                         </div>
 
                         <div class="form-group col-4">
@@ -134,8 +134,8 @@
 
 
                         <div class="form-group col-4">
-                            <label for="subject" class="col-form-label text-dark">Mulkiya Details</label>
-                            <input class="form-control font-style"  name="mulkiya_details" accept="image/png, image/gif, image/jpeg" type="file"  />
+                            <label for="subject" class="col-form-label text-dark">Mulkiya Details<span class="text-danger">*</span></label>
+                            <input class="form-control font-style" required name="mulkiya_details" accept="image/png, image/gif, image/jpeg" type="file"  />
                         </div>
 
 
