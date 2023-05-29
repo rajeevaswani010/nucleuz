@@ -40,7 +40,7 @@
                 <div class="row">
                     <div class="col">
                         <label>{{ __("Report Type") }}</label>
-                        <select class="form-control" name="report_type">
+                        <select class="form-control" name="report_type" onchange = "onReportTypeChange(event)">
                             <option value="">{{ __("") }}</option>
                             <option @if(@$_GET['report_type'] == "On Rent") selected @endif value="On Rent">{{ __("On Rent") }}</option>
                             <option @if(@$_GET['report_type'] == "Reservation") selected @endif value="Reservation">{{ __("Reservation") }}</option>
@@ -65,15 +65,15 @@
                     </div>
 
                     <div class="col">
-                        <label>{{ __("Pickup From Date") }}</label>
-                        <input type="date" class="form-control" name="from_date" value="{{ @$_GET['from_date'] }}">
+                        <label>{{ __("From") }}</label>
+                        <input type="date" class="form-control" id="from_date" onchange="validateDateRange()" name="from_date" value="{{ @$_GET['from_date'] }}">
                     </div>
 
                     <div class="col">
-                        <label>{{ __("Pickup To Date") }}</label>
-                        <input type="date" class="form-control" name="to_date" value="{{ @$_GET['to_date'] }}">
+                        <label>{{ __("To") }}</label>
+                        <input type="date" class="form-control" id="to_date" onchange="validateDateRange()" name="to_date" value="{{ @$_GET['to_date'] }}">
                     </div>
-                    <div class="col"><button class="btn btn-success mt-4" name="search" value="search" role="button"><i class="material-icons">search</i></button></div>
+                    <div class="col"><button class="btn btn-success mt-4" name="search" value="search" role="button"><i class="fa fa-sech"> Search</i></button></div>
                 </div>
             </div>
         </form>
@@ -118,6 +118,44 @@
 <!-- [ Main Content ] end -->
 </div>
 </div>
+<script>
+    validateDateRange();
 
+    function onReportTypeChange(e){
+        console.log("inside fucntion on report type change");
+        console.log(e.target.value);
+
+        switch (e.target.value) {
+            case "Reservation" :
+                // Do work here
+                $("#to_date").prop("disabled",false);
+                $("#from_date").prop("disabled",false);
+                
+                break;
+            case "On Rent" :
+                console.log("on rent");
+                $("#to_date").val = "";
+                $("#from_date").val = "";
+                $("#to_date").prop("disabled",true);
+                $("#from_date").prop("disabled",true);
+                break;
+            default :
+                // Do work here
+                console.log("default");
+                $("#to_date").prop("disabled",false);
+                $("#from_date").prop("disabled",false);
+                break;
+        }
+    }
+
+    function validateDateRange(){
+        $from = $("#from_date").val();
+        $to = $("#to_date").val();
+
+        $("#to_date").attr("min",$from);
+        $("#from_date").attr("max", $to);    
+    }
+
+</script>
 
 @endsection

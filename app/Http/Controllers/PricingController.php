@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 use Session;
+use Excel;
 
+use App\Export\PricingExport;
+use App\Import\PricingImport;
 use App\Models\Pricing;
 
 class PricingController extends Controller
@@ -122,4 +125,16 @@ class PricingController extends Controller
         Pricing::find($id)->delete();
         return redirect("pricing");
     }
+
+    public function Export(){
+        $Data = Pricing::where("company_id", session("CompanyLinkID"))->latest()->get();
+        return Excel::download(new PricingExport($Data), 'pricing.xlsx');
+    }
+
+    public function Import(Request $request){
+        $path = $request->file('ExcelFile')->store('ExcelFile');
+        Excel::import(new PricingImport, $path);
+        return redirect()->back();
+    }
+
 }

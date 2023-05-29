@@ -8,6 +8,7 @@ use Session;
 
 use App\Models\Admin;
 use App\Models\Booking;
+use App\Models\BookingInvite;
 use App\Models\Customer;
 use App\Models\Vehicle;
 use App\Models\Office;
@@ -28,9 +29,9 @@ class DashboardController extends Controller
 		$OnRentVehicle = Booking::where("company_id", session("CompanyLinkID"))->where("status", 2)->count();
 		$Return = Booking::where("company_id", session("CompanyLinkID"))->where("dropoff_date", ">=", date("Y-m-d")." 00:00:00")->where("dropoff_date", "<=", date("Y-m-d")." 23:59:59")->where("status", 2)->count();
 
-		$Invite = Customer::where("company_id", session("CompanyLinkID"))->count();
-		$ToalBooking = Booking::where("company_id", session("CompanyLinkID"))->count();
-		$Reservation = $Invite - $ToalBooking;
+		$Invite = BookingInvite::where("company_id", session("CompanyLinkID"))->where("status",1)->count(); //registered invites.. 
+		//$ToalBooking = Booking::where("company_id", session("CompanyLinkID"))->count();
+		$Reservation = $Invite;// - $ToalBooking;
 
 		$HatchbackBooking = Booking::where("company_id", session("CompanyLinkID"))->where("car_type", "Hatchback")->count();
 		$SedanBooking = Booking::where("company_id", session("CompanyLinkID"))->where("car_type", "Sedan")->count();

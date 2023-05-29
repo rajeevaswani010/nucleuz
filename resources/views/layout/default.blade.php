@@ -4,8 +4,8 @@
 <meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}">
 <head>
     <title>{{ $ActiveAction ? $ActiveAction : 'Dashboard' }} </title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.0/html5shiv.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.0/html5shiv.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script> -->
 
     <!-- Meta -->
     <meta charset="utf-8"/>
@@ -34,7 +34,8 @@
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/customizer.css') }}">
     <link rel="stylesheet" href="{{ URL('public/newasserts/css/custom.css') }}" id="main-style-link">
     <script src="{{ URL('public/newasserts/js/jquery.min.js') }}"></script>
-
+    
+    <link rel="stylesheet" href="{{ URL('resources/css/app.css') }}">
     </head>
 <body class="theme-4">
 

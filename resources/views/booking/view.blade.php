@@ -53,12 +53,12 @@
 
                     <div class="col">
                         <label>{{ __("Pickup From Date") }}</label>
-                        <input type="date" class="form-control" name="from_date" value="{{ @$_GET['from_date'] }}">
+                        <input type="date" class="form-control" id="from_date" name="from_date" value="{{ @$_GET['from_date'] }}" onchange="validateDateRange()">
                     </div>
 
                     <div class="col">
                         <label>{{ __("Pickup To Date") }}</label>
-                        <input type="date" class="form-control" name="to_date" value="{{ @$_GET['to_date'] }}">
+                        <input type="date" class="form-control" id="to_date" name="to_date" value="{{ @$_GET['to_date'] }}" onchange="validateDateRange()">
                     </div>
                     <div class="col">
                         <label>{{ __("Status") }}</label>
@@ -176,12 +176,23 @@
 </div>
 </div>
 <script type="text/javascript">
+
+validateDateRange();
+
 function GoDeleteCat(ID){
     if(confirm("Are you sure to Delete This Record. Once you deleted, no data will be recovered")){
         return true;
     }
     
     return false;
+}
+
+function validateDateRange(){
+    $from = $("#from_date").val();
+    $to = $("#to_date").val();
+
+    $("#to_date").attr("min",$from);
+    $("#from_date").attr("max", $to);    
 }
 </script>
 

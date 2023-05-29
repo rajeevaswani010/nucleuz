@@ -36,7 +36,7 @@ class ReportController extends Controller{
 
         $GetVehicleIDS = array();
         if($request->report_type != ""){
-            $GetBooking = Booking::where("company_id", session("CompanyLinkID"))->where("vehicle_id","!=", null);
+            $GetBooking = Booking::where("company_id", session("CompanyLinkID"));
             Log:info("count - ".$GetBooking->count());
 
             if($request->report_type == "On Rent"){
@@ -59,7 +59,7 @@ class ReportController extends Controller{
                 $GetBooking = $GetBooking->where("status", 1);
             }
 
-            // Log::info("count - ".$GetBooking->count());
+            Log::info("count - ".$GetBooking->count());
 
             if($request->from_date != ""){
                 $GetBooking = $GetBooking->where("pickup_date_time", ">=", $request->from_date." 00:00:00");    

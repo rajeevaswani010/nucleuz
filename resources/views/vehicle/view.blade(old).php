@@ -22,7 +22,7 @@
             {!! Form::open(['url' => 'UplaodVehicle', 'enctype' => 'multipart/form-data', 'method' => 'POST']) !!}
             <div class="row">
                 <div class="col-lg-4"><input type="file" name="ExcelFile" required class="form-control"></div>
-                <div class="col-lg-4"><button class="btn btn-success">Upload</button></div>
+                <div class="col-lg-4"><button class="btn btn-">Upload</button></div>
                 <div class="col-lg-4"><a href="{{ URL('public/Vehicle Sample.xlsx') }}">{{ __("Download Sample") }}</a></div>
             </div>
             {!! Form::close() !!}

@@ -28,7 +28,7 @@
             <div class="card">
                 <div class="card-body ">
                     
-                {!! Form::open(['url' => 'booking-invite', 'enctype' => 'multipart/form-data', 'method' => 'POST']) !!}
+                {!! Form::open(['url' => 'booking-invite', 'enctype' => 'multipart/form-data', 'method' => 'POST', 'id' => 'form']) !!}
 
                     <div class="row">
 
@@ -64,5 +64,37 @@
     </div>
 </div>
 
+<section id="loading">
+    <div id="loading-content"></div>
+</section>
+<script>
+// let form = document.querySelector('#form');
+// let loader = document.querySelector('#loader')
 
+// form.addEventListener('submit', function (event) {
+//     event.preventDefault();
+  
+//     // using non css framework method with Style
+//     loader.style.display = 'block';
+  
+//     // using a css framework such as TailwindCSS
+//     loader.classList.remove('hidden');
+
+//     // pretend the form has been sumitted and returned
+//     setTimeout(() => loader.style.display = 'none', 1000);
+// });
+
+function showLoading() {
+  document.querySelector('#loading').classList.add('loading');
+  document.querySelector('#loading-content').classList.add('loading-content');
+}
+
+function hideLoading() {
+  document.querySelector('#loading').classList.remove('loading');
+  document.querySelector('#loading-content').classList.remove('loading-content');
+}
+
+showLoading();
+
+</script>
 @endsection

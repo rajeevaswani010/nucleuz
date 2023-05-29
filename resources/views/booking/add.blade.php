@@ -28,7 +28,7 @@
         {!! Form::open(['url' => 'booking', 'id' => 'BookingForm', 'enctype' => 'multipart/form-data', 'method' => 'POST']) !!}
 
 
-        <div class="card">
+        <div class="card ">
         <div class="card-header"><h4>{{ __('Customer Details') }}</h4></div>
         <div class="card-body">
             <div class="row">
@@ -130,7 +130,10 @@
 
                 <div class="col-lg-3 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Resident Card Details") }}</label>
-                    <input type="file" class="form-control font-style" name="residency_card" capture>
+                    <!-- <input type="file" name="residency_card" class="col-form-label text-dark custom-file-input" 
+                        style="display:none;" id="file_residency_card">
+                    <label class="btn btn-light form-control font-style custom-file-label" for="file_residency_card" id="label_file_residency_card">Choose file</label> -->
+                    <input type="file" class="form-control font-style" name="residency_card" id="file_residency_card" capture>
                     @if(@$CustomerData->residency_card != "")
                     <img src="{{ URL('public') }}/{{ @$CustomerData->residency_card }}" style="width: 100px">
                     @endif
@@ -169,17 +172,27 @@
         <div class="card-header"><h4>{{ __("Booking Details") }}</h4></div>
         <div class="card-body">
             <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <label>{{ __("Date of Pickup") }} <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" required onchange="fetchAvailableVehicles(event)" id="pickupDate" name="PickupDate" min="{{ date('Y-m-d') }}" >
+                </div>
+
+                <div class="col-lg-6 mb-4">
+                    <label>{{ __("Time of Pickup") }} <span class="text-danger">*</span></label>
+                    <input type="time" class="form-control" id="pickupTime" required name="PickupTime">
+                </div>
+
                 <div class="col-lg-12 mb-4">
-                    <label>{{ __("Vehicle") }} <span class="text-danger">*</span></label>
+                    <label>{{ __("Vehicle") }} <span class="text-danger">*</span></label><span style="float:right; font-style:italic; color:red;">[ Vehicle option shown in <b>RED</b> means is not available ]</span>
                     <select class="form-control" required id="VehicleData" onchange="fetchReviews()" name="vehicle_id">
                         <option value="">{{ __("Select") }}</option>
-                        <option value="Hatchback">{{ __("Hatchback") }}</option>
+                        <!-- <option value="Hatchback">{{ __("Hatchback") }}</option>
                         <option value="Sedan">{{ __("Sedan") }}</option>
                         <option value="SUV">{{ __("SUV") }}</option>
                         <option value="MUV">{{ __("MUV") }}</option>
                         <option value="Coupe">{{ __("Coupe") }}</option>
                         <option value="Convertibles">{{ __("Convertibles") }}</option>
-                        <option value="Pickup Trucks">{{ __("Pickup Trucks") }}</option>
+                        <option value="Pickup Trucks">{{ __("Pickup Trucks") }}</option> -->
                     </select>
                 </div>
 
@@ -201,16 +214,6 @@
                 <div class="col-lg-4 mb-4">
                     <label>{{ __("Per day KM Allocation") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" required name="km_allocation">
-                </div>
-
-                <div class="col-lg-6 mb-4">
-                    <label>{{ __("Date of Pickup") }} <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" required name="PickupDate" min="{{ date('Y-m-d') }}">
-                </div>
-
-                <div class="col-lg-6 mb-4">
-                    <label>{{ __("Time of Pickup") }} <span class="text-danger">*</span></label>
-                    <input type="time" class="form-control" required name="PickupTime">
                 </div>
 
                 <div class="col-lg-12 mb-4">
@@ -273,17 +276,16 @@
                      <div id="LoadSubTotal"><b>0.0</b></div>
                 </div>
 
-
-                <div class="mt-2">
-                    <b>{{ __("VAT") }} :</b>
-                     <div id="LoadTax"><b>0.0</b></div>
-                </div>
-
                 <div class="mt-2">
                     <b>{{ __("Discount") }} :</b>
                      <div id="LoadDiscount"><b>0.0</b></div>
                 </div>
-           
+
+                <div class="mt-2">
+                    <b>{{ __("VAT (5%)") }} :</b>
+                     <div id="LoadTax"><b>0.0</b></div>
+                </div>
+
                 <div class="mt-2">
                     <b>{{ __("Grand Total") }} :</b>
                     <div id="LoadGrandTotal"><b>0.0</b></div>
@@ -323,8 +325,47 @@
 </div>
 
 <script type="text/javascript">
-    function fetchReviews(){
+    
+    function fetchAvailableVehicles( e ){
 
+        $.ajax({
+          url: "{{ URL('Booking/GetAvailableCarTypes') }}",
+          method: "POST",
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          data: {
+            pickupDate: $("#pickupDate").val(),
+          },
+          success: function( data, textStatus, jqXHR ) {
+
+                JsData = JSON.parse(data);
+                console.log(JsData);
+                select = document.getElementById('VehicleData');
+                select.innerHTML='';
+                var opt = document.createElement('option');
+                opt.value = "asdfad";
+                opt.innerHTML = '--Select Vehicle--';
+                select.appendChild(opt);
+
+                for (const key in JsData) {
+                    var opt = document.createElement('option');
+                    opt.value = key;
+                    opt.innerHTML = key.toUpperCase();
+                    if(JsData[key]<=0) {
+                        opt.disabled = "disabled";
+                        opt.style = "color:red; font-style: italic;";
+                    }
+                    select.appendChild(opt);
+                }  
+          },
+          error: function( jqXHR, textStatus, errorThrown ) {
+            alert("Fail to fetch vehicles for selected date. Please contact company for assistance. Error: " + errorThrown);             
+          }
+        });
+    }
+
+    function fetchReviews(){
         // alert('jjjjj');
         // return false;
         if($("#TarrifData").val() == "Daily"){
@@ -388,8 +429,6 @@
                   processData:false,
                   success: function( data, textStatus, jqXHR ) {
                       JsData = JSON.parse(data);
-                      
-                      console.log(JsData);
                       
                       if(JsData.Status == 0){
                           $("#ErrorText").html(JsData.Message);
@@ -456,6 +495,7 @@
                   $("#permanent_address").val(JsData.permanent_address);
                   $("#temp_address").val(JsData.temp_address);
                   $("#title").val(JsData.title);
+                  $("#label_file_residency_card").html(JsData.residency_card);
               }else{
                 $("#errormsg").html("Customer Not Found");
               }

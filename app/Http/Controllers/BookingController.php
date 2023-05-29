@@ -20,6 +20,7 @@ use App\Models\Customer;
 use App\Models\Office;
 
 use Log;
+use DB;
 
 class BookingController extends Controller
 {
@@ -563,6 +564,40 @@ class BookingController extends Controller
             return json_encode(array("GrandTotal" => $Amount, "Tax" => $TaxAmount, "SubTotal" => $SubTotal, "Discount" => $DiscountAmount, "Due" => number_format($DueAmount, 2), "Advance" => $AdvanceAmount));
         }catch(\Exception $e){
             echo $e->getMessage();
+        }
+    }
+
+    public function GetAvailableCarTypes(Request $request){
+        try {
+            $GetAllVehicles = DB::table('vehicles')
+                        ->selectRaw('lower(car_type) as car_type, count(*) as count')
+                        ->where("company_id",session("CompanyLinkID"))
+                        ->groupBy('car_type')
+                        ->orderBy('car_type')
+                        ->get()
+                        ;
+
+            // Log::info(json_encode($GetAllVehicles));
+            $getAllVehicleResp = collect();
+            foreach ( $GetAllVehicles as $obj ){
+                $getAllVehicleResp[$obj->car_type] = $obj->count;
+            }
+
+            $query = 'select lcase(car_type) as car_type from bookings where company_id = '.session("CompanyLinkID")
+                    .' and (
+                        (  status = 1 and pickup_date_time >= \''.$request->pickupDate.' 00:00:00\' and pickup_date_time <= \''.$request->pickupDate.' 23:59:59\' ) 
+                            or (status = 2 and dropoff_date >= \''.$request->pickupDate.' 00:00:00\' )
+                        )'
+                        ;
+            Log::info($query);
+            $GetAllBookings = DB::select($query);
+            foreach ($GetAllBookings as $obj){
+                $getAllVehicleResp[$obj->car_type] -= 1;
+            }
+
+            return json_encode($getAllVehicleResp);
+        } catch(Exception $e){
+            echo $e.getMessage();
         }
     }
     
