@@ -525,6 +525,10 @@ class BookingController extends Controller
                 }
             }
 
+            if($BasePrice==0){
+                return json_encode(array("GrandTotal" => 0, "Tax" => 0, "SubTotal" => 0, "Discount" => 0, "Due" => 0, "Advance" => 0));
+            }
+
             $Amount = $BasePrice * $Input["days"];
             
             $DiscountAmount = number_format($Input["discount"], 2);
