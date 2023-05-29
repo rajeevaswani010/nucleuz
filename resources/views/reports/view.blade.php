@@ -40,7 +40,7 @@
                 <div class="row">
                     <div class="col">
                         <label>{{ __("Report Type") }}</label>
-                        <select class="form-control" name="report_type" onchange = "onReportTypeChange(event)">
+                        <select class="form-control" name="report_type" id="report_type" onchange = "onReportTypeChange()">
                             <option value="">{{ __("") }}</option>
                             <option @if(@$_GET['report_type'] == "On Rent") selected @endif value="On Rent">{{ __("On Rent") }}</option>
                             <option @if(@$_GET['report_type'] == "Reservation") selected @endif value="Reservation">{{ __("Reservation") }}</option>
@@ -120,24 +120,29 @@
 </div>
 <script>
     validateDateRange();
+    onReportTypeChange();
 
-    function onReportTypeChange(e){
-        console.log("inside fucntion on report type change");
-        console.log(e.target.value);
+    function onReportTypeChange(){
+        $reportType = $("#report_type").val();
+        console.log("inside fucntion on report type change - " + $reportType);
 
-        switch (e.target.value) {
+        switch ($reportType) {
             case "Reservation" :
                 // Do work here
                 $("#to_date").prop("disabled",false);
                 $("#from_date").prop("disabled",false);
-                
                 break;
             case "On Rent" :
-                console.log("on rent");
                 $("#to_date").val = "";
                 $("#from_date").val = "";
                 $("#to_date").prop("disabled",true);
                 $("#from_date").prop("disabled",true);
+                break;
+            case "Returns":
+                $("#to_date").prop("disabled",false);
+                $("#from_date").prop("disabled",false);
+                $("#to_date").val = new Date().toISOString().substr(0,10);
+                $("#from_date").val = new Date().toISOString().substr(0,10);
                 break;
             default :
                 // Do work here

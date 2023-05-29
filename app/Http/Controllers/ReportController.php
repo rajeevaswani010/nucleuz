@@ -48,7 +48,7 @@ class ReportController extends Controller{
             }
 
             if($request->report_type == "Returns"){
-                $GetBooking = $GetBooking->where("status", 1);
+                $GetBooking = $GetBooking->where("status", 2);
             }
 
             if($request->report_type == "Available"){
