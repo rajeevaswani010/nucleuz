@@ -41,7 +41,7 @@
                     <div class="col">
                         <label>{{ __("Report Type") }}</label>
                         <select class="form-control" name="report_type">
-                            <option value="">{{ __("All") }}</option>
+                            <option value="">{{ __("") }}</option>
                             <option @if(@$_GET['report_type'] == "On Rent") selected @endif value="On Rent">{{ __("On Rent") }}</option>
                             <option @if(@$_GET['report_type'] == "Reservation") selected @endif value="Reservation">{{ __("Reservation") }}</option>
                             <option @if(@$_GET['report_type'] == "Returns") selected @endif value="Returns">{{ __("Returns") }}</option>
@@ -89,17 +89,22 @@
 <tr>
 <th>Car Detail</th>
 <th>Chasis</th>
+<th>Model</th>
 <th>Reg. No</th>
 </tr>
 </thead>
 
 <tbody>
-    
+
     @foreach($Data as $DT)
+    <script> 
+         console.log("DT is " + {{ $DT->id }}); 
+    </script>    
     <tr class="font-style">
     <td>{{ $DT->car_type }}</td>
     <td>{{ $DT->make }}</td>
     <td>{{ $DT->model }}</td>
+    <td>{{ $DT->reg_no }}</td>
     </tr>
     @endforeach
 

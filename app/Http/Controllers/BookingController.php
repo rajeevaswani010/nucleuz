@@ -29,11 +29,18 @@ class BookingController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request){
-        Log::info('first log ***************************** Request:'.json_encode($request));
         if(session("AdminID") == ""){
             return redirect("/");
         }
-        
+
+        Log::debug("Booking page index filters ---- vehicle type: ".$request->vehicle_type
+                    ." , from: ".$request->from_date
+                    ." , to: ".$request->to_date
+                    ." , status: ".$request->status
+                );
+        //echo '<pre>';print_r($request->status); echo '</pre>';die();
+
+
         $Data = Booking::where("company_id", session("CompanyLinkID"));
 
         if($request->from_date != ""){
@@ -48,11 +55,16 @@ class BookingController extends Controller
             $Data = $Data->where("car_type", $request->vehicle_type);
         }
 
+        if($request->status != ""){
+            $Data = $Data->where("status", $request->status);
+        }
+
         $Data = $Data->orderBy("id", "DESC")->get();
         
         if(isset($request->export) && $request->export == "Export"){
             return Excel::download(new BookingExport($Data), 'Booking.xlsx');
         }
+
         $ActiveAction = "booking";
         return view('booking.view', compact("Data", "ActiveAction"));
     }
