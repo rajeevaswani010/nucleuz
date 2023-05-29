@@ -64,7 +64,7 @@
     </div>
 </div>
 
-<section id="loading">
+<!-- <section id="loading">
     <div id="loading-content"></div>
 </section>
 <script>
@@ -94,7 +94,7 @@ function hideLoading() {
   document.querySelector('#loading-content').classList.remove('loading-content');
 }
 
-showLoading();
+showLoading(); -->
 
 </script>
 @endsection
