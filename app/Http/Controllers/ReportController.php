@@ -40,7 +40,7 @@ class ReportController extends Controller{
             Log:info("count - ".$GetBooking->count());
 
             if($request->report_type == "On Rent"){
-                $GetBooking = $GetBooking->where("status", 2);
+                $GetBooking = $GetBooking->where("status", 2)->where("pickup_date_time","<=",date("Y-m-d")." 23:59:59");
             }
 
             if($request->report_type == "Reservation"){
@@ -62,7 +62,7 @@ class ReportController extends Controller{
             Log::info("count - ".$GetBooking->count());
 
             if($request->from_date != ""){
-                $GetBooking = $GetBooking->where("pickup_date_time", ">=", $request->from_date." 00:00:00");    
+                $GetBooking = $GetBooking->where("pickup_date_time", ">=", $request->from_date." 23:59:59");    
             }
     
             if($request->to_date != ""){

@@ -322,12 +322,25 @@ class BookingController extends Controller
      */
     public function show($id)
     {
-
         // echo 'sdfjkdsl';die();
         $Booking = Booking::find($id);
-        $BookedVehicle = Booking::select("vehicle_id")->where("company_id", $Booking->company_id)->where("pickup_date_time", "<=", $Booking->pickup_date_time)->where("status", "!=", "3")->get()->pluck("vehicle_id")->toArray();
-        $BookedVehicle = array_filter($BookedVehicle);
-        $AllVehicles = Vehicle::whereNotIn("id", $BookedVehicle)->where("car_type", $Booking->car_type)->where("company_id", $Booking->company_id)->get();
+        $Booking_pickupdate = substr($Booking->pickup_date_time,0,10)." 23:59:59";
+        Log::info($Booking_pickupdate);
+        //$BookedVehicle = Booking::select("vehicle_id")->where("company_id", $Booking->company_id)->where("status","==",2)->where("pickup_date_time", "<=", $Booking_pickupdate)->get()->toArray();
+        $query = 'select vehicle_id from bookings where company_id = '.$Booking->company_id
+        .' and status = 2 and pickup_date_time <= \''.$Booking_pickupdate.'\'';
+            
+        //Log::info($query);
+        $BookedVehicle = DB::select($query);
+        $BookedVehiclesId = array();
+        foreach ( $BookedVehicle as $obj ){
+            $BookedVehiclesId[] = $obj->vehicle_id;
+        }
+
+        Log::info(sizeOf($BookedVehiclesId));
+        Log::info(json_encode($BookedVehiclesId));
+        //$BookedVehicle = array_filter($BookedVehicle);
+        $AllVehicles = Vehicle::whereNotIn("id", $BookedVehiclesId)->where("car_type", $Booking->car_type)->where("company_id", $Booking->company_id)->get();
         $ActiveAction = "booking";
         return view('booking.show', compact("Booking", "ActiveAction", "AllVehicles"));
     }
@@ -584,12 +597,9 @@ class BookingController extends Controller
             }
 
             $query = 'select lcase(car_type) as car_type from bookings where company_id = '.session("CompanyLinkID")
-                    .' and (
-                        (  status = 1 and pickup_date_time >= \''.$request->pickupDate.' 00:00:00\' and pickup_date_time <= \''.$request->pickupDate.' 23:59:59\' ) 
-                            or (status = 2 and dropoff_date >= \''.$request->pickupDate.' 00:00:00\' )
-                        )'
-                        ;
-            Log::info($query);
+                    .' and status != 4 and pickup_date_time <= \''.$request->pickupDate.' 23:59:59\' and dropoff_date >= \''.$request->pickupDate.' 00:00:00\'';
+                        
+            //Log::info($query);
             $GetAllBookings = DB::select($query);
             foreach ($GetAllBookings as $obj){
                 $getAllVehicleResp[$obj->car_type] -= 1;

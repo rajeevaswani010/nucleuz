@@ -129,8 +129,8 @@
         switch ($reportType) {
             case "Reservation" :
                 // Do work here
-                $("#to_date").prop("disabled",false);
-                $("#from_date").prop("disabled",false);
+                // $("#to_date").prop("disabled",false);
+                // $("#from_date").prop("disabled",false);
                 break;
             case "On Rent" :
                 // $("#to_date").val = "";
@@ -139,10 +139,10 @@
                 // $("#from_date").prop("disabled",true);
                 break;
             case "Returns":
-                $("#to_date").prop("disabled",false);
-                $("#from_date").prop("disabled",false);
-                $("#to_date").val = new Date().toISOString().substr(0,10);
-                $("#from_date").val = new Date().toISOString().substr(0,10);
+                // $("#to_date").prop("disabled",false);
+                // $("#from_date").prop("disabled",false);
+                // $("#to_date").val = new Date().toISOString().substr(0,10);
+                // $("#from_date").val = new Date().toISOString().substr(0,10);
                 break;
             default :
                 // Do work here
