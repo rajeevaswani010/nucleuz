@@ -53,7 +53,7 @@
         </div>
 
 
-        <div class="col-lg-4 col-md-4">
+        <!-- <div class="col-lg-4 col-md-4">
             <a href="{{ URL('reports') }}?report_type=Reservation&from_date={{ date('Y-m-d') }}">
             <div class="card">
                 <div class="card-body p-3">
@@ -76,7 +76,7 @@
                 </div>
             </div>
             </a>
-        </div>
+        </div> -->
 
 
 
