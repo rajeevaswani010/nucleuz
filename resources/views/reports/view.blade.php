@@ -133,10 +133,10 @@
                 $("#from_date").prop("disabled",false);
                 break;
             case "On Rent" :
-                $("#to_date").val = "";
-                $("#from_date").val = "";
-                $("#to_date").prop("disabled",true);
-                $("#from_date").prop("disabled",true);
+                // $("#to_date").val = "";
+                // $("#from_date").val = "";
+                // $("#to_date").prop("disabled",true);
+                // $("#from_date").prop("disabled",true);
                 break;
             case "Returns":
                 $("#to_date").prop("disabled",false);
