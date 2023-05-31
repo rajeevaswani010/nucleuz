@@ -96,6 +96,7 @@
 <th>Booking</th>
 <th>Amount</th>
 <th>Status</th>
+<th>Last Updated</th>
 <th>Action</th>
 </tr>
 </thead>
@@ -151,6 +152,7 @@
     <span class="indicator-line rounded bg-danger"></span>
     @endif
 </td>
+<td>{{ $DT->updated_at }}</td>
     <td class="Action">
         <span>
 
