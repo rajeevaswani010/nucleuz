@@ -37,6 +37,7 @@ class CustomerController extends Controller
                 $Customer = new Customer();
                 $Customer->company_id = session("CompanyLinkID");
                 $Customer->email = $Email;
+                $Customer->name = $InviteObj->name;
             }
 
             $Conuntry = Country::orderBy("name")->get();
@@ -55,35 +56,24 @@ class CustomerController extends Controller
         $CustomerFound = 0;
         
         foreach($CheckCustomer as $Cms){
-            if($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->email == $Input["email"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"]){
+            if(
+                ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->email == $Input["email"])
+                || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+                || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"])
+                || ($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+                || ($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"])
+                || ($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+            ){
                 $CustomerFound = 1;
             }
             
             if($CustomerFound == 1){
                 $CustomerID = $Cms->id;
+                break;
             }
         }
 
+        //create new customer if id is null.. else update data.
         if($CustomerID == ""){
             
             if($request->file('driving_license') == null){
@@ -105,7 +95,7 @@ class CustomerController extends Controller
             }
             
             $NewCode = substr($GetCompanyDetail->name, 0, 2)."-".($GetInt+1);
-            
+
             $CustObj = new Customer();
             $CustObj->company_id = $InviteObj->company_id;
             $CustObj->customer_id = $NewCode;
@@ -145,97 +135,105 @@ class CustomerController extends Controller
             $CustObj->save();
             $CustomerID = $CustObj->id;
             Log::info('customer id: '.$CustomerID);
-
-            if(isset($InviteObj->status)){
-                $UserData = Admin::find($InviteObj->user_id);
-                $Email = $UserData->email;
-                
-                
-                $BookingObj = new Booking();
-                $BookingObj->staff_id = $InviteObj->user_id;
-                $BookingObj->company_id = $InviteObj->company_id;
-                $BookingObj->customer_id = $CustomerID;
-                $BookingObj->car_type = $Input["vehicle_id"];
-                $BookingObj->tarrif_detail = $Input["tarrif_detail"];
-                $BookingObj->tarrif_type = $Input["tarrif_type"];
-                $BookingObj->discount_amount = 0;
-        
-                $MultiplyDay = 1;
-                if($Input["tarrif_type"] == "Weekly"){
-                    $MultiplyDay = 7;
-                }
-                if($Input["tarrif_type"] == "Monthly"){
-                    $MultiplyDay = 30;
-                }
-        
-                $Day = $Input["tarrif_detail"] * $MultiplyDay;
-                $DopDate = date("Y-m-d H:i:s", strtotime("+".$Day." days", strtotime($Input["PickupDate"])));
-                
-                $BookingObj->dropoff_date = $DopDate;
-                $BookingObj->tax_percentage = 5;
-                $BookingObj->pickup_date_time = $Input["PickupDate"]." ".$Input["PickupTime"];
-                $BookingObj->pickup_location = $Input["pickup_location"];
-                $BookingObj->payment_mode = $Input["payment_mode"];
-                $BookingObj->status = 1;
-                
-                if($request->file('card_details') != null){
-                    $path = $request->file('card_details')->store('BookimngImages');
-                    $BookingObj->card_details = $path;
-                }
-                
-                $GetPricing = Pricing::where("car_type", $Input["vehicle_id"])->where("company_id", $InviteObj->company_id)->first();
-        
-                $BasePrice = 0;
-                if($Input["tarrif_type"] == "Daily"){
-                    if(isset($GetPricing->daily_pricing)){
-                        $BasePrice = $GetPricing->daily_pricing;
-                    }
-                }
-        
-                if($Input["tarrif_type"] == "Weekly"){
-                    if(isset($GetPricing->weekly_pricing)){
-                        $BasePrice = $GetPricing->weekly_pricing;
-                    }
-                }
-        
-                if($Input["tarrif_type"] == "Monthly"){
-                    if(isset($GetPricing->monthly_pricing)){
-                        $BasePrice = $GetPricing->monthly_pricing;
-                    }
-                }
-        
-                $Amount = $BasePrice * $Input["tarrif_detail"];
-                $TaxAmount = ($Amount * 5) / 100;
-                $SubTotal = $Amount;
-                $Amount += $TaxAmount;
-        
-                $BookingObj->sub_total = $SubTotal;
-                $BookingObj->grand_total = $Amount;
-                $BookingObj->tarrif_amount = $BasePrice;
-                $BookingObj->save();
-
-                $InviteObj->booking_id = $BookingObj->id;
-                $InviteObj->save();
-
-                $NotiObj = new Notification();
-                $NotiObj->title = "New Customer Registration";
-                $NotiObj->desp = $Input["first_name"]." is register from your invite link";
-                $NotiObj->linked_id = $BookingObj->id;
-                $NotiObj->module = "booking";
-                $NotiObj->user_id = $InviteObj->user_id;
-                $NotiObj->save();
-                
-                $InviteObj->customer_id = $BookingObj->id;
-                $InviteObj->status = 1;
-                $InviteObj->save();
-
-                $data = array("Name" => $UserData->name, "Customer" => $InviteObj->name);
-                Mail::send("EmailTemplates.CustomerRegister", $data, function ($m) use($Email, $InviteObj){
-                    $m->from($InviteObj->email, $InviteObj->name);
-                    $m->to($Email)->subject("Customer Register Successfully");
-                });
-            }
         }
+
+        if(isset($InviteObj->status)){
+            $UserData = Admin::find($InviteObj->user_id);
+            $Email = $UserData->email;
+            
+            
+            $BookingObj = new Booking();
+            $BookingObj->staff_id = $InviteObj->user_id;
+            $BookingObj->company_id = $InviteObj->company_id;
+            $BookingObj->customer_id = $CustomerID;
+            $BookingObj->car_type = $Input["vehicle_id"];
+            $BookingObj->tarrif_detail = $Input["tarrif_detail"];
+            $BookingObj->tarrif_type = $Input["tarrif_type"];
+            $BookingObj->discount_amount = 0;
+    
+            $MultiplyDay = 1;
+            if($Input["tarrif_type"] == "Weekly"){
+                $MultiplyDay = 7;
+            }
+            if($Input["tarrif_type"] == "Monthly"){
+                $MultiplyDay = 30;
+            }
+    
+            $Day = $Input["tarrif_detail"] * $MultiplyDay;
+            $DopDate = date("Y-m-d H:i:s", strtotime("+".$Day." days", strtotime($Input["PickupDate"])));
+            
+            $BookingObj->dropoff_date = $DopDate;
+            $BookingObj->tax_percentage = 5;
+            $BookingObj->pickup_date_time = $Input["PickupDate"]." ".$Input["PickupTime"];
+            $BookingObj->pickup_location = $Input["pickup_location"];
+            $BookingObj->payment_mode = $Input["payment_mode"];
+            $BookingObj->status = 1;
+            
+            if($request->file('card_details') != null){
+                $path = $request->file('card_details')->store('BookimngImages');
+                $BookingObj->card_details = $path;
+            }
+            
+            $GetPricing = Pricing::where("car_type", $Input["vehicle_id"])->where("company_id", $InviteObj->company_id)->first();
+    
+            $BasePrice = 0;
+            if($Input["tarrif_type"] == "Daily"){
+                if(isset($GetPricing->daily_pricing)){
+                    $BasePrice = $GetPricing->daily_pricing;
+                }
+            }
+    
+            if($Input["tarrif_type"] == "Weekly"){
+                if(isset($GetPricing->weekly_pricing)){
+                    $BasePrice = $GetPricing->weekly_pricing;
+                }
+            }
+    
+            if($Input["tarrif_type"] == "Monthly"){
+                if(isset($GetPricing->monthly_pricing)){
+                    $BasePrice = $GetPricing->monthly_pricing;
+                }
+            }
+    
+            $Amount = $BasePrice * $Input["tarrif_detail"];
+            $TaxAmount = ($Amount * 5) / 100;
+            $SubTotal = $Amount;
+            $Amount += $TaxAmount;
+    
+            $BookingObj->sub_total = $SubTotal;
+            $BookingObj->grand_total = $Amount;
+            $BookingObj->tarrif_amount = $BasePrice;
+            $BookingObj->save();
+
+            Log::info('booking id: '.$BookingObj->id);
+
+            $InviteObj->booking_id = $BookingObj->id;
+            $InviteObj->customer_id = $CustomerID;
+            $InviteObj->status = 1;
+            $InviteObj->link = "";//set invite link to null once customer submits registration for booking.
+            $InviteObj->save();
+
+            Log::info('invite object status 1 save.');
+
+            $NotiObj = new Notification();
+            $NotiObj->title = "New Customer Registration";
+            $NotiObj->desp = $Input["first_name"]." is register from your invite link";
+            $NotiObj->linked_id = $BookingObj->id;
+            $NotiObj->module = "booking";
+            $NotiObj->user_id = $InviteObj->user_id;
+            $NotiObj->save();
+            
+            $data = array("Name" => $UserData->name, "Customer" => $InviteObj->name);
+            Mail::send("EmailTemplates.CustomerRegister", $data, function ($m) use($Email, $InviteObj){
+                $m->from($InviteObj->email, $InviteObj->name);
+                $m->to($Email)->subject("Customer Register Successfully");
+            });
+
+        } else {
+            Log::info("invite object status not set error... ");
+            return json_encode(array("Status" =>  0, "Message" => "Registeration Fail. Contact company"));
+        }
+
         return json_encode(array("Status" =>  1, "Message" => "Register Successfully"));
     }
     

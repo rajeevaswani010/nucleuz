@@ -29,7 +29,7 @@
             <div class="row">
                 <div class="col-lg-3 mb-4">
                     <label>Salutation <span class="text-danger">*</span></label>
-                    <select class="form-control" name="title" required>
+                    <select class="form-control" name="title" id="title" required>
                         <option value="">Select</option>
                         <option>Mr.</option>
                         <option>Mrs.</option>
@@ -59,10 +59,10 @@
 
                 <div class="col-lg-4 mb-4">
                     <label>Gender <span class="text-danger">*</span></label>
-                    <select class="form-control" name="gender" required>
+                    <select class="form-control" name="gender" id="gender" required>
                         <option value="">Select</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
+                        <option value="Male">{{ __("Male") }}</option>
+                        <option value="Female">{{ __("Female") }}</option>
                     </select>
                 </div>
 
@@ -73,7 +73,7 @@
 
                 <div class="col-lg-4 mb-4">
                     <label>Nationality <span class="text-danger">*</span></label>
-                    <select class="form-control" name="nationality" required>
+                    <select class="form-control" name="nationality" id="nationality" required>
                         <option value="">Select</option>
                         @foreach($Conuntry as $Cont)
                         <option value="{{ $Cont->name }}">{{ $Cont->name }}</option>
@@ -88,7 +88,7 @@
 
                 <div class="col-lg-3 mb-4">
                     <label>Country Code <span class="text-danger">*</span></label>
-                    <select class="form-control" name="country_code" required>
+                    <select class="form-control" name="country_code" id="country_code" required>
                         <option value="">Select</option>
                         @foreach($Conuntry as $Cont)
                         <option value="{{ $Cont->phonecode }}">{{ $Cont->name }} - {{ $Cont->phonecode }}</option>
@@ -146,62 +146,62 @@
         <div class="card-header"><h4>Booking Details</h4></div>
         <div class="card-body">
             <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <label>Vehicle <span class="text-danger">*</span></label>
+                <div class="col-lg-6 mb-4">
+                    <label>{{ __("Date of Pickup") }} <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" required onchange="fetchAvailableVehicles(event)" id="pickupDate" name="PickupDate" min="{{ date('Y-m-d') }}" >
+                </div>
+
+                <div class="col-lg-6 mb-4">
+                    <label>{{ __("Time of Pickup") }} <span class="text-danger">*</span></label>
+                    <input type="time" class="form-control" id="pickupTime" required name="PickupTime">
+                </div>
+
+                <div class="col-lg-12 mb-4">
+                    <label>{{ __("Vehicle") }} <span class="text-danger">*</span></label><span style="float:right; font-style:italic; color:red;">[ Vehicle option shown in <b>RED</b> means is not available ]</span>
                     <select class="form-control" required id="VehicleData" onchange="fetchReviews()" name="vehicle_id">
-                        <option value="">Select</option>
-                        <option>Hatchback</option>
-                        <option>Sedan</option>
-                        <option>SUV</option>
-                        <option>MUV</option>
-                        <option>Coupe</option>
-                        <option>Convertibles</option>
-                        <option>Pickup Trucks</option>
+                        <option value="">{{ __("Select") }}</option>
+                        <!-- <option value="Hatchback">{{ __("Hatchback") }}</option>
+                        <option value="Sedan">{{ __("Sedan") }}</option>
+                        <option value="SUV">{{ __("SUV") }}</option>
+                        <option value="MUV">{{ __("MUV") }}</option>
+                        <option value="Coupe">{{ __("Coupe") }}</option>
+                        <option value="Convertibles">{{ __("Convertibles") }}</option>
+                        <option value="Pickup Trucks">{{ __("Pickup Trucks") }}</option> -->
                     </select>
                 </div>
 
-                <div class="col-lg-4 mb-4">
-                    <label>Tarrif <span class="text-danger">*</span></label>
+                <div class="col-lg-6 mb-4">
+                    <label>{{ __("Tarrif") }} <span class="text-danger">*</span></label>
                     <select class="form-control" required id="TarrifData" onchange="fetchReviews()" name="tarrif_type">
-                        <option value="">Select</option>
-                        <option>Daily</option>
-                        <option>Weekly</option>
-                        <option>Monthly</option>
+                        <option value="">{{ __("Select") }}</option>
+                        <option value="Daily">{{ __("Daily") }}</option>
+                        <option value="Weekly">{{ __("Weekly") }}</option>
+                        <option value="Monthly">{{ __("Monthly") }}</option>
                     </select>
                 </div>
 
-                <div class="col-lg-4 mb-4">
-                    <label id="UpdateTextDay">No of Days <span class="text-danger">*</span></label>
+                <div class="col-lg-6 mb-4">
+                    <label id="UpdateTextDay">{{ __("No of Days") }} <span class="text-danger">*</span></label>
                     <input type="number" step="0" class="form-control" name="tarrif_detail" required id="NoOfDays" onblur="fetchReviews()">
                 </div>
 
-                <div class="col-lg-6 mb-4">
-                    <label>Date of Pickup <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" required name="PickupDate" min="{{ date('Y-m-d') }}">
-                </div>
-
-                <div class="col-lg-6 mb-4">
-                    <label>Time of Pickup <span class="text-danger">*</span></label>
-                    <input type="time" class="form-control" required name="PickupTime">
-                </div>
-
                 <div class="col-lg-4 mb-4">
-                    <label>Payment Mode <span class="text-danger">*</span></label>
+                    <label>{{ __("Payment Mode") }} <span class="text-danger">*</span></label>
                     <select class="form-control" required name="payment_mode" onchange="PayMethod(this.value)">
-                        <option value="">Select</option>
-                        <option>Cash</option>
-                        <option>Card</option>
-                        <option>Credit</option>
+                        <option value="">{{ __("Select") }}</option>
+                        <option value="Cash">{{ __("Cash") }}</option>
+                        <option value="Card">{{ __("Card") }}</option>
+                        <option value="Credit">{{ __("Credit") }}</option>
                     </select>
                 </div>
 
                 <div class="col-lg-4 mb-4" id="ShowCardDiv" style="display: none">
-                    <label>Card Details <span class="text-danger">*</span></label>
+                    <label>{{ __("Card Details") }} <span class="text-danger">*</span></label>
                     <input type="file" class="form-control" name="card_details">
                 </div>
                 
                 <div class="col-lg-4 mb-4">
-                    <label>Location of Pickup <span class="text-danger">*</span></label>
+                    <label>{{ __("Location of Pickup") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" required name="pickup_location">
                 </div>
             </div>
@@ -244,6 +244,55 @@
 
 @section("ExtraJS")
 <script type="text/javascript">
+
+    //update customer data.. from $customer arg.
+    $("#title").val('<?php echo $Customer->title ?>');
+    $("#gender").val('<?php echo $Customer->gender ?>');
+    $("#nationality").val('<?php echo $Customer->nationality ?>');
+
+    console.log("setting country code - <?php echo $Customer->country_code ?>");
+    $("#country_code").val('<?php echo $Customer->country_code ?>');
+
+
+    function fetchAvailableVehicles( e ){
+
+        $.ajax({
+        url: "{{ URL('Booking/GetAvailableCarTypes') }}",
+        method: "POST",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: {
+            pickupDate: $("#pickupDate").val(),
+        },
+        success: function( data, textStatus, jqXHR ) {
+
+                JsData = JSON.parse(data);
+                console.log(JsData);
+                select = document.getElementById('VehicleData');
+                select.innerHTML='';
+                var opt = document.createElement('option');
+                opt.value = "asdfad";
+                opt.innerHTML = '--Select Vehicle--';
+                select.appendChild(opt);
+
+                for (const key in JsData) {
+                    var opt = document.createElement('option');
+                    opt.value = key;
+                    opt.innerHTML = key.toUpperCase();
+                    if(JsData[key]<=0) {
+                        opt.disabled = "disabled";
+                        opt.style = "color:red; font-style: italic;";
+                    }
+                    select.appendChild(opt);
+                }  
+        },
+        error: function( jqXHR, textStatus, errorThrown ) {
+            alert("Fail to fetch vehicles for selected date. Please contact company for assistance. Error: " + errorThrown);             
+        }
+        });
+    }
+
     function fetchReviews(){
         if($("#TarrifData").val() == "Daily"){
             $("#UpdateTextDay").html('No of Days <span class="text-danger">*</span>');
