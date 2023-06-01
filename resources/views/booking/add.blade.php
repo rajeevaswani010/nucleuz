@@ -81,7 +81,7 @@
 
                 <div class="col-lg-4 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Date of Birth") }} <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control font-style" name="dob" id="dob" value="{{ @$CustomerData->dob }}" required max="{{ date('Y-m-d') }}">
+                    <input type="date" class="form-control font-style" name="dob" id="dob" value="{{ @$CustomerData->dob }}" required max="{{ date('Y-m-d', strtotime('-18 year')) }}">
                 </div>
 
                 <div class="col-lg-4 mb-4">
