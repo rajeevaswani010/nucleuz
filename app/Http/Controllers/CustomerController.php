@@ -46,11 +46,8 @@ class CustomerController extends Controller
     }
 
     public function registerPost(Request $request){
-        Log::info('first log ***************************** Request:'.json_encode($request));
-
         $Input = $request->all();
         $CustomerID = "";
-        
         $InviteObj = BookingInvite::where("email", $Input["email"])->where("status", 0)->first();
         $CheckCustomer = Customer::where("company_id", $InviteObj->company_id)->get();
         $CustomerFound = 0;

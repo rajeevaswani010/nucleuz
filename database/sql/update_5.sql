@@ -8,4 +8,4 @@ ALTER TABLE booking_invites DROP COLUMN booking_id;
 
 ALTER TABLE booking_invites Add COLUMN requirements VARCHAR(1024) DEFAULT NULL AFTER updated_at;
 
-
+ALTER TABLE notifications MODIFY COLUMN linked_id INT NULL;
