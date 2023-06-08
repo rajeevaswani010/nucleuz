@@ -209,7 +209,7 @@
     </div>
 
     <div class="card mt-3">
-        <div class="card-header"><h4>Review Booking Details</h4></div>
+        <div class="card-header"><h4>Tentative Billable Amount</h4></div>
         <div class="card-body">
             <div class="float-right" id="LoadSubTotal"><b>0.0</b></div>
             <div class="float-right">Sub Total: &nbsp;</div>
@@ -228,6 +228,7 @@
             <div class="float-right" id="LoadDue"><b>0.0</b></div>
             <div class="float-right">Estimated Amount: &nbsp;</div>
             <div class="clearfix"></div>
+            <div class="float-right"><span style="float-right font-style:italic; color:red;">*The above value may change at the time of vehicle return</span> </div>
         </div>
     </div>
 
