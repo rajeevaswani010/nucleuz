@@ -13,7 +13,7 @@ use Log;
 class VehicleImport implements ToCollection, WithHeadingRow, WithChunkReading, WithBatchInserts{
     public function collection(Collection $rows){
         foreach ($rows as $row){
-            Log::debug("row car type: ".$row['car_type']);
+            //Log::debug("row car type: ".$row['car_type']);
             $CheckCode = Vehicle::where("company_id", session("CompanyLinkID"))->where("reg_no", $row['registration_number'])->count();
             if($CheckCode == 0){
                 $NewObj = new Vehicle();

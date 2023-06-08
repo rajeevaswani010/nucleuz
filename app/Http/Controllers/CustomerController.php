@@ -140,17 +140,24 @@ class CustomerController extends Controller
         if(isset($InviteObj->status)){
             $UserData = Admin::find($InviteObj->user_id);
             $Email = $UserData->email;
+           
+            $requirements["car_type"] = $Input["vehicle_id"];
+            $requirements["tarrif_detail"] = $Input["tarrif_detail"];
+            $requirements["tarrif_type"] = $Input["tarrif_type"];
+            $requirements["PickupDate"] = $Input["PickupDate"];
+            $requirements["PickupTime"] = $Input["PickupTime"];
+            $requirements["pickup_location"] = $Input["pickup_location"];
+            $requirements["payment_mode"] = $Input["payment_mode"];
+            $requirements["tarrif_detail"] = $Input["tarrif_detail"];
             
+            $req="";
+            foreach($requirements as $key => $value){
+                $req.=($key."=".$value."|");
+            }
             
-            $BookingObj = new Booking();
-            $BookingObj->staff_id = $InviteObj->user_id;
-            $BookingObj->company_id = $InviteObj->company_id;
-            $BookingObj->customer_id = $CustomerID;
-            $BookingObj->car_type = $Input["vehicle_id"];
-            $BookingObj->tarrif_detail = $Input["tarrif_detail"];
-            $BookingObj->tarrif_type = $Input["tarrif_type"];
-            $BookingObj->discount_amount = 0;
-    
+            $InviteObj["requirements"] = $req;
+
+            
             $MultiplyDay = 1;
             if($Input["tarrif_type"] == "Weekly"){
                 $MultiplyDay = 7;
@@ -161,18 +168,6 @@ class CustomerController extends Controller
     
             $Day = $Input["tarrif_detail"] * $MultiplyDay;
             $DopDate = date("Y-m-d H:i:s", strtotime("+".$Day." days", strtotime($Input["PickupDate"])));
-            
-            $BookingObj->dropoff_date = $DopDate;
-            $BookingObj->tax_percentage = 5;
-            $BookingObj->pickup_date_time = $Input["PickupDate"]." ".$Input["PickupTime"];
-            $BookingObj->pickup_location = $Input["pickup_location"];
-            $BookingObj->payment_mode = $Input["payment_mode"];
-            $BookingObj->status = 1;
-            
-            if($request->file('card_details') != null){
-                $path = $request->file('card_details')->store('BookimngImages');
-                $BookingObj->card_details = $path;
-            }
             
             $GetPricing = Pricing::where("car_type", $Input["vehicle_id"])->where("company_id", $InviteObj->company_id)->first();
     
@@ -195,19 +190,6 @@ class CustomerController extends Controller
                 }
             }
     
-            $Amount = $BasePrice * $Input["tarrif_detail"];
-            $TaxAmount = ($Amount * 5) / 100;
-            $SubTotal = $Amount;
-            $Amount += $TaxAmount;
-    
-            $BookingObj->sub_total = $SubTotal;
-            $BookingObj->grand_total = $Amount;
-            $BookingObj->tarrif_amount = $BasePrice;
-            $BookingObj->save();
-
-            Log::info('booking id: '.$BookingObj->id);
-
-            $InviteObj->booking_id = $BookingObj->id;
             $InviteObj->customer_id = $CustomerID;
             $InviteObj->status = 1;
             $InviteObj->link = "";//set invite link to null once customer submits registration for booking.
@@ -218,7 +200,7 @@ class CustomerController extends Controller
             $NotiObj = new Notification();
             $NotiObj->title = "New Customer Registration";
             $NotiObj->desp = $Input["first_name"]." is register from your invite link";
-            $NotiObj->linked_id = $BookingObj->id;
+            $NotiObj->linked_id = null;
             $NotiObj->module = "booking";
             $NotiObj->user_id = $InviteObj->user_id;
             $NotiObj->save();

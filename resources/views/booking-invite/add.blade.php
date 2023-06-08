@@ -44,7 +44,7 @@
                         <div class="modal-footer">
                             <input class="btn btn-xs btn-primary" type="submit" value="Save">
                         </div>
-                        {!! Form::close() !!}
+                {!! Form::close() !!}
 
                         @if(Session::has('Danger'))
                         <div class="alert alert-danger" role="alert">

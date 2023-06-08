@@ -184,4 +184,27 @@ class VehicleController extends Controller
         Excel::import(new VehicleImport, $path);
         return redirect()->back();
     }
+
+    public function GetAllCarTypes(){
+        try {
+            $GetAllVehicles = DB::table('vehicles')
+                        ->selectRaw('lower(car_type) as car_type, count(*) as count')
+                        ->where("company_id",session("CompanyLinkID"))
+                        ->groupBy('car_type')
+                        ->orderBy('car_type')
+                        ->get()
+                        ;
+
+            // Log::info(json_encode($GetAllVehicles));
+            $getAllVehicleResp = collect();
+            foreach ( $GetAllVehicles as $obj ){
+                $getAllVehicleResp[$obj->car_type] = $obj->count;
+            }
+
+            return json_encode($getAllVehicleResp);
+        } catch(Exception $e){
+            echo $e.getMessage();
+        }
+
+    }
 }

@@ -96,17 +96,34 @@ class BookingController extends Controller
             return redirect("/");
         }
 
+        $Input = $request->all();
+        $CustomerData = array();
+        $Requirements = array();
+        $InviteId = 0;//default  0 means no invite
+        if (array_key_exists("inviteId",$Input)){
+            $InviteId = $Input["inviteId"];
+            $InviteObj = BookingInvite::where("company_id", session("CompanyLinkID"))->find($InviteId);
+            if($InviteObj != null){
+                $CustomerID = $InviteObj->customer_id;
+                Log::debug("customerid - ".$CustomerID);
+                $CustomerData = Customer::where("company_id", session("CompanyLinkID"))->find($CustomerID);
+
+                Log::debug($InviteObj->requirements);
+                $arr= explode("|", $InviteObj->requirements);
+                foreach($arr as $item){
+                    $arr2 = explode("=",$item);
+                    if(count($arr2)>0){
+                        $Requirements[$arr2[0]] = (count($arr2)>1)?$arr2[1]:null;
+                    }
+                }
+            }
+        }
+
         $ActiveAction = "booking";
         $AllVehicles = Vehicle::where("company_id", session("CompanyLinkID"))->get();
         $AllPricing = Pricing::where("company_id", session("CompanyLinkID"))->get();
-        $CustomerID = @$request->id;
-        $CustomerData = array();
-        if(isset($request->id)){
-            $CustomerData = Customer::where("company_id", session("CompanyLinkID"))->find($CustomerID);
-        }
-        
         $Conuntry = Country::orderBy("name")->get();
-        return view('booking.add', compact("ActiveAction", "AllVehicles", "AllPricing", "CustomerData", "Conuntry"));
+        return view('booking.add', compact("ActiveAction", "AllVehicles", "AllPricing", "CustomerData", "Conuntry", "Requirements", "InviteId"));
     }
 
     /**
@@ -302,6 +319,12 @@ class BookingController extends Controller
         $BookingObj->tarrif_amount = $BasePrice;
         $BookingObj->save();
 
+        $InviteId = $Input["invite_id"];
+        if($InviteId != 0){
+            //del invite obj.. 
+            BookingInvite::where('id',$InviteId)->delete();
+        }
+
         $BookingObj = Booking::find($BookingObj->id);
 
         $data = array("Booking" => $BookingObj);
@@ -310,10 +333,10 @@ class BookingController extends Controller
             $m->to($BookingObj->customer->email)->subject("New Car Booking");
         });
 
-        $CheckInvite = BookingInvite::where("email", $Input["email"])->count();
-        if($CheckInvite > 0){
-            BookingInvite::where("email", $Input["email"])->delete();
-        }
+        // $CheckInvite = BookingInvite::where("email", $Input["email"])->count();
+        // if($CheckInvite > 0){
+        //     BookingInvite::where("email", $Input["email"])->delete();
+        // }
 
         return json_encode(array("Status" =>  1, "Message" => "Booking Recorded Successfully"));
     }

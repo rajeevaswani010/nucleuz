@@ -2,6 +2,7 @@
 
 @section("content")
 
+
 <!-- [ Main Content ] start -->
 <div class="dash-container">
     <div class="dash-content">
@@ -219,12 +220,12 @@
 
                 <div class="col-lg-12 mb-4">
                     <label>{{ __("Location of Pickup") }} <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" required name="pickup_location">
+                    <input type="text" class="form-control" required name="pickup_location" id="pickup_location">
                 </div>
 
                 <div class="col-lg-3 mb-4">
                     <label>{{ __("Payment Mode") }} <span class="text-danger">*</span></label>
-                    <select class="form-control" required name="payment_mode" onchange="PayMethod(this.value)">
+                    <select class="form-control" required name="payment_mode" id="payment_mode" onchange="PayMethod(this.value)">
                         <option value="">{{ __("Select") }}</option>
                         <option value="Cash">{{ __("Cash") }}</option>
                         <option value="Card">{{ __("Card") }}</option>
@@ -255,6 +256,9 @@
                 <div class="col-lg-4 mb-4">
                     <label>{{ __("Additional KM Amount") }} <span class="text-danger">*</span></label>
                     <input type="text " name="additional_kilometers_amount" class="form-control number" required value="0">
+                </div>
+                <div class="col-lg-3 mb-3 d-none">
+                    <input type="text" name="invite_id" class="form-control number" id="invite_id" value="{{ @$InviteId }}">
                 </div>
             </div>
         </div>
@@ -314,21 +318,43 @@
     <div class="alert alert-success" id="SuccessText" style="display: none"></div>
 
     <div id="LoadingStatus" style="display: none" class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>
+
     <button class="btn btn-xs btn-primary" onClick="SaveManager()" id="LoginBtn">{{ __("Save") }}</button>
 
     {!! Form::close() !!}
 
         </div>
     </div>
-
     <!-- [ Main Content ] end -->
     </div>
 </div>
 
 <script type="text/javascript">
-    
-    function fetchAvailableVehicles( e ){
 
+    //set requirements..
+    @if(!empty($Requirements["tarrif_detail"])) 
+        $("#NoOfDays").val({{ @$Requirements["tarrif_detail"] }});
+    @endif
+    @if(!empty($Requirements["tarrif_type"])) 
+        $("#TarrifData").val('{{ @$Requirements["tarrif_type"] }}');
+    @endif
+    @if(!empty($Requirements["payment_mode"])) 
+        $("#payment_mode").val('{{ @$Requirements["payment_mode"] }}');
+    @endif
+    @if(!empty($Requirements["pickup_location"])) 
+        $("#pickup_location").val('{{ @$Requirements["pickup_location"] }}');
+    @endif
+    @if(!empty($Requirements["PickupTime"])) 
+        $("#pickupTime").val('{{ @$Requirements["PickupTime"] }}');
+    @endif
+    @if(!empty($Requirements["PickupDate"])) 
+        $("#pickupDate").val('{{ @$Requirements["PickupDate"] }}');
+        fetchAvailableVehicles();
+    @endif
+    
+
+    function fetchAvailableVehicles( e ){
+        console.log("fetch vehicles called");
         $.ajax({
           url: "{{ URL('Booking/GetAvailableCarTypes') }}",
           method: "POST",
@@ -345,7 +371,7 @@
                 select = document.getElementById('VehicleData');
                 select.innerHTML='';
                 var opt = document.createElement('option');
-                opt.value = "asdfad";
+                opt.value = "";
                 opt.innerHTML = '--Select Vehicle--';
                 select.appendChild(opt);
 
@@ -358,7 +384,18 @@
                         opt.style = "color:red; font-style: italic;";
                     }
                     select.appendChild(opt);
-                }  
+                }
+
+                @if(!empty($Requirements["car_type"])) 
+                    carType = '{{ @$Requirements["car_type"] }}'.toLowerCase();
+                    if(JsData[carType] > 0) {
+                        $("#VehicleData").val(carType);
+                        fetchReviews();
+                    } else {
+                        alert("Customer required cartype - "+carType+" is not available for selected dates."); //style this
+                    }
+                @endif
+  
           },
           error: function( jqXHR, textStatus, errorThrown ) {
             alert("Fail to fetch vehicles for selected date. Please contact company for assistance. Error: " + errorThrown);             
@@ -380,7 +417,6 @@
         if($("#TarrifData").val() == "Monthly"){
             $("#UpdateTextDay").html('No of Months <span class="text-danger">*</span>');
         }
-        
         $.ajax({
           url: "{{ URL('Booking/Review') }}",
           method: "POST",
