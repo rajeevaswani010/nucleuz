@@ -234,6 +234,10 @@ class BookingController extends Controller
             return json_encode(array("Status" =>  0, "Message" => "Pickup Date Can't Be in Past"));
         }
 
+        if($Input["dob"]." ".$Input["dob"] > date('Y-m-d', strtotime('-18 year'))){
+            return json_encode(array("Status" =>  0, "Message" => "Date Of Birth Can't Be Less Than 18 Years"));
+        }
+
         $BookingObj = new Booking();
         $BookingObj->staff_id = session("AdminID");
         $BookingObj->company_id = session("CompanyLinkID");

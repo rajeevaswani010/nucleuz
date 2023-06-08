@@ -61,9 +61,17 @@ class VehicleController extends Controller
         $Input = $request->all();
 
         $request->validate([
-            'reg_no' => 'required|unique:vehicles'
+            'reg_no' => 'required|alpha_num|unique:vehicles|min:6|max:8',
+            'chasis_no' => 'required|alpha_num|min:17'
             ],
-            [ 'reg_no.unique'      => 'Sorry, This Registration Number Is Already Used. Please Try With Different One, Thank You.']);
+            [ 'reg_no.unique'      => 'Sorry, This Registration Number Is Already Used. Please Try With Different One, Thank You.',
+              'reg_no.alpha_num'      => 'Registration Number Should Be Alpha-Numeric',
+              'reg_no.min'      => 'Registration Number Should Be Minimum 6 Characters',
+              'reg_no.max'      => 'Registration Number Should Be Maximum 8 Characters',
+              'chasis_no.alpha_num'      => 'Chasis Number Should Be Alpha-Numeric',
+              'chasis_no.min'      => 'Chasis Number Should Be Minimum 17 Characters'
+
+            ]);
 
         $Input["company_id"] = session("CompanyLinkID");
 

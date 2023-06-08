@@ -255,7 +255,7 @@
                 
                 <div class="col-lg-4 mb-4">
                     <label>{{ __("Licenses Expiry Date") }}<span class="text-danger">*</span></label>
-                    <input type="date" name="license_expiry_date" class="form-control number" required>
+                    <input type="date" class="form-control number" name="license_expiry_date" value="{{ $Booking->license_expiry_date }}" required min="{{ date('Y-m-d', strtotime('+3 months')) }}">
                 </div>
                 
                 <div class="col-lg-4 mb-4">
