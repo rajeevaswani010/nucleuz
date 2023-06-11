@@ -29,7 +29,7 @@
             <div class="row">
                 <div class="col-lg-3 mb-4">
                     <label>Salutation <span class="text-danger">*</span></label>
-                    <select class="form-control" name="title" required>
+                    <select class="form-control" name="title" id="title" required>
                         <option value="">Select</option>
                         <option>Mr.</option>
                         <option>Mrs.</option>
@@ -59,7 +59,7 @@
 
                 <div class="col-lg-4 mb-4">
                     <label>Gender <span class="text-danger">*</span></label>
-                    <select class="form-control" name="gender" required>
+                    <select class="form-control" name="gender" id="gender" required>
                         <option value="">Select</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
@@ -73,7 +73,7 @@
 
                 <div class="col-lg-4 mb-4">
                     <label>Nationality <span class="text-danger">*</span></label>
-                    <select class="form-control" name="nationality" required>
+                    <select class="form-control" name="nationality" id="nationality" required>
                         <option value="">Select</option>
                         @foreach($Conuntry as $Cont)
                         <option value="{{ $Cont->name }}">{{ $Cont->name }}</option>
@@ -88,7 +88,7 @@
 
                 <div class="col-lg-3 mb-4">
                     <label>Country Code <span class="text-danger">*</span></label>
-                    <select class="form-control" name="country_code" required>
+                    <select class="form-control" name="country_code" id="country_code" required>
                         <option value="">Select</option>
                         @foreach($Conuntry as $Cont)
                         <option value="{{ $Cont->phonecode }}">{{ $Cont->name }} - {{ $Cont->phonecode }}</option>
@@ -150,13 +150,9 @@
                     <label>Vehicle <span class="text-danger">*</span></label>
                     <select class="form-control" required id="VehicleData" onchange="fetchReviews()" name="vehicle_id">
                         <option value="">Select</option>
-                        <option>Hatchback</option>
-                        <option>Sedan</option>
-                        <option>SUV</option>
-                        <option>MUV</option>
-                        <option>Coupe</option>
-                        <option>Convertibles</option>
-                        <option>Pickup Trucks</option>
+                        @foreach($VehicleTypes as $vehicle)
+                        <option value="{{ $vehicle->car_type }}">{{ $vehicle->car_type }}</option>
+                        @endforeach
                     </select>
                 </div>
 
@@ -246,43 +242,11 @@
 @section("ExtraJS")
 <script type="text/javascript">
 
-//    fetchAAllVehicleTypes();
-
-    function fetchAAllVehicleTypes(){
-        $.ajax({
-          url: "{{ URL('Vehicle/GetAllCarTypes') }}",
-          method: "GET",
-          headers: {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          },
-          success: function( data, textStatus, jqXHR ) {
-
-                JsData = JSON.parse(data);
-                // JsData["suv"] = 0;  // for testing....
-                if(JsData.length <= 0) {
-                    alert("Vehicle data is 0. Please contact company for assistance. ");             
-                } else {
-                    console.log(JsData);
-                    select = document.getElementById('VehicleData');
-                    select.innerHTML='';
-                    var opt = document.createElement('option');
-                    opt.value = "";
-                    opt.innerHTML = '--Select Vehicle--';
-                    select.appendChild(opt);
-
-                    for (const key in JsData) {
-                        var opt = document.createElement('option');
-                        opt.value = key;
-                        opt.innerHTML = key.toUpperCase();
-                        select.appendChild(opt);
-                    }
-                }
-          },
-          error: function( jqXHR, textStatus, errorThrown ) {
-            alert("Fail to fetch vehicles. Please contact company for assistance. Error: " + errorThrown);             
-          }
-        });
-    }
+    //prefilling customer fields based on data  recieved
+    $('#title').val('{{ $Customer->title }}')
+    $('#gender').val('{{ $Customer->gender }}');
+    $('#nationality').val('{{ $Customer->nationality }}');
+    $('#country_code').val('{{ $Customer->country_code }}');
 
     function fetchReviews(){
         if($("#TarrifData").val() == "Daily"){

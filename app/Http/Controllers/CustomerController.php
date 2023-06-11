@@ -18,6 +18,7 @@ use App\Models\Office;
 use App\Export\CustomerExport;
 
 use Log;
+use DB;
 
 class CustomerController extends Controller
 {
@@ -41,7 +42,15 @@ class CustomerController extends Controller
             }
 
             $Conuntry = Country::orderBy("name")->get();
-            return view("CustomerRegister", compact("InviteObj", "Customer" , "Conuntry"));
+            $VehicleTypes = DB::table('vehicles')
+                        ->selectRaw('upper(car_type) as car_type')
+                        ->where("company_id",session("CompanyLinkID"))
+                        ->groupBy('car_type')
+                        ->orderBy('car_type')
+                        ->get();
+            //Log::info(json_encode($VehicleTypes));
+
+            return view("CustomerRegister", compact("InviteObj", "Customer" , "Conuntry", "VehicleTypes"));
         }
     }
 
@@ -105,7 +114,9 @@ class CustomerController extends Controller
             $CustObj->nationality = $Input["nationality"];
             $CustObj->gender = $Input["gender"];
             $CustObj->dob = $Input["dob"];
-            $CustObj->mobile = "+".$Input["country_code"].$Input["mobile"];
+            $CustObj->country_code = $Input["country_code"]; 
+            //$CustObj->mobile = "+".$Input["country_code"].$Input["mobile"];
+            $CustObj->mobile = $Input["mobile"];
             $CustObj->email = $Input["email"];
             $CustObj->insurance = $Input["insurance"];
 

@@ -34,8 +34,7 @@
 <div class="row">
 <div class="col-sm-12">
 
-
-<form>
+        {!! Form::open(['url' => 'reports', 'enctype' => 'multipart/form-data', 'method' => 'GET', 'id' => 'form']) !!}
             <div class="card">
                 <div class="row">
                     <div class="col">
@@ -73,46 +72,137 @@
                         <label>{{ __("To") }}</label>
                         <input type="date" class="form-control" id="to_date" onchange="validateDateRange()" name="to_date" value="{{ @$_GET['to_date'] }}">
                     </div>
-                    <div class="col"><button class="btn btn-success mt-4" name="search" value="search" role="button"><i class="fa fa-sech"> Search</i></button></div>
+                    <div class="col"><button class="btn btn-success mt-4" type="submit" name="search" value="search" role="button"><i class="fa fa-sech"> Search</i></button></div>
                 </div>
             </div>
-        </form>
+        {!! Form::close() !!}
 
 
 
-
+@if(@$_GET['report_type'] == "Available")
 <div class="card">
 <div class="card-body table-border-style">
 <div class="table-responsive">
 <table class="table datatable">
-<thead>
-<tr>
-<th>Car Detail</th>
-<th>Chasis</th>
-<th>Model</th>
-<th>Reg. No</th>
-</tr>
-</thead>
-
-<tbody>
-
-    @foreach($Data as $DT)
-    <script> 
-         console.log("DT is " + {{ $DT->id }}); 
-    </script>    
-    <tr class="font-style">
-    <td>{{ $DT->car_type }}</td>
-    <td>{{ $DT->make }}</td>
-    <td>{{ $DT->model }}</td>
-    <td>{{ $DT->reg_no }}</td>
+    <thead>
+    <tr>
+    <th>Car Type</th>
+    <th>Available ?</th>
+    <th>Quantity</th>
     </tr>
-    @endforeach
+    </thead>
 
-                        </tbody>
+    <tbody>
+
+        @foreach($Data as $DT)
+        <tr class="font-style">
+        <td>{{ $DT["car_type"] }}</td>
+        <td></td>
+        <td>{{ $DT["count"] }}</td>
+        </tr>
+        @endforeach
+
+    </tbody>
 </table>
 </div>
 </div>
 </div>
+@endif
+@if(@$_GET['report_type'] == "On Rent")
+<div class="card">
+<div class="card-body table-border-style">
+<div class="table-responsive">
+<table class="table datatable">
+    <thead>
+    <tr>
+    <th>Id</th>
+    <th>Car Type</th>
+    <th>Reg. No.</th>
+    <th>Customer Name</th>
+    <th>Contact</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach($Data as $DT)
+        <tr class="font-style">
+        <td>{{ $DT->id }}</td>
+        <td>{{ $DT->car_type }}</td>
+        <td>{{ $DT->reg_no }}</td>
+        <td>{{ $DT->first_name }} {{ $DT->last_name }}</td>
+        <td>{{ $DT->mobile }}</td>
+        </tr>
+        @endforeach
+
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+@endif
+@if(@$_GET['report_type'] == "Reservation")
+<div class="card">
+<div class="card-body table-border-style">
+<div class="table-responsive">
+<table class="table datatable">
+    <thead>
+    <tr>
+    <th>Id</th>
+    <th>Car Type</th>
+    <th>Customer</th>
+    <th>Mobile</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach($Data as $DT)
+        <tr class="font-style">
+        <td>{{ $DT->id }}</td>
+        <td>{{ $DT->car_type }}</td>
+        <td>{{ $DT->first_name }}</td>
+        <td>{{ $DT->mobile }}</td>
+        </tr>
+        @endforeach
+
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+@endif
+@if(@$_GET['report_type'] == "Returns")
+<div class="card">
+<div class="card-body table-border-style">
+<div class="table-responsive">
+<table class="table datatable">
+    <thead>
+    <tr>
+    <th>Id</th>
+    <th>Car Type</th>
+    <th>Reg. No.</th>
+    <th>Customer Name</th>
+    <th>Contact</th>
+    <th>dropoff date</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach($Data as $DT)
+        <tr class="font-style">
+        <td>{{ $DT->id }}</td>
+        <td>{{ $DT->car_type }}</td>
+        <td>{{ $DT->reg_no }}</td>
+        <td>{{ $DT->first_name }} {{ $DT->last_name }}</td>
+        <td>{{ $DT->mobile }}</td>
+        <td>{{ $DT->dropoff_date }}</td>        
+        </tr>
+        @endforeach
+
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+@endif
+
+
 </div>
 </div>
 <!-- [ Main Content ] end -->

@@ -321,8 +321,9 @@ class BookingController extends Controller
 
         $InviteId = $Input["invite_id"];
         if($InviteId != 0){
-            //del invite obj.. 
-            BookingInvite::where('id',$InviteId)->delete();
+            //lets not delete but update invite obj.. 
+            //BookingInvite::where('id',$InviteId)->delete();
+            BookingInvite::where('id',$InviteId)->update(['status' => 2, 'link' => "" ]);
         }
 
         $BookingObj = Booking::find($BookingObj->id);

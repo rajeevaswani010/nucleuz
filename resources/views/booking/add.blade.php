@@ -45,14 +45,14 @@
                     <label for="subject" class="col-form-label text-dark">{{ __("Salutation") }} <span class="text-danger">*</span></label>
                     <select class="form-control font-style" name="title" id="title" required>
                         <option value="">{{ __("Select") }}</option>
-                        <option @if(@$CustomerData->title == "Mr.") selected @endif>Mr.</option>
-                        <option @if(@$CustomerData->title == "Mrs.") selected @endif>Mrs.</option>
-                        <option @if(@$CustomerData->title == "Miss.") selected @endif>Miss.</option>
-                        <option @if(@$CustomerData->title == "Dr.") selected @endif>Dr.</option>
-                        <option @if(@$CustomerData->title == "Eng.") selected @endif>Eng.</option>
-                        <option @if(@$CustomerData->title == "Coln.") selected @endif>Coln.</option>
-                        <option @if(@$CustomerData->title == "M/s") selected @endif>M/s</option>
-                        <option @if(@$CustomerData->title == "Ms.") selected @endif>Ms.</option>
+                        <option>Mr.</option>
+                        <option>Mrs.</option>
+                        <option>Miss.</option>
+                        <option>Dr.</option>
+                        <option>Eng.</option>
+                        <option>Coln.</option>
+                        <option>M/s</option>
+                        <option>Ms.</option>
                     </select>
                 </div>
 
@@ -330,6 +330,11 @@
 </div>
 
 <script type="text/javascript">
+    //prefilling customer fields based on data  recieved
+    $('#title').val('{{ $CustomerData->title }}')
+    $('#gender').val('{{ $CustomerData->gender }}');
+    $('#nationality').val('{{ $CustomerData->nationality }}');
+    $('#country_code').val('{{ $CustomerData->country_code }}');
 
     //set requirements..
     @if(!empty($Requirements["tarrif_detail"])) 

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Session;
 use Excel;
+use Log;
+use DB;
 
 use App\Export\VehicleExport;
 use App\Import\VehicleImport;
@@ -195,7 +197,7 @@ class VehicleController extends Controller
                         ->get()
                         ;
 
-            // Log::info(json_encode($GetAllVehicles));
+            Log::info(json_encode($GetAllVehicles));
             $getAllVehicleResp = collect();
             foreach ( $GetAllVehicles as $obj ){
                 $getAllVehicleResp[$obj->car_type] = $obj->count;
