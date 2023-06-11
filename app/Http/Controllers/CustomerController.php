@@ -145,6 +145,10 @@ class CustomerController extends Controller
             Log::info('customer id: '.$CustomerID);
         }
 
+        if($Input["dob"]." ".$Input["dob"] > date('Y-m-d', strtotime('-18 year'))){
+            return json_encode(array("Status" =>  0, "Message" => "Date Of Birth Can't Be Less Than 18 Years"));
+        }
+
         if(isset($InviteObj->status)){
             $UserData = Admin::find($InviteObj->user_id);
             $Email = $UserData->email;
