@@ -331,10 +331,12 @@
 
 <script type="text/javascript">
     //prefilling customer fields based on data  recieved
-    $('#title').val('{{ $CustomerData->title }}')
-    $('#gender').val('{{ $CustomerData->gender }}');
-    $('#nationality').val('{{ $CustomerData->nationality }}');
-    $('#country_code').val('{{ $CustomerData->country_code }}');
+    @if(!empty($CustomerData)) 
+        $('#title').val('{{ $CustomerData->title }}')
+        $('#gender').val('{{ $CustomerData->gender }}');
+        $('#nationality').val('{{ $CustomerData->nationality }}');
+        $('#country_code').val('{{ $CustomerData->country_code }}');
+    @endif
 
     //set requirements..
     @if(!empty($Requirements["tarrif_detail"])) 
