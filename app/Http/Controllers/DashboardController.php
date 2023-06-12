@@ -15,6 +15,8 @@ use App\Models\Office;
 use App\Models\License;
 use App\Models\Subscription;
 
+use Log;
+
 class DashboardController extends Controller
 {
 	public function index(){
@@ -83,6 +85,14 @@ class DashboardController extends Controller
 		//     }
 		// }
 
-		return view('dashboard', compact("ActiveAction", "NumUser", "AllCompany", "ExpLic", "TodayPickup", "TomorrowPickup", "VehicleAvaialble", "OnRentVehicle", "Reservation", "Return", "HatchbackBooking", "SedanBooking", "SUVBooking", "MUVBooking", "CoupeBooking", "ConvertiblesBooking", "PickupBooking", "MonthArray","totalActiveLicense","totalLicenseProduct","suspendedlicensecount"));
+		return view('dashboard', 
+			compact("ActiveAction", "NumUser", "AllCompany", 
+					"ExpLic", "TodayPickup", "TomorrowPickup", 
+					"VehicleAvaialble", "OnRentVehicle", "Reservation", 
+					"Return", "HatchbackBooking", 
+					"SedanBooking", "SUVBooking", "MUVBooking", "CoupeBooking", 
+					"ConvertiblesBooking", "PickupBooking", "MonthArray","totalActiveLicense",
+					"totalLicenseProduct","suspendedlicensecount"
+					));
     }
 }

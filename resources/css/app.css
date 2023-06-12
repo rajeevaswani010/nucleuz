@@ -28,9 +28,21 @@
 	top: 50%;
 	left:50%;
 	animation: spin 2s linear infinite;
-	}
+}
 	
-	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
-	}
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+/* calendar styling */
+.fc-col-header-cell{
+	background: lightgrey;
+}
+
+/* .fc-event{
+	background-color: #584ed2 !important;
+}
+.fc-event:hover{
+	background-color: #685ee5;
+} */

@@ -142,7 +142,7 @@ class BookingController extends Controller
         $CustomerID = "";
         $CheckCustomer = Customer::where("company_id", session("CompanyLinkID"))->get();
         
-        $CustomerFound = 0;
+        // $CustomerFound = 0;
         
         
         if($Input["payment_mode"] == "Card"){
@@ -152,33 +152,19 @@ class BookingController extends Controller
         }
         
         foreach($CheckCustomer as $Cms){
-            if($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->email == $Input["email"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"]){
-                $CustomerFound = 1;
-            }
-            
-            if($CustomerFound == 1){
+            if(
+                ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->email == $Input["email"])
+                || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+                || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"])
+                || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"])
+                || ($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+                || ($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"])
+                || ($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+            )
+            {
                 $CustomerID = $Cms->id;
-            }
+                break;
+            }           
         }
         
         if($CustomerID == ""){
@@ -525,7 +511,7 @@ class BookingController extends Controller
         
         unset($Input["dropoff_time"]);
         Booking::where('id', $id)->update($Input);
-        return redirect("booking/".$id."/edit");
+        return redirect("\/booking/".$id."/edit");
     }
     
     function time_difference($time_1, $time_2, $limit = null){
@@ -686,5 +672,27 @@ class BookingController extends Controller
         }catch(\Exception $e){
 
         }
+    }
+
+    public function GetBookings( Request $request){
+        Log::info("inside getbookings");
+        $from = $request->start;
+        $to = $request->end;
+        $Data = Booking::select(
+                    DB::raw('CAST(pickup_date_time AS DATE) AS start'),
+                    DB::raw('count(*) as title'),
+                )
+                ->where("company_id", session("CompanyLinkID"))
+                ->whereIn("status",[1])
+                ->where("pickup_date_time",">=",$from." 00:00:00")
+                ->where("pickup_date_time","<=",$to." 00:59:59")
+                ->groupBy('start')
+                ->get();
+
+        foreach($Data as $dt){
+            $dt->url = "/booking?from_date=".$dt->start."&to_date=".$dt->start."&status=1";
+        }
+        Log::debug(json_encode($Data));
+        return json_encode($Data);
     }
 }

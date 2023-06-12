@@ -2,7 +2,7 @@
 
 @section("content")
 
-
+<script src="{{ URL('public/newasserts/js/fullcalendar-6.1.8/dist/index.global.min.js') }}"></script>
 
 <!-- [ Main Content ] start -->
 <div class="dash-container">
@@ -238,130 +238,34 @@
 
             </div>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <h3>{{ __('Pickup Date Wise') }}</h3>
-                <table class="table table-bordered table-flush mb-0 thead-border-top-0 table-nowrap">
-                    <thead>
-                        <tr>
-                            <th>
-                                <div class="lh-1 d-flex flex-column text-50 my-4pt">
-                                    {{ __('Monday') }}
-                                </div>
-                            </th>
-                            <th>
-                                <div class="lh-1 d-flex flex-column text-50 my-4pt">
-                                    {{ __('Tuesday') }}
-                                </div>
-                            </th>
-                            <th>
-                                <div class="lh-1 d-flex flex-column text-50 my-4pt">
-                                    {{ __('Wednesday') }}
-                                </div>
-                            </th>
-                            <th>
-                                <div class="lh-1 d-flex flex-column text-50 my-4pt">
-                                    {{ __('Thursday') }}
-                                </div>
-                            </th>
-                            <th>
-                                <div class="lh-1 d-flex flex-column text-50 my-4pt">
-                                    {{ __('Friday') }}
-                                </div>
-                            </th>
-                            <th>
-                                <div class="lh-1 d-flex flex-column text-50 my-4pt">
-                                    {{ __('Saturday') }}
-                                </div>
-                            </th>
-                            <th>
-                                <div class="lh-1 d-flex flex-column text-50 my-4pt">
-                                    {{ __('Sunday') }}
-                                </div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="list">
-                        @php
-                        $WeekDay = date("l", strtotime(date("Y-m-01")));
-                        $OffsetIndex = 0;
-                        if(strtoupper($WeekDay) == "MONDAY"){
-                            $OffsetIndex = 0;
-                        }
-                        if(strtoupper($WeekDay) == "TUESDAY"){
-                            $OffsetIndex = 1;
-                        }
-                        if(strtoupper($WeekDay) == "WEDNESDAY"){
-                            $OffsetIndex = 2;
-                        }
-                        if(strtoupper($WeekDay) == "THURSDAY"){
-                            $OffsetIndex = 3;
-                        }
-                        if(strtoupper($WeekDay) == "FRIDAY"){
-                            $OffsetIndex = 4;
-                        }
-                        if(strtoupper($WeekDay) == "SATURDAY"){
-                            $OffsetIndex = 5;
-                        }
-                        if(strtoupper($WeekDay) == "SUNDAY"){
-                            $OffsetIndex = 6;
-                        }
-
-                        $Counter = 1;
-                        @endphp
-
-                        <tr>
-                            @for($i = 0; $i < $OffsetIndex; $i++)
-                                <td>
-                                </td>
-                                @php
-                                $Counter++;
-                                @endphp
-
-                                @if($Counter == 8)
-                                @php
-                                    $Counter = 1;
-                                @endphp
-                                </tr>
-                                @endif
-                            @endfor
-
-                            @php
-                            $date = new \DateTime('last day of this month');
-                            $numDaysOfCurrentMonth = $date->format('d');
-                            @endphp
-
-                            @for($k = 1; $k <= $numDaysOfCurrentMonth; $k++)
-                            
-                            @php
-                            $NewDate = date("Y-m-d", strtotime("+".($k-1)." days", strtotime(date("Y-m-01"))));
-                            $TodayPickup = App\Models\Booking::where("company_id", session("CompanyLinkID"))->where("pickup_date_time", ">=", $NewDate." 00:00:00")->where("pickup_date_time", "<=", $NewDate." 23:59:59")->count();
-                            @endphp
-
-                                <td>
-                                    {{ $k }}
-                                    <a class="d-flex flex-column border-1 rounded px-8pt py-4pt lh-1 @if($TodayPickup == 0) bg-light @else bg-primary @endif" href="{{ URL('booking') }}?from_date={{ $NewDate }}&to_date={{ $NewDate }}">
-                                        {{ $TodayPickup }}
-                                    </a>
-                                </td>
-
-                                @php
-                                $Counter++;
-                                @endphp
-
-                                @if($Counter == 8)
-                                @php
-                                    $Counter = 1;
-                                @endphp
-                                </tr>
-                                @endif
-                            @endfor
-                        </tr>
-                    </tbody>
-                </table>
+        <div class="card" style="padding: 30px;">
+            <h3>{{ __('Pickup Date Wise') }}</h3>
+            <div id="bookingCalendar">
             </div>
         </div>
+        <script type="text/javascript">
+            var calendarEl = document.getElementById('bookingCalendar');
 
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    end: 'prev,next',// today',
+                    center: 'title',
+                    start: '' //'dayGridMonth',//,timeGridWeek,timeGridDay'
+                },
+                aspectRatio: 3,
+                eventClick: function(info){
+                    if (info.event.url) {
+                        window.open(info.event.url,"_SELF");
+                        info.jsEvent.preventDefault();
+                    }
+                },
+                events: '/Booking/Get'	//gets the booking from booking controller
+            });
+
+            calendar.render();
+
+        </script>
 
         @endif
 
