@@ -16,6 +16,7 @@
         "laravelcollective/html": "^6.3",
         "maatwebsite/excel": "^3.1",
         "monolog/monolog": "^2.9",
+        "snapappointments/bootstrap-select": "^1.13",
         "thiagoalessio/tesseract_ocr": "^2.12"
     },
     "require-dev": {
