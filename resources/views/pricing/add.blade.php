@@ -36,13 +36,16 @@
                             <label for="from" class="col-form-label text-dark">Car Type</label>
                             <select class="form-control font-style" name="car_type" required>
                             <option value="">{{ __("Select") }}</option>
-                            <option value="Hatchback">{{ __("Hatchback") }}</option>
+                            @foreach($AllCarTypes as $CarType)
+                            <option value="{{ $CarType->name }}">{{ $CarType->name }}</option>
+                            @endforeach
+                            <!-- <option value="Hatchback">{{ __("Hatchback") }}</option>
                             <option value="Sedan">{{ __("Sedan") }}</option>
                             <option value="SUV">{{ __("SUV") }}</option>
                             <option value="MUV">{{ __("MUV") }}</option>
                             <option value="Coupe">{{ __("Coupe") }}</option>
                             <option value="Convertibles">{{ __("Convertibles") }}</option>
-                            <option value="Pickup Trucks">{{ __("Pickup Trucks") }}</option>
+                            <option value="Pickup Trucks">{{ __("Pickup Trucks") }}</option> -->
                         </select>
                         </div>
 

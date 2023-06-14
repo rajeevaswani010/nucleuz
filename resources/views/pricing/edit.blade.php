@@ -36,16 +36,19 @@
 
                     <div class="form-group col-6">
             <label for="subject" class="col-form-label text-dark">Car Type</label>
-            <select class="form-control font-style" name="car_type" required>
+            <select class="form-control font-style" name="car_type" required disabled>
                 <option value="">Select</option>
-                <option @if($Data->car_type == "Hatchback") selected @endif value="Hatchback">Hatchback</option>
+                @foreach($AllCarTypes as $CarType)
+                    <option @if($Data->car_type == $CarType->name) selected @endif value="{{ $CarType->name }}">{{ $CarType->name }}</option>
+                @endforeach
+                <!-- <option @if($Data->car_type == "Hatchback") selected @endif value="Hatchback">Hatchback</option>
                 <option @if($Data->car_type == "Sedan") selected @endif value="Sedan">Sedan</option>
                 <option @if($Data->car_type == "SUV") selected @endif value="SUV">SUV</option>
                 <option @if($Data->car_type == "MUV") selected @endif value="MUV">MUV</option>
                 <option @if($Data->car_type == "Coupe") selected @endif value="Coupe">Coupe</option>
                 <option @if($Data->car_type == "Convertibles") selected @endif value="Convertibles">Convertibles</option>
                 
-                <option @if($Data->car_type == "Pickup Trucks") selected @endif value="Pickup Trucks">Pickup Trucks</option>
+                <option @if($Data->car_type == "Pickup Trucks") selected @endif value="Pickup Trucks">Pickup Trucks</option> -->
                 
             </select>
         </div>

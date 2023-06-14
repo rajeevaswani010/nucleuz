@@ -29,7 +29,7 @@ class VehicleImport implements ToCollection, WithHeadingRow, WithChunkReading, W
                 $NewObj = Vehicle::where("company_id", session("CompanyLinkID"))->where("reg_no", $row['registration_number'])->first();
             }
             
-            $brnd = Brand::select("name")->where('name','LIKE',$row['make'],)->first();
+            $brnd = Brand::select("name")->where('name','LIKE',$row['make'])->first();
             $cartype = CarType::select("name")->where('name','LIKE',$row['car_type'])->first();
 
             if($brnd && $cartype){

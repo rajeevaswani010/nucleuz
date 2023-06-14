@@ -11,6 +11,7 @@ use Excel;
 use App\Export\PricingExport;
 use App\Import\PricingImport;
 use App\Models\Pricing;
+use App\Models\CarType;
 
 class PricingController extends Controller
 {
@@ -39,8 +40,9 @@ class PricingController extends Controller
             return redirect("/");
         }
 
+        $AllCarTypes = CarType::get();
         $ActiveAction = "pricing";
-        return view('pricing.add', compact("ActiveAction"));
+        return view('pricing.add', compact("ActiveAction","AllCarTypes"));
     }
 
     /**
@@ -86,9 +88,10 @@ class PricingController extends Controller
         
         $Data = Pricing::find($id);
         // echo '<pre>';print_r($Data); echo '</pre>';die();
+        $AllCarTypes = CarType::get();
 
         $ActiveAction = "pricing";
-        return view('pricing.edit', compact("Data", "ActiveAction"));
+        return view('pricing.edit', compact("Data", "ActiveAction","AllCarTypes"));
     }
 
     /**
