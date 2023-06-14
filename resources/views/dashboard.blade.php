@@ -132,7 +132,7 @@
         </div>
 
 
-        <div class="col-lg-4 col-md-4">
+        <div class="col-lg-6 col-md-6">
             <a href="{{ URL('booking') }}?from_date={{ date('Y-m-d') }}&to_date={{ date('Y-m-d') }}">
             <div class="card">
                 <div class="card-body p-3">
@@ -156,7 +156,7 @@
         </div>
 
 
-        <div class="col-lg-4 col-md-4">
+        <div class="col-lg-6 col-md-6">
             <a href="{{ URL('booking') }}?from_date={{ date('Y-m-d', strtotime('+1 day')) }}&to_date={{ date('Y-m-d', strtotime('+1 day')) }}">
             <div class="card">
                 <div class="card-body p-3">

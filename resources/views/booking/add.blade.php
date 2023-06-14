@@ -360,7 +360,6 @@
         fetchAvailableVehicles();
     @endif
     
-    $("#UpdateTextDay").html('No of Weeks <span class="text-danger">*</span>');
 
     document.getElementById("TarrifData").addEventListener('change', (event) => {
         console.log("onchange");
@@ -369,6 +368,7 @@
         }
         
         if($("#TarrifData").val() == "Weekly"){
+            console.log("change label")
             $("#UpdateTextDay").html('No of Weeks <span class="text-danger">*</span>');
         }
         
@@ -409,7 +409,6 @@
                 success: function( data, textStatus, jqXHR ) {
 
                         JsData = JSON.parse(data);
-                        console.log(JsData);
                         select = document.getElementById('VehicleData');
                         select.innerHTML='';
                         var opt = document.createElement('option');
@@ -449,6 +448,7 @@
     }
 
     function fetchReviews(){
+
         // alert('jjjjj');
         // return false;
         $.ajax({

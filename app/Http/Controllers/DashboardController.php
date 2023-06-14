@@ -62,6 +62,17 @@ class DashboardController extends Controller
 		$ConvertiblesBooking = Booking::where("company_id", session("CompanyLinkID"))->where("car_type", "Convertibles")->count();
 		$PickupBooking = Booking::where("company_id", session("CompanyLinkID"))->where("car_type", "Pickup Trucks")->count();
 
+		$BookingsDataGroupByCarType = DB::table('bookings')
+					->selectRaw('car_type, count(*) as count')
+					->where("company_id",session("CompanyLinkID"))
+					->groupBy('car_type')
+					->orderBy('car_type')
+					->get();
+		$BookingDataByCarTypeArr = collect();
+		foreach($BookingsDataGroupByCarType as $elmt){
+			$BookingDataByCarTypeArr[$elmt->car_type] = $elmt->count; 
+		}
+		Log::debug(json_encode($BookingDataByCarTypeArr));
 		$BookingData = Booking::where("company_id", session("CompanyLinkID"))->get();
 		$MonthArray = array();
 
@@ -108,10 +119,46 @@ class DashboardController extends Controller
 			compact("ActiveAction", "NumUser", "AllCompany", 
 					"ExpLic", "TodayPickup", "TomorrowPickup", 
 					"VehicleAvaialble", "OnRentVehicle", "Reservation", 
-					"Return", "HatchbackBooking", 
-					"SedanBooking", "SUVBooking", "MUVBooking", "CoupeBooking", 
-					"ConvertiblesBooking", "PickupBooking", "MonthArray","totalActiveLicense",
+					"Return", 
+					"HatchbackBooking", 
+					"SedanBooking", "SUVBooking", "MUVBooking", "CoupeBooking", "BookingDataByCarTypeArr",
+					"ConvertiblesBooking", "PickupBooking", 
+					"MonthArray","totalActiveLicense",
 					"totalLicenseProduct","suspendedlicensecount"
 					));
     }
+
+	public function GetBookings( Request $request){
+        $from = $request->start;
+        $to = $request->end;
+        $Data = Booking::select(
+                    DB::raw('CAST(pickup_date_time AS DATE) AS start'),
+                    DB::raw('count(*) as title'),
+                )
+                ->where("company_id", session("CompanyLinkID"))
+                ->whereIn("status",[1,2])
+                ->where("pickup_date_time",">=",$from." 00:00:00")
+                ->where("pickup_date_time","<=",$to." 23:59:59")
+                ->groupBy('start')
+                ->get();
+
+        foreach($Data as $dt){
+            $dt->url = "/booking?from_date=".$dt->start."&to_date=".$dt->start."&status=1";
+        }
+        Log::debug(json_encode($Data));
+        return json_encode($Data);
+    }
+
+	public function GetBookingGroupByVehicleType( Request $request){
+		$Data = DB::table('bookings')
+				->selectRaw('lower(car_type) as car_type, count(*) as count')
+				->where("company_id",session("CompanyLinkID"))
+				->groupBy('car_type')
+				->orderBy('car_type')
+				->get();
+
+        Log::debug(json_encode($Data));
+        return json_encode($Data);
+	}
+
 }

@@ -731,26 +731,4 @@ class BookingController extends Controller
 
         }
     }
-
-    public function GetBookings( Request $request){
-        Log::info("inside getbookings");
-        $from = $request->start;
-        $to = $request->end;
-        $Data = Booking::select(
-                    DB::raw('CAST(pickup_date_time AS DATE) AS start'),
-                    DB::raw('count(*) as title'),
-                )
-                ->where("company_id", session("CompanyLinkID"))
-                ->whereIn("status",[1])
-                ->where("pickup_date_time",">=",$from." 00:00:00")
-                ->where("pickup_date_time","<=",$to." 00:59:59")
-                ->groupBy('start')
-                ->get();
-
-        foreach($Data as $dt){
-            $dt->url = "/booking?from_date=".$dt->start."&to_date=".$dt->start."&status=1";
-        }
-        Log::debug(json_encode($Data));
-        return json_encode($Data);
-    }
 }

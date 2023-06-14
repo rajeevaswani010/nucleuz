@@ -83,7 +83,7 @@ Route::get('Vehicle/GetAllCarTypes', [VehicleController::class, 'GetAllCarTypes'
 Route::get("BookingCancel/{ID}", [BookingController::class, 'CancelBooking']);
 Route::post('Customer/Review', [BookingController::class, 'ReviewCustomer']);
 Route::post('BookingExceed/{id}', [BookingController::class, 'BookingExceed']);
-Route::get('Booking/Get', [BookingController::class, 'GetBookings']);
+Route::get('Booking/Get', [DashboardController::class, 'GetBookings']);
 
 //===========my new code==================================//
 Route::get('bookingreciepts', [BookingController::class, 'BookingReciept']);
