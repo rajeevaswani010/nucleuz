@@ -15,6 +15,7 @@ use App\Models\Pricing;
 use App\Models\Booking;
 use App\Models\BookingInvite;
 use App\Models\Customer;
+use App\Models\CarType;
 
 use Log;
 use DB;
@@ -28,9 +29,7 @@ class ReportController extends Controller{
             return redirect("/");
         }
 
-        $GetAllVehicleTypes = Vehicle::select("car_type")
-                ->where('company_id', session("CompanyLinkID"))
-                ->distinct()->get();
+        $GetAllVehicleTypes = CarType::get();
 
         $Input = $request->all();
     
@@ -42,7 +41,9 @@ class ReportController extends Controller{
 
         switch($request->report_type){
             case "On Rent":
-                $Data = Booking::where('bookings.company_id', session("CompanyLinkID"))->where('bookings.status', 2)
+                $Data = Booking::where('bookings.company_id', session("CompanyLinkID"))
+                        ->where('bookings.status', 2)
+                        ->where("pickup_date_time","<=",date("Y-m-d H:i:s"))
                         ->join('vehicles','vehicles.id','=','bookings.vehicle_id')
                         ->join('customers', 'customers.id', '=','bookings.customer_id')
                         ->get(['bookings.id','vehicles.make as veh_make','vehicles.model as veh_model','vehicles.variant as veh_variant',
@@ -167,15 +168,50 @@ class ReportController extends Controller{
                 }
             
                 if ($request->from_date != null){
-                    $Data = $Data->where("dropoff_date",">=",$request->from_date." 00:00:00");
+                    $from_date_time = $request->from_date." 00:00";
+                } else {
+                    $from_date_time = date('Y-m-d')." 00:00";
                 }
 
                 if ($request->to_date != null){
-                    $Data = $Data->where("dropoff_date","<=",$request->to_date." 23:59:59");
+                    $to_date_time = $request->to_date." 23:59:59";
+                } else {
+                    $to_date_time = date('Y-m-d')." 23:59:59";
                 }
+                $Data = $Data->where("dropoff_date",">=",$from_date_time)->where("dropoff_date","<=",$to_date_time);
+
                 Log::info(json_encode($Data));
                 break;
-            case "Billing":
+            case "Billing":  //get only completed bookings.. 
+                $Data = Booking::where('bookings.company_id', session("CompanyLinkID"))->where('bookings.status', 3)
+                        ->join('vehicles','vehicles.id','=','bookings.vehicle_id')
+                        ->join('customers', 'customers.id', '=','bookings.customer_id')
+                        ->get(['bookings.id','vehicles.make as veh_make','vehicles.model as veh_model','vehicles.variant as veh_variant',
+                                'vehicles.car_type','vehicles.reg_no','customers.first_name AS cust_first_name',
+                                'customers.last_name as cust_last_name','customers.mobile as cust_mobile',
+                                'customers.email as cust_email','bookings.pickup_date_time','bookings.dropoff_date',
+                                'bookings.discount_amount','bookings.grand_total'
+                            ])  ;
+
+                if($request->vehicle_type != ""){
+                    $Data = $Data->where("car_type",$request->vehicle_type);                
+                }
+            
+                if ($request->from_date != null){
+                    $from_date_time = $request->from_date." 00:00";
+                } else {
+                    $from_date_time = date('Y-m-d')." 00:00";
+                }
+
+                if ($request->to_date != null){
+                    $to_date_time = $request->to_date." 23:59:59";
+                } else {
+                    $to_date_time = date('Y-m-d')." 23:59:59";
+                }
+                $Data = $Data->where("dropoff_date",">=",$from_date_time)->where("dropoff_date","<=",$to_date_time);
+
+                Log::info(json_encode($Data));
+                break;
             default:
                 $Data = array();
         }

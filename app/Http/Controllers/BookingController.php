@@ -18,6 +18,7 @@ use App\Models\Booking;
 use App\Models\BookingInvite;
 use App\Models\Customer;
 use App\Models\Office;
+use App\Models\CarType;
 
 use Log;
 use DB;
@@ -34,10 +35,7 @@ class BookingController extends Controller
             return redirect("/");
         }
 
-        $GetAllVehicleTypes = Vehicle::select("car_type")
-                ->where('company_id', session("CompanyLinkID"))
-                ->distinct()->get();
-
+        $GetAllVehicleTypes = CarType::get();
         Log::debug("Booking page index filters ---- vehicle type: ".$request->vehicle_type
                     ." , from: ".$request->from_date
                     ." , to: ".$request->to_date

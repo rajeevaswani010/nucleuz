@@ -61,7 +61,7 @@
                         <select class="form-control" name="vehicle_type" id="vehicle_type">
                             <option value="">{{ __("All") }}</option>
                             @foreach ($GetAllVehicleTypes as $vehicle)
-                             <option value={{ $vehicle['car_type'] }}>{{ $vehicle['car_type'] }}</option>
+                             <option value={{ $vehicle['name'] }}>{{ $vehicle['name'] }}</option>
                             @endforeach
                             <script>
                                 $('#vehicle_type').val(urlParams.get('vehicle_type'));
@@ -249,6 +249,55 @@
         </td>
         <td><strong class="js-lists-values-employee-name">{{ $DT->pickup_date_time }}</strong></td>
         <td><strong class="js-lists-values-employee-name">{{ $DT->dropoff_date }}</strong></td>
+        </tr>
+        @endforeach
+
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+@endif
+@if(@$_GET['report_type'] == "Billing")
+<div class="card">
+<div class="card-body table-border-style">
+<div class="table-responsive">
+<table class="table datatable">
+    <thead>
+    <tr>
+    <th>Booking Id</th>
+    <th>Car Type</th>
+    <th>Car Details</th>
+    <th>Customer Details</th>
+    <th>Pick up</th>
+    <th>Drop off</th>
+    <th>Discount</th>
+    <th>Grand Total</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach($Data as $DT)
+        <tr class="font-style">
+        <td>B000{{ $DT->id }}</td>
+        <td>{{ $DT->car_type }}</td>
+        <td>
+            <div class="d-flex flex-column">
+                <p class="mb-0">{{ @$DT->veh_make }}</p>
+                <p class="mb-0">{{ @$DT->veh_model }} / {{ @$DT->veh_variant }}</p>
+                <p class="mb-0"><strong class="js-lists-values-employee-name">{{ @$DT->reg_no }}</strong></p>
+            </div>
+        </td>
+        <td>
+            <div class="d-flex flex-column">
+                <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->cust_first_name }} {{ $DT->cust_last_name }}</strong></p>
+                <p class="mb-0"><i class="fa fa-phone"></i>&nbsp{{ $DT->cust_mobile }}</p>
+                <p class="mb-0"><i class="fa fa-envelope"></i>&nbsp{{ $DT->cust_email }}</p>
+            </div>
+        </td>
+        <td><strong class="js-lists-values-employee-name">{{ $DT->pickup_date_time }}</strong></td>
+        <td><strong class="js-lists-values-employee-name">{{ $DT->dropoff_date }}</strong></td>
+        <td><strong class="js-lists-values-employee-name">{{ $DT->discount_amount }}</strong></td>
+        <td><strong class="js-lists-values-employee-name">{{ $DT->grand_total }}</strong></td>
         </tr>
         @endforeach
 

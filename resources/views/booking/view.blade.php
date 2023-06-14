@@ -59,7 +59,7 @@
                         <select class="form-control" name="vehicle_type">
                             <option value="">{{ __("All") }}</option>
                             @foreach ($GetAllVehicleTypes as $vehicle)
-                             <option value={{ $vehicle['car_type'] }}>{{ $vehicle['car_type'] }}</option>
+                             <option value={{ $vehicle['name'] }}>{{ $vehicle['name'] }}</option>
                             @endforeach
                             <script>
                                 $('#vehicle_type').val(urlParams.get('vehicle_type'));

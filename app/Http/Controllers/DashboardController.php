@@ -47,7 +47,7 @@ class DashboardController extends Controller
 					->count()	;
 		$VehicleAvaialble = $GetAllVehicles - $GetBooking;
 
-		$OnRentVehicle = Booking::where("company_id", session("CompanyLinkID"))->where("status", 2)->where("pickup_date_time","<=",date("Y-m-d")." 23:59:59")->distinct()->pluck("vehicle_id")->count();
+		$OnRentVehicle = Booking::select("vehicle_id")->where("company_id", session("CompanyLinkID"))->where("status", 2)->where("pickup_date_time","<=",date("Y-m-d H:i:s"))->count();
 		$Return = Booking::where("company_id", session("CompanyLinkID"))->where("dropoff_date", ">=", date("Y-m-d")." 00:00:00")->where("dropoff_date", "<=", date("Y-m-d")." 23:59:59")->where("status", 2)->count();
 
 		$Invite = BookingInvite::where("company_id", session("CompanyLinkID"))->where("status",1)->count(); //registered invites.. 
