@@ -108,6 +108,7 @@
 <tr>
 <th>Booking ID</th>
 <th>Customer</th>
+<th>Vehicle Type</th>
 <th>Vehicle</th>
 <th>Booking</th>
 <th>Amount</th>
@@ -130,15 +131,19 @@
     <tr class="font-style">
     @endif
     <td>B000{{ $DT->id }}</td>
-    <td><div class="d-flex flex-column">
+    <td>
+        <div class="d-flex flex-column">
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->customer->first_name }} {{ $DT->customer->last_name }}</strong></p>
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->customer->mobile }}</strong></p>
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->customer->email }}</strong></p>
-    </div></td>
+        </div>
+    </td>
+    <td>
+    <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->car_type }}</strong></p>
+    </td>
 
     <td>
     <div class="d-flex flex-column">
-        <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->car_type }}</strong></p>
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ @$DT->vehicle->make }}</strong></p>
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ @$DT->vehicle->model }}</strong></p>
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ @$DT->vehicle->reg_no }}</strong></p>
