@@ -424,11 +424,10 @@ class BookingController extends Controller
             
             $ExtraAmount = ($Booking->additional_kilometers_amount * $Extra);
             $ExtraAmount = $ExtraAmount + trim($Input["additional_charges"]);
-            
-            
-            $Amount = $Booking->sub_total + $ExtraAmount + $Input["additional_charges"];
-            $Amount -= $Input["discount_amount"];
-            
+        
+            #$Amount = $Booking->sub_total + $ExtraAmount + $Input["additional_charges"];
+            $Amount = $Booking->sub_total + $ExtraAmount ;
+            #$Amount -= $Input["discount_amount"];
             $TaxAmount = ($Amount * 5) / 100;
             $SubTotal = $Amount;
             $Amount += $TaxAmount;
@@ -509,16 +508,39 @@ class BookingController extends Controller
 
     public function BookingExceed(Request $request, $id){
         $Input = $request->all();
+
+        $vehicle = Booking::select("vehicle_id","car_type")->where("company_id", session("CompanyLinkID"))->where("id",$id)->first();
+        $GetPricing = Pricing::where("car_type", $vehicle["car_type"])->where("company_id", session("CompanyLinkID"))->first();
+
         unset($Input["_method"]);
         unset($Input["_token"]);
         
         $GetBooking = Booking::find($id);
         $Input["dropoff_date"] = $Input["dropoff_date"]." ".$Input["dropoff_time"];
         $ExtraDay = $this->time_difference ($GetBooking->dropoff_date, $Input["dropoff_date"], "day");
+        Log::debug("ExtraDay : ".$ExtraDay);
+        #calculation for month , week and days
+        $Month = floor((int)$ExtraDay/30);
+        $Week = floor(((int)$ExtraDay - (int)$Month * 30)/7);
+        $Days = (int)$ExtraDay - (int)$Month * 30 - (int)$Week * 7;
+
+        $ExtraAmount = 0;
+        if(isset($GetPricing->monthly_pricing)){
+            $ExtraAmount += (float)$Month * $GetPricing->monthly_pricing;
+        }
+        if(isset($GetPricing->weekly_pricing)){
+            $ExtraAmount += (float)$Week * $GetPricing->weekly_pricing;
+        }
+        if(isset($GetPricing->daily_pricing)){
+            $ExtraAmount += (float)$Days * $GetPricing->daily_pricing;
+        }
         
-        $ExtraAmount = (float)$ExtraDay * $GetBooking->tarrif_amount;
+        #$ExtraAmount = (float)$ExtraDay * $GetBooking->tarrif_amount;
+        Log::debug("ExtraAmount :".$ExtraAmount);
         $SubTotal = $GetBooking->sub_total + $ExtraAmount;
-        $GrandTotal = $GetBooking->grand_total + $ExtraAmount;
+        $TaxAmount = ($SubTotal * 5) / 100;
+        #$GrandTotal = $GetBooking->grand_total + $ExtraAmount;
+        $GrandTotal = $SubTotal + $TaxAmount;
         
         $Input["sub_total"] = $SubTotal;
         $Input["grand_total"] = $GrandTotal;
@@ -531,28 +553,31 @@ class BookingController extends Controller
     function time_difference($time_1, $time_2, $limit = null){
         $val_1 = new \DateTime($time_1);
         $val_2 = new \DateTime($time_2);
-        $interval = $val_1->diff($val_2);
+        $days = $val_1->diff($val_2)->format('%r%a');
+        return $days;
         
-        $output = array(
-            "year" => $interval->y,
-            "month" => $interval->m,
-            "day" => $interval->d,
-            "hour" => $interval->h,
-            "minute" => $interval->i,
-            "second" => $interval->s
-        );
-        
-        $return = "";
-        foreach ($output AS $key => $value) {
-            if ($value == 1)
-                $return .= $value;
-            elseif ($value >= 1)
-                $return .= $value;
+        // $interval = $val_1->diff($val_2);
+
+        // $output = array(
+        //     "year" => $interval->y,
+        //     "month" => $interval->m,
+        //     "day" => $interval->d,
+        //     "hour" => $interval->h,
+        //     "minute" => $interval->i,
+        //     "second" => $interval->s
+        // );
+
+        // $return = "";
+        // foreach ($output AS $key => $value) {
+        //     if ($value == 1)
+        //         $return .= $value;
+        //     elseif ($value >= 1)
+        //         $return .= $value;
             
-            if ($key == $limit)
-            return trim($return);
-        }
-        return trim($return);
+        //     if ($key == $limit)
+        //         return trim($return);
+        // }
+        // return trim($return);
     }
 
     public function review(Request $request){
