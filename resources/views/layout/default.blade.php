@@ -432,7 +432,7 @@ aria-expanded="false"
 .spanner.show, .overlay.show {
 	opacity: 1
 }
-.spinner-border{
+#default-spinner{
     position: absolute;
     top:50%;
     left:50%;
@@ -455,7 +455,7 @@ aria-expanded="false"
 
 <div class="overlay"></div>
 <div class="spanner">
-  <div class="spinner-border text-primary" role="status">
+  <div class="spinner-border text-primary" id="default-spinner" role="status">
   <span class="sr-only">Loading...</span>
   </div>
 </div>
