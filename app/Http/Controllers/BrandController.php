@@ -54,6 +54,7 @@ class BrandController extends Controller
         }
         
         $Input = $request->all();
+        $Input["name"] = ucfirst($Input["name"]);
 
         $request->validate([
             'name' => 'required|unique:brands'

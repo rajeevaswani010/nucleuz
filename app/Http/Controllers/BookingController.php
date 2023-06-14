@@ -343,14 +343,22 @@ class BookingController extends Controller
         Log::debug("bookingcontroller show - enter");
         // echo 'sdfjkdsl';die();
         $Booking = Booking::find($id);
-        $Booking_pickupdate = substr($Booking->pickup_date_time,0,10)." 23:59:59";
+        $Booking_pickupdate = substr($Booking->pickup_date_time,0,10)." 00:00:00";
+        $Booking_dropoffdate = substr($Booking->dropoff_date,0,10)." 23:59:59";
         Log::info($Booking_pickupdate);
+        Log::info($Booking_dropoffdate);
         //$BookedVehicle = Booking::select("vehicle_id")->where("company_id", $Booking->company_id)->where("status","==",2)->where("pickup_date_time", "<=", $Booking_pickupdate)->get()->toArray();
-        $query = 'select vehicle_id from bookings where company_id = '.$Booking->company_id
-        .' and status = 2 and pickup_date_time <= \''.$Booking_pickupdate.'\'';
+        // $query = 'select vehicle_id from bookings where company_id = '.$Booking->company_id
+        // .' and status = 2 and pickup_date_time <= \''.$Booking_pickupdate.'\'';
             
         //Log::info($query);
-        $BookedVehicle = DB::select($query);
+        //$BookedVehicle = DB::select($query);
+        $BookedVehicle = Booking::select("vehicle_id")
+                    ->where("company_id", $Booking->company_id)
+                    ->where("status",2)
+                    ->where("pickup_date_time","<=",$Booking_dropoffdate)
+                    ->where("dropoff_date",">=",$Booking_pickupdate)
+                    ->get();
         $BookedVehiclesId = array();
         foreach ( $BookedVehicle as $obj ){
             $BookedVehiclesId[] = $obj->vehicle_id;
@@ -475,9 +483,10 @@ class BookingController extends Controller
                 });
             }
         }
-        
+
         if(isset($Input["km_reading_pickup"])){
             $data = array("Booking" => $Booking);
+            Log::debug("bookingcontroller update - sending email");
             Mail::send("EmailTemplates.Booking2", $data, function ($m) use($Booking){
                 $m->from("no-reply@nucleuz.app", "Nucleuz");
                 $m->to($Booking->customer->email)->subject("New Car Booking");

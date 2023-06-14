@@ -11,17 +11,21 @@ use App\Models\Brand;
 
 class BrandImport implements ToCollection, WithHeadingRow, WithChunkReading, WithBatchInserts{
     public function collection(Collection $rows){
+
+        $rownumber = 0;
         foreach ($rows as $row){
-            $CheckCode = Brand::where("name", $row['name'])->count();
+            $CheckCode = Brand::where('name','LIKE',$row['name'])->count();
             if($CheckCode == 0){
                 $NewObj = new Brand();
             }else{
-                $NewObj = Brand::where("name", $row['name'])->first();
+                $NewObj = Brand::where('name','LIKE',$row['name'])->first();
             }
             
             $NewObj->name = $row['name'];
             $NewObj->save();
+            $rownumber++;
         }
+        Log::debug("brand import - total rows processed: ".$rownumber);
     }
     
     public function batchSize(): int{

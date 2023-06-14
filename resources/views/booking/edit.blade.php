@@ -92,7 +92,7 @@
                     <div class="mt-2"><b>{{ __("No. of Days") }}</b> {{ $Booking->tarrif_detail }}</div>
                     <div class="mt-2"><b>{{ __("Per Day KM Allocations") }}</b> {{ $Booking->km_allocation }}</div>
                     <div class="mt-2"><b>{{ __("Date & Time of Pickup") }}</b> {{ date("d F, Y H:i A", strtotime($Booking->pickup_date_time)) }}</div>
-                    <div class="mt-2"><b>{{ __("Drop Off Date") }}</b> {{ date("d F, Y", strtotime($Booking->dropoff_date)) }}</div>
+                    <div class="mt-2"><b>{{ __("Drop Off Date") }}</b> {{ date("d F, Y ", strtotime($Booking->dropoff_date)) }}</div>
                     <div class="mt-2"><b>{{ __("Location of Pickup") }}</b> {{ $Booking->pickup_location }}</div>
                     <div class="mt-2"><b>{{ __("KM Reading at time of pickup") }}</b> {{ $Booking->km_reading_pickup }}</div>
                     <div class="mt-2"><b>{{ __("KM Reading at Drop Off") }}</b> {{ $Booking->km_drop_time }}</div>
@@ -218,7 +218,8 @@
         
         <div class="col-lg-6">
             <label>{{ __("Drop off Time") }} <span class="text-danger">*</span></label>
-            <input type="time" class="form-control" name="dropoff_time" min="{{ date('H:i:s') }}" value="{{ date('H:i:s') }}" required>
+            <input type="time" class="form-control" name="dropoff_time"  value="{{ date('H:i:s') }}" required>
+            <!-- <input type="time" class="form-control" name="dropoff_time" min="{{ date('H:i:s') }}" value="{{ date('H:i:s') }}" required> -->
         </div>
         
         <div class="col-lg-6 mt-3">

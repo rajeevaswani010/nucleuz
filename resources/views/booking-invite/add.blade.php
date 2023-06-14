@@ -42,7 +42,7 @@
                         </div>
 
                         <div class="modal-footer">
-                            <input class="btn btn-xs btn-primary" type="submit" value="Save">
+                            <input class="btn btn-xs btn-primary" type="submit" onclick="showloading()" value="Save">
                         </div>
                 {!! Form::close() !!}
 
@@ -63,38 +63,4 @@
     <!-- [ Main Content ] end -->
     </div>
 </div>
-
-<!-- <section id="loading">
-    <div id="loading-content"></div>
-</section>
-<script>
-// let form = document.querySelector('#form');
-// let loader = document.querySelector('#loader')
-
-// form.addEventListener('submit', function (event) {
-//     event.preventDefault();
-  
-//     // using non css framework method with Style
-//     loader.style.display = 'block';
-  
-//     // using a css framework such as TailwindCSS
-//     loader.classList.remove('hidden');
-
-//     // pretend the form has been sumitted and returned
-//     setTimeout(() => loader.style.display = 'none', 1000);
-// });
-
-function showLoading() {
-  document.querySelector('#loading').classList.add('loading');
-  document.querySelector('#loading-content').classList.add('loading-content');
-}
-
-function hideLoading() {
-  document.querySelector('#loading').classList.remove('loading');
-  document.querySelector('#loading-content').classList.remove('loading-content');
-}
-
-showLoading(); -->
-
-</script>
 @endsection

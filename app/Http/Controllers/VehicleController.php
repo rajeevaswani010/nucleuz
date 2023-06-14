@@ -14,6 +14,7 @@ use App\Import\VehicleImport;
 
 use App\Models\Vehicle;
 use App\Models\Brand;
+use App\Models\CarType;
 
 class VehicleController extends Controller
 {
@@ -45,7 +46,8 @@ class VehicleController extends Controller
 
         $ActiveAction = "vehicle";
         $AllBrands = Brand::get();
-        return view('vehicle.add', compact("ActiveAction", "AllBrands"));
+        $AllCarTypes = CarType::get();
+        return view('vehicle.add', compact("ActiveAction", "AllBrands","AllCarTypes"));
     }
 
     /**
@@ -121,8 +123,9 @@ class VehicleController extends Controller
         
         $Data = Vehicle::find($id);
         $AllBrands = Brand::get();
+        $AllCarTypes = CarType::get();
         $ActiveAction = "vehicle";
-        return view('vehicle.edit', compact("Data", "ActiveAction", "AllBrands"));
+        return view('vehicle.edit', compact("Data", "ActiveAction", "AllBrands","AllCarTypes"));
     }
 
     /**

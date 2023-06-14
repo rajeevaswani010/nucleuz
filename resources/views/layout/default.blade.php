@@ -357,6 +357,87 @@ aria-expanded="false"
     </div>
     </header>
 
+<style>
+.spanner{
+  position:absolute;
+  top: 50%;
+  left: 0;
+  background: #2a2a2a55;
+  width: 100%;
+  display:block;
+  text-align:center;
+  height: 100%;
+  color: #FFF;
+  transform: translateY(-50%);
+  z-index: 10000;
+  visibility: hidden;
+}
+
+.overlay{
+  position: fixed;
+	width: 100%;
+	height: 100%;
+  background: rgba(0,0,0,0.5);
+  visibility: hidden;
+}
+
+.loader,
+.loader:before,
+.loader:after {
+  border-radius: 50%;
+  width: 2.5em;
+  height: 2.5em;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation: load7 1.8s infinite ease-in-out;
+  animation: load7 1.8s infinite ease-in-out;
+}
+.loader {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+}
+@-webkit-keyframes load7 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 2.5em 0 -1.3em;
+  }
+  40% {
+    box-shadow: 0 2.5em 0 0;
+  }
+}
+@keyframes load7 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 2.5em 0 -1.3em;
+  }
+  40% {
+    box-shadow: 0 2.5em 0 0;
+  }
+}
+
+.show{
+  visibility: visible;
+}
+
+.spanner, .overlay{
+	opacity: 0;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.spanner.show, .overlay.show {
+	opacity: 1
+}
+.spinner-border{
+    position: absolute;
+    top:50%;
+    left:50%;
+}
+</style>
 
 <!-- [ Header ] end -->
 
@@ -372,7 +453,12 @@ aria-expanded="false"
     </div>
 </footer>
 
-
+<div class="overlay"></div>
+<div class="spanner">
+  <div class="spinner-border text-primary" role="status">
+  <span class="sr-only">Loading...</span>
+  </div>
+</div>
 <!-- Warning Section Ends -->
 <!-- Required Js -->
 <script src="{{ URL('public/newasserts/js/jquery.form.js') }}"></script>
@@ -402,6 +488,19 @@ aria-expanded="false"
 </script>
 <script src="{{ URL('public/newasserts/js/custom.js') }}"></script>
 
+<!-- show overlay progress here.. -->
+<script>
+function showloading(){ 
+    console.log("inside showloading");
+    $("div.spanner").addClass("show");
+    $("div.overlay").addClass("show");
+}
+function hideloading(){
+    console.log("inside hideloading");
+    $("div.spanner").removeClass("show");
+    $("div.overlay").removeClass("show");
+}
+</script>
 <!-- 
     <script>
                 (function () {

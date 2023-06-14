@@ -491,6 +491,7 @@
             var formURL = formObj.attr("action");
             if( window.FormData !== undefined ) {
                 var formData = new FormData(this);
+                showloading();
                 $.ajax({
                   url: formURL,
                   type: "POST",
@@ -512,6 +513,7 @@
                           $("#SuccessText").fadeIn("fast");
                           window.location = "{{ URL('booking') }}";
                       }
+                      hideloading();
                   },
                   error: function( jqXHR, textStatus, errorThrown ) {
                       $("#ErrorText").html("Some Error Occure. Please Try Again Later");
@@ -519,6 +521,7 @@
                       
                       $("#LoginBtn").fadeIn("fast");
                       $("#LoadingStatus").fadeOut("fast");
+                      hideloading();
                   }
                 });
                 e.preventDefault();
