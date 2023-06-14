@@ -548,7 +548,7 @@ class BookingController extends Controller
         
         unset($Input["dropoff_time"]);
         Booking::where('id', $id)->update($Input);
-        return redirect("\/booking/".$id."/edit");
+        return redirect("booking/".$id."/edit");
     }
     
     function time_difference($time_1, $time_2, $limit = null){
