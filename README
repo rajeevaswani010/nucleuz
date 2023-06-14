@@ -44,7 +44,7 @@ Every time update sql file is created dont forget to update this table also..
 
 Creating package   (below command will create pkg.zip in one step outside current directory)
 =======================================
-$ zip -r ../pkg_`date "+%H%M%S_%d%m%Y"`.zip *
+$ sh buildPkg.sh
 
-Copy abpve pkg.zip to public_html folder on host server.
+Copy abpve pkg_<date>_<time>.zip to public_html folder on host server.
 Uncompress it. 
