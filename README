@@ -48,3 +48,5 @@ $ sh buildPkg.sh
 
 Copy abpve pkg_<date>_<time>.zip to public_html folder on host server.
 Uncompress it. 
+
+config/database.php    change password back to  "[Tc]-J0-)?Ag"     else it will not work.
