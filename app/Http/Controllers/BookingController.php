@@ -34,6 +34,10 @@ class BookingController extends Controller
             return redirect("/");
         }
 
+        $GetAllVehicleTypes = Vehicle::select("car_type")
+                ->where('company_id', session("CompanyLinkID"))
+                ->distinct()->get();
+
         Log::debug("Booking page index filters ---- vehicle type: ".$request->vehicle_type
                     ." , from: ".$request->from_date
                     ." , to: ".$request->to_date
@@ -67,7 +71,7 @@ class BookingController extends Controller
         }
 
         $ActiveAction = "booking";
-        return view('booking.view', compact("Data", "ActiveAction"));
+        return view('booking.view', compact("Data", "GetAllVehicleTypes", "ActiveAction"));
     }
 
     public function BookingReciept()
@@ -142,7 +146,7 @@ class BookingController extends Controller
         $CustomerID = "";
         $CheckCustomer = Customer::where("company_id", session("CompanyLinkID"))->get();
         
-        $CustomerFound = 0;
+        // $CustomerFound = 0;
         
         
         if($Input["payment_mode"] == "Card"){
@@ -152,33 +156,19 @@ class BookingController extends Controller
         }
         
         foreach($CheckCustomer as $Cms){
-            if($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->email == $Input["email"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"]){
-                $CustomerFound = 1;
-            }
-            
-            if($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"]){
-                $CustomerFound = 1;
-            }
-            
-            if($CustomerFound == 1){
+            if(
+                ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->email == $Input["email"])
+                || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+                || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"])
+                || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"])
+                || ($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+                || ($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"])
+                || ($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+            )
+            {
                 $CustomerID = $Cms->id;
-            }
+                break;
+            }           
         }
         
         if($CustomerID == ""){
@@ -350,6 +340,7 @@ class BookingController extends Controller
      */
     public function show($id)
     {
+        Log::debug("bookingcontroller show - enter");
         // echo 'sdfjkdsl';die();
         $Booking = Booking::find($id);
         $Booking_pickupdate = substr($Booking->pickup_date_time,0,10)." 23:59:59";
@@ -370,6 +361,9 @@ class BookingController extends Controller
         //$BookedVehicle = array_filter($BookedVehicle);
         $AllVehicles = Vehicle::whereNotIn("id", $BookedVehiclesId)->where("car_type", $Booking->car_type)->where("company_id", $Booking->company_id)->get();
         $ActiveAction = "booking";
+
+        Log::debug("bookingcontroller show - exit");
+
         return view('booking.show', compact("Booking", "ActiveAction", "AllVehicles"));
     }
 
@@ -400,6 +394,8 @@ class BookingController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::debug("bookingcontroller update - enter");
+
         if(session("AdminID") == ""){
             return redirect("/");
         }
@@ -487,6 +483,9 @@ class BookingController extends Controller
                 $m->to($Booking->customer->email)->subject("New Car Booking");
             });
         }
+
+        Log::debug("bookingcontroller update - exit");
+
         return redirect("booking/".$id."/edit");
     }
 
@@ -507,6 +506,8 @@ class BookingController extends Controller
     }
 
     public function BookingExceed(Request $request, $id){
+        Log::debug("bookingcontroller exceed - enter");
+
         $Input = $request->all();
 
         $vehicle = Booking::select("vehicle_id","car_type")->where("company_id", session("CompanyLinkID"))->where("id",$id)->first();
@@ -547,7 +548,7 @@ class BookingController extends Controller
         
         unset($Input["dropoff_time"]);
         Booking::where('id', $id)->update($Input);
-        return redirect("booking/".$id."/edit");
+        return redirect("\/booking/".$id."/edit");
     }
     
     function time_difference($time_1, $time_2, $limit = null){
@@ -578,9 +579,12 @@ class BookingController extends Controller
         //         return trim($return);
         // }
         // return trim($return);
-    }
+        }
+
 
     public function review(Request $request){
+        Log::debug("bookingcontroller review - enter");
+
         try{
             $Input = $request->all();
             $GetPricing = Pricing::where("company_id", session("CompanyLinkID"))->where("car_type", $Input["vehicle"])->first();
@@ -627,10 +631,14 @@ class BookingController extends Controller
             $DueAmount = $Amount;
             $Amount = number_format($Amount, 2);
 
+            Log::debug("bookingcontroller review - exit");
+
             return json_encode(array("GrandTotal" => $Amount, "Tax" => $TaxAmount, "SubTotal" => $SubTotal, "Discount" => $DiscountAmount, "Due" => number_format($DueAmount, 2), "Advance" => $AdvanceAmount));
         }catch(\Exception $e){
             echo $e->getMessage();
         }
+
+        
     }
 
     public function GetAvailableCarTypes(Request $request){
@@ -643,14 +651,18 @@ class BookingController extends Controller
                         ->get()
                         ;
 
-            // Log::info(json_encode($GetAllVehicles));
+            $numOfDays = $request->numOfDays;
+            $pickupDateTime = $request->pickupDate." 00:00:00";
+            $dropDateTime = date('Y-m-d 23:59:59', strtotime("$pickupDateTime +$numOfDays days"));
+            Log::info($dropDateTime);
+
             $getAllVehicleResp = collect();
             foreach ( $GetAllVehicles as $obj ){
                 $getAllVehicleResp[$obj->car_type] = $obj->count;
             }
 
             $query = 'select lcase(car_type) as car_type from bookings where company_id = '.session("CompanyLinkID")
-                    .' and status != 4 and pickup_date_time <= \''.$request->pickupDate.' 23:59:59\' and dropoff_date >= \''.$request->pickupDate.' 00:00:00\'';
+                    .' and status in (1,2) and pickup_date_time <= \''.$dropDateTime.'\' and dropoff_date >= \''.$pickupDateTime.'\'';
                         
             //Log::info($query);
             $GetAllBookings = DB::select($query);
@@ -711,5 +723,27 @@ class BookingController extends Controller
         }catch(\Exception $e){
 
         }
+    }
+
+    public function GetBookings( Request $request){
+        Log::info("inside getbookings");
+        $from = $request->start;
+        $to = $request->end;
+        $Data = Booking::select(
+                    DB::raw('CAST(pickup_date_time AS DATE) AS start'),
+                    DB::raw('count(*) as title'),
+                )
+                ->where("company_id", session("CompanyLinkID"))
+                ->whereIn("status",[1])
+                ->where("pickup_date_time",">=",$from." 00:00:00")
+                ->where("pickup_date_time","<=",$to." 00:59:59")
+                ->groupBy('start')
+                ->get();
+
+        foreach($Data as $dt){
+            $dt->url = "/booking?from_date=".$dt->start."&to_date=".$dt->start."&status=1";
+        }
+        Log::debug(json_encode($Data));
+        return json_encode($Data);
     }
 }

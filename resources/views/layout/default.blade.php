@@ -384,16 +384,15 @@ aria-expanded="false"
 <script src="{{ URL('public/newasserts/js/moment.min.js') }}"></script>
 
 
-
+    <!-- COMMENTED as of now.. dont know where it is used. -->
 <!-- Apex Chart -->
-<script src="{{ URL('public/newasserts/assets/js/plugins/bootstrap-switch-button.min.js') }}"></script>
+<!-- <script src="{{ URL('public/newasserts/assets/js/plugins/bootstrap-switch-button.min.js') }}"></script> -->
 <script src="{{ URL('public/newasserts/assets/js/plugins/sweetalert2.all.min.js') }}"></script>
 <script src="{{ URL('public/newasserts/assets/js/plugins/simple-datatables.js') }}"></script>
-<!-- Apex Chart -->
-<script src="{{ URL('public/newasserts/assets/js/plugins/apexcharts.min.js') }}"></script>
-<script src="{{ URL('public/newasserts/assets/js/plugins/main.min.js') }}"></script>
-<script src="{{ URL('public/newasserts/assets/js/plugins/choices.min.js') }}"></script>
-<script src="{{ URL('public/newasserts/assets/js/plugins/flatpickr.min.js') }}"></script>
+<!-- <script src="{{ URL('public/newasserts/assets/js/plugins/apexcharts.min.js') }}"></script> -->
+<!-- <script src="{{ URL('public/newasserts/assets/js/plugins/main.min.js') }}"></script> -->
+<!-- <script src="{{ URL('public/newasserts/assets/js/plugins/choices.min.js') }}"></script>
+<script src="{{ URL('public/newasserts/assets/js/plugins/flatpickr.min.js') }}"></script> -->
 
 <script src="{{ URL('public/newasserts/js/jscolor.js') }}"></script>
 
@@ -403,6 +402,7 @@ aria-expanded="false"
 </script>
 <script src="{{ URL('public/newasserts/js/custom.js') }}"></script>
 
+<!-- 
     <script>
                 (function () {
             var chartBarOptions = {
@@ -583,7 +583,7 @@ aria-expanded="false"
             var chart = new ApexCharts(document.querySelector("#incomeByCategory"), options);
             chart.render();
         })();
-            </script>
+            </script> -->
 
 
 
@@ -619,7 +619,7 @@ aria-expanded="false"
             document.querySelector("body").classList.add(temp);
         });
     }
-    //
+    
     // var custthemebg = document.querySelector("#cust-theme-bg");
     // custthemebg.addEventListener("click", function () {
     //     if (custthemebg.checked) {
@@ -644,7 +644,7 @@ aria-expanded="false"
         }
     }
 </script>
-<script src="https://js.pusher.com/7.0.3/pusher.min.js"></script>
+<!-- <script src="https://js.pusher.com/7.0.3/pusher.min.js"></script>
 <script >
   // Enable pusher logging - don't include this in production
   Pusher.logToConsole = true;
@@ -664,6 +664,6 @@ aria-expanded="false"
 <script>
   // Messenger global variable - 0 by default
   messenger = "";
-</script>
+</script> -->
 </body>
 </html>

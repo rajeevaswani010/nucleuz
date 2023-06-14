@@ -3,6 +3,23 @@
 @section("content")
 
 
+<style>
+.booking-status {
+    padding: 6px;
+    font-size: small;
+    font-weight: bold;
+}
+
+.booking-status.assigned,
+.booking-status.cancelled {
+    color:white;
+}
+
+.booking-error {
+    background: #ffc4c4;
+}
+</style>
+
 <!-- [ Main Content ] start -->
 <div class="dash-container">
 <div class="dash-content">
@@ -41,13 +58,12 @@
                         <label>{{ __("Vehicle Type") }}</label>
                         <select class="form-control" name="vehicle_type">
                             <option value="">{{ __("All") }}</option>
-                            <option @if(@$_GET['vehicle_type'] == "Hatchback") selected @endif>Hatchback</option>
-                            <option @if(@$_GET['vehicle_type'] == "Sedan") selected @endif>Sedan</option>
-                            <option @if(@$_GET['vehicle_type'] == "SUV") selected @endif>SUV</option>
-                            <option @if(@$_GET['vehicle_type'] == "MUV") selected @endif>MUV</option>
-                            <option @if(@$_GET['vehicle_type'] == "Coupe") selected @endif>Coupe</option>
-                            <option @if(@$_GET['vehicle_type'] == "Convertibles") selected @endif>Convertibles</option>
-                            <option @if(@$_GET['vehicle_type'] == "Pickup Trucks") selected @endif>Pickup Trucks</option>
+                            @foreach ($GetAllVehicleTypes as $vehicle)
+                             <option value={{ $vehicle['car_type'] }}>{{ $vehicle['car_type'] }}</option>
+                            @endforeach
+                            <script>
+                                $('#vehicle_type').val(urlParams.get('vehicle_type'));
+                            </script>
                         </select>
                     </div>
 
@@ -104,7 +120,15 @@
 <tbody>
     
     @foreach($Data as $DT)
+
+    @if(
+        ($DT->status == 1 && $DT->pickup_date_time < date('Y-m-d')) ||
+        ($DT->status == 2 && $DT->dropoff_date < date('Y-m-d'))
+    )
+    <tr class="font-style booking-error">
+    @else
     <tr class="font-style">
+    @endif
     <td>B000{{ $DT->id }}</td>
     <td><div class="d-flex flex-column">
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->customer->first_name }} {{ $DT->customer->last_name }}</strong></p>
@@ -133,23 +157,19 @@
     <td>OMR {{ number_format($DT->grand_total, 2) }}</td>
     <td>
     @if($DT->status == 3)
-    {{ __("Complete") }}
-    <span class="indicator-line rounded bg-success"></span>
+    <span class="indicator-line rounded bg-success booking-status complete">{{ __("Complete") }}</span>
     @endif
 
     @if($DT->status == 1)
-    {{ __("Assigned") }}
-    <span class="indicator-line rounded bg-primary"></span>
+    <span class="indicator-line rounded bg-secondary booking-status assigned" >{{ __("Assigned") }}</span>
     @endif
     
     @if($DT->status == 2)
-    {{ __("Delivered") }}
-    <span class="indicator-line rounded bg-warning"></span>
+    <span class="indicator-line rounded bg-warning booking-status delivered">{{ __("Delivered") }}</span>
     @endif
     
     @if($DT->status == 4)
-    {{ __("Cancelled") }}
-    <span class="indicator-line rounded bg-danger"></span>
+    <span class="indicator-line rounded bg-danger booking-status cancelled">{{ __("Cancelled") }}</span>
     @endif
 </td>
 <td>{{ $DT->updated_at }}</td>

@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 
 use Session;
 use Mail;
+use StdClass;
 
 use App\Models\Vehicle;
 use App\Models\Pricing;
@@ -18,6 +19,7 @@ use App\Models\Customer;
 use Log;
 use DB;
 
+
 class ReportController extends Controller{
 
     public function View(Request $request){
@@ -25,6 +27,10 @@ class ReportController extends Controller{
         if(session("AdminID") == ""){
             return redirect("/");
         }
+
+        $GetAllVehicleTypes = Vehicle::select("car_type")
+                ->where('company_id', session("CompanyLinkID"))
+                ->distinct()->get();
 
         $Input = $request->all();
     
@@ -35,13 +41,15 @@ class ReportController extends Controller{
         );
 
         switch($request->report_type){
-
             case "On Rent":
                 $Data = Booking::where('bookings.company_id', session("CompanyLinkID"))->where('bookings.status', 2)
                         ->join('vehicles','vehicles.id','=','bookings.vehicle_id')
                         ->join('customers', 'customers.id', '=','bookings.customer_id')
-                        ->get(['bookings.id','bookings.car_type','vehicles.reg_no','customers.first_name','customers.last_name','customers.mobile'])
-                        ;
+                        ->get(['bookings.id','vehicles.make as veh_make','vehicles.model as veh_model','vehicles.variant as veh_variant',
+                                'vehicles.car_type','vehicles.reg_no','customers.first_name AS cust_first_name',
+                                'customers.last_name as cust_last_name','customers.mobile as cust_mobile',
+                                'customers.email as cust_email','bookings.pickup_date_time','bookings.dropoff_date'
+                            ])  ;
         
                 /*above eloquent results in below query ... 
                 SELECT `bookings`.`id`, `bookings`.`car_type`, `vehicles`.`reg_no`, `customers`.`first_name`, 
@@ -52,88 +60,128 @@ class ReportController extends Controller{
                     AND bookings.status = 2;
                     */
                 if($request->vehicle_type != ""){
-                    Log::debug("vehicle type - ".$request->vehicle_type);
-                    $Data = $Data->where("car_type",strtolower($request->vehicle_type) );                
+                    $Data = $Data->where("car_type",$request->vehicle_type);                
                 }
-                // Log:info("count - ".$Data->count());
-                $ActiveAction = "reports";
-                return view('reports.view', compact("Data", "ActiveAction"));
 
+                Log::info(json_encode($Data));
+                break;
             case "Available":
+                Log::debug("inside available");
                 $GetAllVehicles = DB::table('vehicles')
-                        ->selectRaw('lower(car_type) as car_type, count(*) as count')
-                        ->where("company_id",session("CompanyLinkID"))
-                        ->groupBy('car_type')
-                        ->orderBy('car_type')
-                        ->get()
-                ;
+                            ->selectRaw('lower(car_type) as car_type, count(*) as count')
+                            ->where("company_id",session("CompanyLinkID"))
+                            ->groupBy('car_type')
+                            ->orderBy('car_type')
+                            ->get()
+                            ;
 
-                Log::info(json_encode($GetAllVehicles));
-                $Data = collect();
-                foreach ( $GetAllVehicles as $obj ){
-                    $Data[$obj->car_type] = $obj->count;
+                Log::debug(json_encode($GetAllVehicles));
+                if($request->vehicle_type != null){
+                    Log::info("vehicle type - ".strtolower($request->vehicle_type));
+                    $GetAllVehicles = $GetAllVehicles->where("car_type",strtolower($request->vehicle_type));       
                 }
 
-                $query = 'select lcase(car_type) as car_type from bookings where company_id = '.session("CompanyLinkID")
-                        .' and status != 4 and pickup_date_time <= \''.$request->pickupDate.' 23:59:59\' and dropoff_date >= \''.$request->pickupDate.' 00:00:00\'';
-                            
-                //Log::info($query);
-                $GetAllBookings = DB::select($query);
-                foreach ($GetAllBookings as $obj){
-                    $Data[$obj->car_type] -= 1;
+                if ($request->from_date != null){
+                    $pickupDateTime = $request->from_date." 00:00";
+                } else {
+                    $pickupDateTime = date('Y-m-d')." 00:00";
+                }
+
+                if ($request->to_date != null){
+                    $dropDateTime = date('Y-m-d')." 00:00";
+                } else {
+                    $dropDateTime = date('Y-m-d')." 23:59:59";
                 }
                 
-                $ActiveAction = "reports";
-                return view('reports.view', compact("Data", "ActiveAction"));
+                Log::debug(json_encode($GetAllVehicles));
+                $getAllVehicleResp = collect();
+                foreach ( $GetAllVehicles as $obj ){
+                    $getAllVehicleResp[$obj->car_type] = $obj->count;
+                }
 
+                // $query = 'select lcase(car_type) as car_type from bookings where company_id = '.session("CompanyLinkID")
+                //         .' and status in (1,2) and pickup_date_time <= \''.$dropDateTime.'\' and dropoff_date >= \''.$pickupDateTime.'\'';
+                // $GetAllBookings = DB::select($query);   
+                $GetAllBookings = Booking::selectRaw('lower(car_type) as car_type')
+                            ->where("company_id",session("CompanyLinkID"))
+                            ->whereIn("status",[1,2])
+                            ->where("pickup_date_time","<=",$dropDateTime)
+                            ->where("dropoff_date",">=",$pickupDateTime)
+                            ->get()
+                            ;
+
+                // Log::info($query);
+                if($request->vehicle_type != null){
+                    $GetAllBookings = $GetAllBookings->where("car_type",strtolower($request->vehicle_type));       
+                }
+
+                Log::info(json_encode($GetAllBookings));
+                foreach ($GetAllBookings as $obj){
+                    $getAllVehicleResp[$obj->car_type] -= 1;
+                }
+
+                $Data = array();//$getAllVehicleResp;
+                foreach ($getAllVehicleResp as $key => $value) {
+                    $myObj = new stdClass();
+                    $myObj->car_type = $key;
+                    $myObj->count = $value;
+                    array_push($Data,$myObj);
+                }
+
+                Log::info(json_encode($Data));
+                break;
             case "Reservation":
                 $Data = Booking::where('bookings.company_id', session("CompanyLinkID"))->where('bookings.status', 1)
-                ->join('customers','customers.id','=','bookings.customer_id')
-                ->get(['bookings.id','bookings.car_type','customers.first_name','customers.mobile']);
+                        ->join('customers','customers.id','=','bookings.customer_id')
+                        ->get(['bookings.id','bookings.car_type','customers.first_name AS cust_first_name',
+                                'customers.last_name as cust_last_name','customers.mobile as cust_mobile',
+                                'customers.email as cust_email','bookings.pickup_date_time','bookings.dropoff_date'
+                            ])  ;
 
                 if($request->vehicle_type != null){
-                    $Data = $Data->where("bookings.car_type",strtolower($request->vehicle_type) );                
+                    $Data = $Data->where("car_type",$request->vehicle_type);                
                 }
 
                 if ($request->from_date != null){
-                    $Data = $Data->where("bookings.pickup_date_time",">=",$request->from_date." 00:00:00");
+                    $Data = $Data->where("pickup_date_time",">=",$request->from_date." 00:00:00");
                 }
 
                 if ($request->to_date != null){
-                    $Data = $Data->where("bookings.pickup_date_time","<=",$request->to_date." 23:59:59");
+                    $Data = $Data->where("pickup_date_time","<=",$request->to_date." 23:59:59");
                 }
 
-                $ActiveAction = "reports";
-                return view('reports.view', compact("Data", "ActiveAction"));
-
+                Log::info(json_encode($Data));
+                break;
             case "Returns":
                 $Data = Booking::where('bookings.company_id', session("CompanyLinkID"))->where('bookings.status', 2)
-                ->join('customers','customers.id','=','bookings.customer_id')
-                ->join('vehicles','vehicles.id','=','bookings.vehicle_id')
-                ->get(['bookings.id','bookings.car_type','vehicles.reg_no','customers.first_name','customers.last_name','customers.mobile','bookings.dropoff_date'])
-                ;
+                        ->join('vehicles','vehicles.id','=','bookings.vehicle_id')
+                        ->join('customers', 'customers.id', '=','bookings.customer_id')
+                        ->get(['bookings.id','vehicles.make as veh_make','vehicles.model as veh_model','vehicles.variant as veh_variant',
+                                'vehicles.car_type','vehicles.reg_no','customers.first_name AS cust_first_name',
+                                'customers.last_name as cust_last_name','customers.mobile as cust_mobile',
+                                'customers.email as cust_email','bookings.pickup_date_time','bookings.dropoff_date'
+                            ])  ;
 
-                if($request->vehicle_type != null){
-                    $Data = $Data->where("bookings.car_type",strtolower($request->vehicle_type) );                
+                if($request->vehicle_type != ""){
+                    $Data = $Data->where("car_type",$request->vehicle_type);                
                 }
-
+            
                 if ($request->from_date != null){
-                    $Data = $Data->where("bookings.dropoff_date",">=",$request->from_date." 00:00:00");
+                    $Data = $Data->where("dropoff_date",">=",$request->from_date." 00:00:00");
                 }
 
                 if ($request->to_date != null){
-                    $Data = $Data->where("bookings.dropoff_date","<=",$request->to_date." 23:59:59");
+                    $Data = $Data->where("dropoff_date","<=",$request->to_date." 23:59:59");
                 }
-
-                $ActiveAction = "reports";
-                return view('reports.view', compact("Data", "ActiveAction"));
-
+                Log::info(json_encode($Data));
+                break;
             case "Billing":
             default:
-                $ActiveAction = "reports";
-                return view('reports.view', compact("ActiveAction"));
+                $Data = array();
         }
 
+        $ActiveAction = "reports";
+        return view('reports.view', compact("Data", "GetAllVehicleTypes", "ActiveAction"));
     }
 
     public function View2(Request $request){

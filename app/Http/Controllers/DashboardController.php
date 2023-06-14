@@ -15,6 +15,9 @@ use App\Models\Office;
 use App\Models\License;
 use App\Models\Subscription;
 
+use Log;
+use DB;
+
 class DashboardController extends Controller
 {
 	public function index(){
@@ -22,9 +25,27 @@ class DashboardController extends Controller
 		
 		$TomorrowPickup = Booking::where("company_id", session("CompanyLinkID"))->where("pickup_date_time", ">=", date("Y-m-d", strtotime("+1 day"))." 00:00:00")->where("pickup_date_time", "<=", date("Y-m-d", strtotime("+1 day"))." 23:59:59")->where("status", "!=", 4)->count();
 
-		$GetBooking = Booking::select("vehicle_id")->where("company_id", session("CompanyLinkID"))->where("status", 2)->where("pickup_date_time","<=",date("Y-m-d")." 23:59:59")->distinct()->pluck("vehicle_id")->toArray();
-		$VhIDs = Vehicle::select("id")->where("company_id", session("CompanyLinkID"))->whereNotIn("id", $GetBooking)->count();
-		$VehicleAvaialble = $VhIDs;
+
+		$pickupDateTime = date('Y-m-d')." 00:00";
+		$dropDateTime = date('Y-m-d')." 23:59:59";//, strtotime("$pickupDateTime +1 days"))." 10:00";
+
+		// $GetBooking = Booking::select("car_type")
+		// 			->where("company_id", session("CompanyLinkID"))->whereIn("status", [1,2])
+		// 			->where("pickup_date_time","<=",$dropDateTime)->where("dropoff_date",">=",$pickupDateTime)->count();
+		// $VhIDs = Vehicle::select("id")->where("company_id", session("CompanyLinkID"))->count();
+		$GetAllVehicles = DB::table('vehicles')
+					->selectRaw('lower(car_type) as car_type, count(*) as count')
+					->where("company_id",session("CompanyLinkID"))
+					->orderBy('car_type')
+					->count();
+
+		$GetBooking = Booking::selectRaw('lower(car_type) as car_type')
+					->where("company_id",session("CompanyLinkID"))
+					->whereIn("status",[1,2])
+					->where("pickup_date_time","<=",$dropDateTime)
+					->where("dropoff_date",">=",$pickupDateTime)
+					->count()	;
+		$VehicleAvaialble = $GetAllVehicles - $GetBooking;
 
 		$OnRentVehicle = Booking::where("company_id", session("CompanyLinkID"))->where("status", 2)->where("pickup_date_time","<=",date("Y-m-d")." 23:59:59")->distinct()->pluck("vehicle_id")->count();
 		$Return = Booking::where("company_id", session("CompanyLinkID"))->where("dropoff_date", ">=", date("Y-m-d")." 00:00:00")->where("dropoff_date", "<=", date("Y-m-d")." 23:59:59")->where("status", 2)->count();
@@ -83,6 +104,14 @@ class DashboardController extends Controller
 		//     }
 		// }
 
-		return view('dashboard', compact("ActiveAction", "NumUser", "AllCompany", "ExpLic", "TodayPickup", "TomorrowPickup", "VehicleAvaialble", "OnRentVehicle", "Reservation", "Return", "HatchbackBooking", "SedanBooking", "SUVBooking", "MUVBooking", "CoupeBooking", "ConvertiblesBooking", "PickupBooking", "MonthArray","totalActiveLicense","totalLicenseProduct","suspendedlicensecount"));
+		return view('dashboard', 
+			compact("ActiveAction", "NumUser", "AllCompany", 
+					"ExpLic", "TodayPickup", "TomorrowPickup", 
+					"VehicleAvaialble", "OnRentVehicle", "Reservation", 
+					"Return", "HatchbackBooking", 
+					"SedanBooking", "SUVBooking", "MUVBooking", "CoupeBooking", 
+					"ConvertiblesBooking", "PickupBooking", "MonthArray","totalActiveLicense",
+					"totalLicenseProduct","suspendedlicensecount"
+					));
     }
 }

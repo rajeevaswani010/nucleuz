@@ -2,6 +2,10 @@
 
 @section("content")
 
+<script>
+    //get parameters
+        const urlParams = new URLSearchParams(window.location.search);
+</script>
 
 <!-- [ Main Content ] start -->
 <div class="dash-container">
@@ -37,41 +41,62 @@
         {!! Form::open(['url' => 'reports', 'enctype' => 'multipart/form-data', 'method' => 'GET', 'id' => 'form']) !!}
             <div class="card">
                 <div class="row">
-                    <div class="col">
+                    <div class="col-lg-3">
                         <label>{{ __("Report Type") }}</label>
                         <select class="form-control" name="report_type" id="report_type" onchange = "onReportTypeChange()">
                             <option value="">{{ __("") }}</option>
-                            <option @if(@$_GET['report_type'] == "On Rent") selected @endif value="On Rent">{{ __("On Rent") }}</option>
-                            <option @if(@$_GET['report_type'] == "Reservation") selected @endif value="Reservation">{{ __("Reservation") }}</option>
-                            <option @if(@$_GET['report_type'] == "Returns") selected @endif value="Returns">{{ __("Returns") }}</option>
-                            <option @if(@$_GET['report_type'] == "Available") selected @endif value="Available">{{ __("Available") }}</option>
-                            <option @if(@$_GET['report_type'] == "Billing") selected @endif value="Billing">{{ __("Billing") }}</option>
+                            <option value="On Rent">{{ __("On Rent") }}</option>
+                            <option value="Reservation">{{ __("Reservation") }}</option>
+                            <option value="Returns">{{ __("Returns") }}</option>
+                            <option value="Available">{{ __("Available") }}</option>
+                            <option value="Billing">{{ __("Billing") }}</option>
                         </select>
+                        <script>
+                                $('#report_type').val(urlParams.get('report_type'));
+                        </script>
                     </div>
 
-                    <div class="col">
+                    <div class="col-lg-2">
                         <label>{{ __("Vehicle Type") }}</label>
-                        <select class="form-control" name="vehicle_type">
+                        <select class="form-control" name="vehicle_type" id="vehicle_type">
                             <option value="">{{ __("All") }}</option>
-                            <option @if(@$_GET['vehicle_type'] == "Hatchback") selected @endif value="Hatchback">{{ __("Hatchback") }}</option>
-                            <option @if(@$_GET['vehicle_type'] == "Sedan") selected @endif value="Sedan">{{ __("Sedan") }}</option>
-                            <option @if(@$_GET['vehicle_type'] == "SUV") selected @endif value="SUV">{{ __("SUV") }}</option>
-                            <option @if(@$_GET['vehicle_type'] == "MUV") selected @endif value="MUV">{{ __("MUV") }}</option>
-                            <option @if(@$_GET['vehicle_type'] == "Coupe") selected @endif value="Coupe">{{ __("Coupe") }}</option>
-                            <option @if(@$_GET['vehicle_type'] == "Convertibles") selected @endif value="Convertibles">{{ __("Convertibles") }}</option>
-                            <option @if(@$_GET['vehicle_type'] == "Pickup Trucks") selected @endif value="Pickup Trucks">{{ __("Pickup Trucks") }}</option>
+                            @foreach ($GetAllVehicleTypes as $vehicle)
+                             <option value={{ $vehicle['car_type'] }}>{{ $vehicle['car_type'] }}</option>
+                            @endforeach
+                            <script>
+                                $('#vehicle_type').val(urlParams.get('vehicle_type'));
+                            </script>
+
                         </select>
                     </div>
 
-                    <div class="col">
+                    <div class="col-lg-2">
                         <label>{{ __("From") }}</label>
                         <input type="date" class="form-control" id="from_date" onchange="validateDateRange()" name="from_date" value="{{ @$_GET['from_date'] }}">
+                        <!-- <script>
+                                console.log(urlParams.get('from_date'));
+                                if(urlParams.get('from_date') == ""){
+                                    curDate = new Date().toISOString().substr(0,10);
+                                    $("#from_date").val(curDate);
+                                } else {
+                                    $("#from_date").val(urlParams.get('from_date'));
+                                }
+                        </script> -->
                     </div>
 
-                    <div class="col">
+                    <div class="col-lg-2">
                         <label>{{ __("To") }}</label>
                         <input type="date" class="form-control" id="to_date" onchange="validateDateRange()" name="to_date" value="{{ @$_GET['to_date'] }}">
                     </div>
+                    <!-- <script>
+                                console.log(urlParams.get('to_date'));
+                                if(urlParams.get('to_date') == ""){
+                                    curDate = new Date().toISOString().substr(0,10);
+                                    $("#to_date").val(curDate);
+                                } else {
+                                    $("#to_date").val(urlParams.get('to_date'));
+                                }
+                        </script> -->
                     <div class="col"><button class="btn btn-success mt-4" type="submit" name="search" value="search" role="button"><i class="fa fa-sech"> Search</i></button></div>
                 </div>
             </div>
@@ -87,7 +112,6 @@
     <thead>
     <tr>
     <th>Car Type</th>
-    <th>Available ?</th>
     <th>Quantity</th>
     </tr>
     </thead>
@@ -96,9 +120,8 @@
 
         @foreach($Data as $DT)
         <tr class="font-style">
-        <td>{{ $DT["car_type"] }}</td>
-        <td></td>
-        <td>{{ $DT["count"] }}</td>
+        <td><strong class="js-lists-values-employee-name">{{ $DT->car_type }}</strong></td>
+        <td><strong class="js-lists-values-employee-name">{{ $DT->count }}</strong></td>
         </tr>
         @endforeach
 
@@ -115,21 +138,35 @@
 <table class="table datatable">
     <thead>
     <tr>
-    <th>Id</th>
+    <th>Booking Id</th>
     <th>Car Type</th>
-    <th>Reg. No.</th>
-    <th>Customer Name</th>
-    <th>Contact</th>
+    <th>Car Details</th>
+    <th>Customer Details</th>
+    <th>Pick up</th>
+    <th>Drop off</th>
     </tr>
     </thead>
     <tbody>
         @foreach($Data as $DT)
         <tr class="font-style">
-        <td>{{ $DT->id }}</td>
+        <td>B000{{ $DT->id }}</td>
         <td>{{ $DT->car_type }}</td>
-        <td>{{ $DT->reg_no }}</td>
-        <td>{{ $DT->first_name }} {{ $DT->last_name }}</td>
-        <td>{{ $DT->mobile }}</td>
+        <td>
+            <div class="d-flex flex-column">
+                <p class="mb-0">{{ @$DT->veh_make }}</p>
+                <p class="mb-0">{{ @$DT->veh_model }} / {{ @$DT->veh_variant }}</p>
+                <p class="mb-0"><strong class="js-lists-values-employee-name">{{ @$DT->reg_no }}</strong></p>
+            </div>
+        </td>
+        <td>
+            <div class="d-flex flex-column">
+                <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->cust_first_name }} {{ $DT->cust_last_name }}</strong></p>
+                <p class="mb-0"><i class="fa fa-phone"></i>&nbsp{{ $DT->cust_mobile }}</p>
+                <p class="mb-0"><i class="fa fa-envelope"></i>&nbsp{{ $DT->cust_email }}</p>
+            </div>
+        </td>
+        <td><strong class="js-lists-values-employee-name">{{ $DT->pickup_date_time }}</strong></td>
+        <td><strong class="js-lists-values-employee-name">{{ $DT->dropoff_date }}</strong></td>
         </tr>
         @endforeach
 
@@ -146,19 +183,27 @@
 <table class="table datatable">
     <thead>
     <tr>
-    <th>Id</th>
+    <th>Booking Id</th>
     <th>Car Type</th>
-    <th>Customer</th>
-    <th>Mobile</th>
+    <th>Customer Details</th>
+    <th>Pick up</th>
+    <th>Drop off</th>
     </tr>
     </thead>
     <tbody>
         @foreach($Data as $DT)
         <tr class="font-style">
-        <td>{{ $DT->id }}</td>
+        <td>B000{{ $DT->id }}</td>
         <td>{{ $DT->car_type }}</td>
-        <td>{{ $DT->first_name }}</td>
-        <td>{{ $DT->mobile }}</td>
+        <td>
+            <div class="d-flex flex-column">
+                <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->cust_first_name }} {{ $DT->cust_last_name }}</strong></p>
+                <p class="mb-0"><i class="fa fa-phone"></i>&nbsp{{ $DT->cust_mobile }}</p>
+                <p class="mb-0"><i class="fa fa-envelope"></i>&nbsp{{ $DT->cust_email }}</p>
+            </div>
+        </td>
+        <td><strong class="js-lists-values-employee-name">{{ $DT->pickup_date_time }}</strong></td>
+        <td><strong class="js-lists-values-employee-name">{{ $DT->dropoff_date }}</strong></td>
         </tr>
         @endforeach
 
@@ -175,23 +220,35 @@
 <table class="table datatable">
     <thead>
     <tr>
-    <th>Id</th>
+    <th>Booking Id</th>
     <th>Car Type</th>
-    <th>Reg. No.</th>
-    <th>Customer Name</th>
-    <th>Contact</th>
-    <th>dropoff date</th>
+    <th>Car Details</th>
+    <th>Customer Details</th>
+    <th>Pick up</th>
+    <th>Drop off</th>
     </tr>
     </thead>
     <tbody>
         @foreach($Data as $DT)
         <tr class="font-style">
-        <td>{{ $DT->id }}</td>
+        <td>B000{{ $DT->id }}</td>
         <td>{{ $DT->car_type }}</td>
-        <td>{{ $DT->reg_no }}</td>
-        <td>{{ $DT->first_name }} {{ $DT->last_name }}</td>
-        <td>{{ $DT->mobile }}</td>
-        <td>{{ $DT->dropoff_date }}</td>        
+        <td>
+            <div class="d-flex flex-column">
+                <p class="mb-0">{{ @$DT->veh_make }}</p>
+                <p class="mb-0">{{ @$DT->veh_model }} / {{ @$DT->veh_variant }}</p>
+                <p class="mb-0"><strong class="js-lists-values-employee-name">{{ @$DT->reg_no }}</strong></p>
+            </div>
+        </td>
+        <td>
+            <div class="d-flex flex-column">
+                <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->cust_first_name }} {{ $DT->cust_last_name }}</strong></p>
+                <p class="mb-0"><i class="fa fa-phone"></i>&nbsp{{ $DT->cust_mobile }}</p>
+                <p class="mb-0"><i class="fa fa-envelope"></i>&nbsp{{ $DT->cust_email }}</p>
+            </div>
+        </td>
+        <td><strong class="js-lists-values-employee-name">{{ $DT->pickup_date_time }}</strong></td>
+        <td><strong class="js-lists-values-employee-name">{{ $DT->dropoff_date }}</strong></td>
         </tr>
         @endforeach
 
@@ -219,24 +276,35 @@
         switch ($reportType) {
             case "Reservation" :
                 // Do work here
-                // $("#to_date").prop("disabled",false);
-                // $("#from_date").prop("disabled",false);
+                $("#to_date").prop("disabled",false);
+                $("#from_date").prop("disabled",false);
                 break;
             case "On Rent" :
-                // $("#to_date").val = "";
-                // $("#from_date").val = "";
-                // $("#to_date").prop("disabled",true);
-                // $("#from_date").prop("disabled",true);
+                $("#to_date").val('');
+                $("#from_date").val('');
+                $("#from_date").prop("disabled", true);
+                $("#to_date").prop("disabled",true);
                 break;
             case "Returns":
-                // $("#to_date").prop("disabled",false);
-                // $("#from_date").prop("disabled",false);
-                // $("#to_date").val = new Date().toISOString().substr(0,10);
-                // $("#from_date").val = new Date().toISOString().substr(0,10);
+                $("#to_date").prop("disabled",false);
+                $("#from_date").prop("disabled",false);
+                // curDate = new Date().toISOString().substr(0,10);
+                // $("#to_date").val(curDate);
+                // $("#from_date").val(curDate)
                 break;
+            case "Available":
+                $("#to_date").prop("disabled",false);
+                $("#from_date").prop("disabled",false);
+                // curDate = new Date().toISOString().substr(0,10);
+                // $("#to_date").val(curDate);
+                // $("#from_date").val(curDate)
+
+                // $("#to_date").attr("min",curDate);
+                // $("#from_date").attr("min",curDate );    
+                break;
+            case "Billing":
             default :
                 // Do work here
-                console.log("default");
                 $("#to_date").prop("disabled",false);
                 $("#from_date").prop("disabled",false);
                 break;
@@ -244,11 +312,11 @@
     }
 
     function validateDateRange(){
-        $from = $("#from_date").val();
-        $to = $("#to_date").val();
+        from = $("#from_date").val();
+        to = $("#to_date").val();
 
-        $("#to_date").attr("min",$from);
-        $("#from_date").attr("max", $to);    
+        $("#to_date").attr("min",from);
+        $("#from_date").attr("max", to);    
     }
 
 </script>

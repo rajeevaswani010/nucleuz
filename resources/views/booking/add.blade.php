@@ -174,14 +174,29 @@
         <div class="card-header"><h4>{{ __("Booking Details") }}</h4></div>
         <div class="card-body">
             <div class="row">
-                <div class="col-lg-6 mb-4">
+                <div class="col-lg-3 mb-4">
                     <label>{{ __("Date of Pickup") }} <span class="text-danger">*</span></label>
                     <input type="date" class="form-control" required onchange="fetchAvailableVehicles(event)" id="pickupDate" name="PickupDate" min="{{ date('Y-m-d') }}" >
                 </div>
 
-                <div class="col-lg-6 mb-4">
+                <div class="col-lg-3 mb-4">
                     <label>{{ __("Time of Pickup") }} <span class="text-danger">*</span></label>
-                    <input type="time" class="form-control" id="pickupTime" required name="PickupTime">
+                    <input type="time" class="form-control" id="pickupTime" onchange="fetchAvailableVehicles()" required name="PickupTime">
+                </div>
+
+                <div class="col-lg-3 mb-4">
+                    <label>{{ __("Tarrif") }} <span class="text-danger">*</span></label>
+                    <select class="form-control" required id="TarrifData" onchange="fetchAvailableVehicles()" name="tarrif_type">
+                        <option value="">{{ __("Select") }}</option>
+                        <option value="Daily">{{ __("Daily") }}</option>
+                        <option value="Weekly">{{ __("Weekly") }}</option>
+                        <option value="Monthly">{{ __("Monthly") }}</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-3 mb-4">
+                    <label id="UpdateTextDay">{{ __("No of Days") }} <span class="text-danger">*</span></label>
+                    <input type="number" step="0" class="form-control" name="tarrif_detail" required id="NoOfDays" onblur="fetchAvailableVehicles()" min=1 value=1>
                 </div>
 
                 <div class="col-lg-12 mb-4">
@@ -198,30 +213,16 @@
                     </select>
                 </div>
 
-                <div class="col-lg-4 mb-4">
-                    <label>{{ __("Tarrif") }} <span class="text-danger">*</span></label>
-                    <select class="form-control" required id="TarrifData" onchange="fetchReviews()" name="tarrif_type">
-                        <option value="">{{ __("Select") }}</option>
-                        <option value="Daily">{{ __("Daily") }}</option>
-                        <option value="Weekly">{{ __("Weekly") }}</option>
-                        <option value="Monthly">{{ __("Monthly") }}</option>
-                    </select>
+                <div class="col-lg-9 mb-4">
+                    <label>{{ __("Location of Pickup") }} <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" required name="pickup_location" id="pickup_location">
                 </div>
 
-                <div class="col-lg-4 mb-4">
-                    <label id="UpdateTextDay">{{ __("No of Days") }} <span class="text-danger">*</span></label>
-                    <input type="number" step="0" class="form-control" name="tarrif_detail" required id="NoOfDays" onblur="fetchReviews()">
-                </div>
-
-                <div class="col-lg-4 mb-4">
+                <div class="col-lg-3 mb-4">
                     <label>{{ __("Per day KM Allocation") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" required name="km_allocation">
                 </div>
 
-                <div class="col-lg-12 mb-4">
-                    <label>{{ __("Location of Pickup") }} <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" required name="pickup_location" id="pickup_location">
-                </div>
 
                 <div class="col-lg-3 mb-4">
                     <label>{{ __("Payment Mode") }} <span class="text-danger">*</span></label>
@@ -359,60 +360,10 @@
         fetchAvailableVehicles();
     @endif
     
+    $("#UpdateTextDay").html('No of Weeks <span class="text-danger">*</span>');
 
-    function fetchAvailableVehicles( e ){
-        console.log("fetch vehicles called");
-        $.ajax({
-          url: "{{ URL('Booking/GetAvailableCarTypes') }}",
-          method: "POST",
-          headers: {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          },
-          data: {
-            pickupDate: $("#pickupDate").val(),
-          },
-          success: function( data, textStatus, jqXHR ) {
-
-                JsData = JSON.parse(data);
-                console.log(JsData);
-                select = document.getElementById('VehicleData');
-                select.innerHTML='';
-                var opt = document.createElement('option');
-                opt.value = "";
-                opt.innerHTML = '--Select Vehicle--';
-                select.appendChild(opt);
-
-                for (const key in JsData) {
-                    var opt = document.createElement('option');
-                    opt.value = key;
-                    opt.innerHTML = key.toUpperCase();
-                    if(JsData[key]<=0) {
-                        opt.disabled = "disabled";
-                        opt.style = "color:red; font-style: italic;";
-                    }
-                    select.appendChild(opt);
-                }
-
-                @if(!empty($Requirements["car_type"])) 
-                    carType = '{{ @$Requirements["car_type"] }}'.toLowerCase();
-                    if(JsData[carType] > 0) {
-                        $("#VehicleData").val(carType);
-                        fetchReviews();
-                    } else {
-                        alert("Customer required cartype - "+carType+" is not available for selected dates."); //style this
-                    }
-                @endif
-  
-          },
-          error: function( jqXHR, textStatus, errorThrown ) {
-            alert("Fail to fetch vehicles for selected date. Please contact company for assistance. Error: " + errorThrown);             
-          }
-        });
-    }
-
-    function fetchReviews(){
-        // alert('jjjjj');
-        // return false;
+    document.getElementById("TarrifData").addEventListener('change', (event) => {
+        console.log("onchange");
         if($("#TarrifData").val() == "Daily"){
             $("#UpdateTextDay").html('No of Days <span class="text-danger">*</span>');
         }
@@ -424,6 +375,82 @@
         if($("#TarrifData").val() == "Monthly"){
             $("#UpdateTextDay").html('No of Months <span class="text-danger">*</span>');
         }
+    });
+
+    function fetchAvailableVehicles( e ){
+        
+        $pickupDate = $("#pickupDate").val();
+        $pickupTime = $("#pickupTime").val();
+        $tarrif = $("#TarrifData").val();
+        $tarrifDetail = $("#NoOfDays").val();
+
+        if($pickupDate && $pickupTime && $tarrif && $tarrifDetail){
+
+            $numOfDays = $tarrifDetail;
+            if($("#TarrifData").val() == "Daily"){
+                $numOfDays = $tarrifDetail;
+            } else if($("#TarrifData").val() == "Weekly"){
+                $numOfDays = $tarrifDetail*7;
+            } else if($("#TarrifData").val() == "Monthly"){
+                $numOfDays = $tarrifDetail*30;
+            }
+        
+            $.ajax({
+                url: "{{ URL('Booking/GetAvailableCarTypes') }}",
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    pickupDate: $pickupDate,
+                    pickupTime: $pickupTime,
+                    numOfDays: $numOfDays
+                },
+                success: function( data, textStatus, jqXHR ) {
+
+                        JsData = JSON.parse(data);
+                        console.log(JsData);
+                        select = document.getElementById('VehicleData');
+                        select.innerHTML='';
+                        var opt = document.createElement('option');
+                        opt.value = "";
+                        opt.innerHTML = '--Select Vehicle--';
+                        select.appendChild(opt);
+
+                        for (const key in JsData) {
+                            var opt = document.createElement('option');
+                            opt.value = key;
+                            opt.innerHTML = key.toUpperCase();
+                            if(JsData[key]<=0) {
+                                opt.disabled = "disabled";
+                                opt.style = "color:red; font-style: italic;";
+                            }
+                            select.appendChild(opt);
+                        }
+
+                        @if(!empty($Requirements["car_type"])) 
+                            carType = '{{ @$Requirements["car_type"] }}'.toLowerCase();
+                            if(JsData[carType] > 0) {
+                                $("#VehicleData").val(carType);
+                                fetchReviews();
+                            } else {
+                                alert("Customer required cartype - "+carType+" is not available for selected dates."); //style this
+                            }
+                        @endif
+        
+                },
+                error: function( jqXHR, textStatus, errorThrown ) {
+                    alert("Fail to fetch vehicles for selected date. Please contact company for assistance. Error: " + errorThrown);             
+                }
+            });
+        } else {
+            console.log("not enough params defined");
+        }
+    }
+
+    function fetchReviews(){
+        // alert('jjjjj');
+        // return false;
         $.ajax({
           url: "{{ URL('Booking/Review') }}",
           method: "POST",
