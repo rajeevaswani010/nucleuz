@@ -491,7 +491,6 @@
             var formURL = formObj.attr("action");
             if( window.FormData !== undefined ) {
                 var formData = new FormData(this);
-                showloading();
                 $.ajax({
                   url: formURL,
                   type: "POST",
