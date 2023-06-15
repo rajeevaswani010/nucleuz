@@ -651,7 +651,7 @@ class BookingController extends Controller
     public function GetAvailableCarTypes(Request $request){
         try {
             $GetAllVehicles = DB::table('vehicles')
-                        ->selectRaw('lower(car_type) as car_type, count(*) as count')
+                        ->selectRaw('car_type, count(*) as count')
                         ->where("company_id",session("CompanyLinkID"))
                         ->groupBy('car_type')
                         ->orderBy('car_type')
@@ -668,7 +668,7 @@ class BookingController extends Controller
                 $getAllVehicleResp[$obj->car_type] = $obj->count;
             }
 
-            $query = 'select lcase(car_type) as car_type from bookings where company_id = '.session("CompanyLinkID")
+            $query = 'select car_type from bookings where company_id = '.session("CompanyLinkID")
                     .' and status in (1,2) and pickup_date_time <= \''.$dropDateTime.'\' and dropoff_date >= \''.$pickupDateTime.'\'';
                         
             //Log::info($query);
