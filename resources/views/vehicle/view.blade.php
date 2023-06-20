@@ -7,6 +7,11 @@
     $additionalFeatureColRenderer["no"] = '<span><i class="fa fa-cross"></i></span>';
 @endphp
 
+<script>
+    //get parameters
+    const urlParams = new URLSearchParams(window.location.search);
+</script>
+
 <!-- [ Main Content ] start -->
 <div class="dash-container">
 <div class="dash-content">
@@ -40,13 +45,44 @@
 
 <div class="card mt-5">
         <div class="card-body">
-            {!! Form::open(['url' => 'UplaodVehicle', 'enctype' => 'multipart/form-data', 'method' => 'POST']) !!}
-            <div class="row">
-                <div class="col-lg-4"><input type="file" name="ExcelFile" required class="form-control"></div>
-                <div class="col-lg-4"><button class="btn btn-primary">Upload</button></div>
-                <div class="col-lg-4"><a href="{{ URL('public/Vehicle Sample.xlsx') }}" class="btn btn-primary" style="float: right;">{{ __("Download Sample") }}</a></div>
+            
+            <div class="row align-items-end">
+                <div class="col-lg-5">
+                <form id="vehiclefilters">
+                    <div class="row">
+                        <div class="col-4">
+                            <label>{{ __("Type") }}</label>
+                            <select class="form-control" name="car_type" id="car_type">
+                                <option value="">{{ __("All") }}</option>
+                                @foreach($AllCarTypes as $CarType)
+                                <option>{{ $CarType->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label>{{ __("Make") }}</label>
+                            <select class="form-control" name="make" id="make">
+                                <option value="">{{ __("All") }}</option>
+                                @foreach($AllBrands as $Brnd)
+                                <option>{{ $Brnd->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                </div>
+                <div class="col-lg-5">
+                {!! Form::open(['url' => 'UplaodVehicle', 'enctype' => 'multipart/form-data', 'method' => 'POST']) !!}
+
+                    <div class="row">
+                        <div class="col-lg-9"><input type="file" name="ExcelFile" required class="form-control"></div>
+                        <div class="col-lg-3"><button class="btn btn-primary">Upload</button></div>
+                    </div>
+                    {!! Form::close() !!}
+
+                </div>
+                <div class="col-lg-2"><a href="{{ URL('public/Vehicle Sample.xlsx') }}" class="btn btn-primary" style="float: right;">{{ __("Download Sample") }}</a></div>
             </div>
-            {!! Form::close() !!}
         </div>
 </div>
 
@@ -57,7 +93,17 @@
         </div>
     </div>--}} -->
 
+<script>
+$("#car_type").val(urlParams.get('car_type')) ;
+$("#make").val(urlParams.get('make')) ;
 
+$("#car_type").on("change",function(){
+    $("#vehiclefilters").submit();
+});
+$("#make").on("change",function(){
+    $("#vehiclefilters").submit();
+});
+</script>
 <div class="card">
 <div class="card-body table-border-style">
 <div class="table-responsive">

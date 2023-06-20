@@ -2,6 +2,10 @@
 
 @section("content")
 
+<script>
+    //get parameters
+        const urlParams = new URLSearchParams(window.location.search);
+</script>
 
 <style>
 .booking-status {
@@ -53,7 +57,7 @@
 
 <form>
             <div class="card">
-                <div class="row">
+                <div class="row row align-items-center m-1">
                     <div class="col">
                         <label>{{ __("Vehicle Type") }}</label>
                         <select class="form-control" name="vehicle_type">
@@ -86,8 +90,8 @@
                             <option @if(@$_GET['status'] == 4) selected @endif value=4>Cancelled</option>
                         </select>
                     </div>
-                    <div class="col"><button class="btn btn-primary" role="button"><i class="material-icons">search</i></button></div>
-                    <div class="col"><button class="btn btn-primary" role="button" name="export" value="Export">{{ __("Export") }}</button></div>
+                    <div class="col"><button class="btn btn-primary" role="button">Search</button></div>
+                    <div class="col"><button class="btn btn-primary float-lg-right" role="button" name="export" value="Export">{{ __("Export") }}</button></div>
                 </div>
             </div>
         </form>
@@ -119,7 +123,7 @@
 </thead>
 
 <tbody>
-    
+
     @foreach($Data as $DT)
 
     @if(
@@ -168,11 +172,11 @@
     @if($DT->status == 1)
     <span class="indicator-line rounded bg-secondary booking-status assigned" >{{ __("Assigned") }}</span>
     @endif
-    
+
     @if($DT->status == 2)
     <span class="indicator-line rounded bg-warning booking-status delivered">{{ __("Delivered") }}</span>
     @endif
-    
+
     @if($DT->status == 4)
     <span class="indicator-line rounded bg-danger booking-status cancelled">{{ __("Cancelled") }}</span>
     @endif
@@ -186,7 +190,7 @@
             <i class="ti ti-pencil text-white"></i>
         </a>
     </div>
-           
+
     </span>
     </td>
     </tr>
@@ -210,7 +214,7 @@ function GoDeleteCat(ID){
     if(confirm("Are you sure to Delete This Record. Once you deleted, no data will be recovered")){
         return true;
     }
-    
+
     return false;
 }
 
@@ -219,7 +223,7 @@ function validateDateRange(){
     $to = $("#to_date").val();
 
     $("#to_date").attr("min",$from);
-    $("#from_date").attr("max", $to);    
+    $("#from_date").attr("max", $to);
 }
 </script>
 

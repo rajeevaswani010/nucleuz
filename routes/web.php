@@ -77,6 +77,7 @@ Route::post('UploadPricing', [PricingController::class, 'Import']);
 Route::resource('pricing', PricingController::class);
 Route::resource('booking', BookingController::class);
 Route::resource('booking-invite', BookingInviteController::class);
+Route::post('booking-invite/add', [BookingInviteController::class,'add']);
 Route::post('Booking/Review', [BookingController::class, 'review']);
 Route::post('Booking/GetAvailableCarTypes', [BookingController::class, 'GetAvailableCarTypes']);
 Route::get('Vehicle/GetAllCarTypes', [VehicleController::class, 'GetAllCarTypes']);

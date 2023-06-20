@@ -641,7 +641,7 @@ class BookingController extends Controller
             Log::debug("bookingcontroller review - exit");
 
             return json_encode(array("GrandTotal" => $Amount, "Tax" => $TaxAmount, "SubTotal" => $SubTotal, "Discount" => $DiscountAmount, "Due" => number_format($DueAmount, 2), "Advance" => $AdvanceAmount));
-        }catch(\Exception $e){
+        }catch(Exception $e){
             echo $e->getMessage();
         }
 
@@ -669,7 +669,9 @@ class BookingController extends Controller
             }
 
             $query = 'select car_type from bookings where company_id = '.session("CompanyLinkID")
-                    .' and status in (1,2) and pickup_date_time <= \''.$dropDateTime.'\' and dropoff_date >= \''.$pickupDateTime.'\'';
+                    .' and ((status = 1 and pickup_date_time <= \''.$dropDateTime.'\' and dropoff_date >= \''.$pickupDateTime.'\') or ' 
+                    .' ( status = 2 and pickup_date_time <= \''.$dropDateTime.'\' ))';
+                    
                         
             //Log::info($query);
             $GetAllBookings = DB::select($query);

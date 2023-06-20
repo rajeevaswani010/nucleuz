@@ -39,13 +39,12 @@ class DashboardController extends Controller
 					->orderBy('car_type')
 					->count();
 
-		$GetBooking = Booking::selectRaw('lower(car_type) as car_type')
-					->where("company_id",session("CompanyLinkID"))
-					->whereIn("status",[1,2])
-					->where("pickup_date_time","<=",$dropDateTime)
-					->where("dropoff_date",">=",$pickupDateTime)
-					->count()	;
-		$VehicleAvaialble = $GetAllVehicles - $GetBooking;
+		$query = 'select car_type from bookings where company_id = '.session("CompanyLinkID").
+		' and ((status = 1 and pickup_date_time <= \''.$dropDateTime.'\' and dropoff_date >= \''.$pickupDateTime.'\') or '.
+		' ( status = 2 and pickup_date_time <= \''.$dropDateTime.'\' ))';
+		Log::debug($query);
+        $GetBooking = DB::select($query);
+		$VehicleAvaialble = $GetAllVehicles - sizeof($GetBooking);
 
 		$OnRentVehicle = Booking::select("vehicle_id")->where("company_id", session("CompanyLinkID"))->where("status", 2)->where("pickup_date_time","<=",date("Y-m-d H:i:s"))->count();
 		$Return = Booking::where("company_id", session("CompanyLinkID"))->where("dropoff_date", ">=", date("Y-m-d")." 00:00:00")->where("dropoff_date", "<=", date("Y-m-d")." 23:59:59")->where("status", 2)->count();
@@ -62,20 +61,20 @@ class DashboardController extends Controller
 		$ConvertiblesBooking = Booking::where("company_id", session("CompanyLinkID"))->where("car_type", "Convertibles")->count();
 		$PickupBooking = Booking::where("company_id", session("CompanyLinkID"))->where("car_type", "Pickup Trucks")->count();
 
-		$BookingsDataGroupByCarType = DB::table('bookings')
+		$VehicleDataByCarType = DB::table('bookings')
 					->selectRaw('car_type, count(*) as count')
 					->where("company_id",session("CompanyLinkID"))
 					->groupBy('car_type')
 					->orderBy('car_type')
 					->get();
-		$BookingDataByCarTypeArr = collect();
-		foreach($BookingsDataGroupByCarType as $elmt){
-			$BookingDataByCarTypeArr[$elmt->car_type] = $elmt->count; 
+		$VehicleDataByCarTypeArr = collect();
+		foreach($VehicleDataByCarType as $elmt){
+			$VehicleDataByCarTypeArr[$elmt->car_type] = $elmt->count; 
 		}
-		Log::debug(json_encode($BookingDataByCarTypeArr));
+		Log::debug(json_encode($VehicleDataByCarType));
+		
 		$BookingData = Booking::where("company_id", session("CompanyLinkID"))->get();
 		$MonthArray = array();
-
 		$MonthArray["Jan"] = 0;
 		$MonthArray["Feb"] = 0;
 		$MonthArray["Mar"] = 0;
@@ -88,10 +87,23 @@ class DashboardController extends Controller
 		$MonthArray["Oct"] = 0;
 		$MonthArray["Nov"] = 0;
 		$MonthArray["Dec"] = 0;
-
 		foreach($BookingData as $BD){
 			$MonthArray[date("M", strtotime($BD->pickup_date_time))]++;
 		}
+
+		$query = 'SELECT Month(pickup_date_time) as month, COUNT(*) as count FROM `bookings`'. 
+				' where company_id='.session("CompanyLinkID").' group BY month';
+		$BookingData2 = DB::select($query);
+		$months = array("Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec");
+		$BookingDataArr = collect();
+		foreach($months as $m){
+			$BookingDataArr[$m] = 0;
+		}
+		foreach($BookingData2 as $elmt){
+			$BookingDataArr[$months[$elmt->month-1]] = $elmt->count; 
+		}
+		Log::debug(json_encode($BookingDataArr));
+
 		
 		$ActiveAction = "dashboard";
 		
@@ -121,9 +133,9 @@ class DashboardController extends Controller
 					"VehicleAvaialble", "OnRentVehicle", "Reservation", 
 					"Return", 
 					"HatchbackBooking", 
-					"SedanBooking", "SUVBooking", "MUVBooking", "CoupeBooking", "BookingDataByCarTypeArr",
+					"SedanBooking", "SUVBooking", "MUVBooking", "CoupeBooking", "VehicleDataByCarTypeArr",
 					"ConvertiblesBooking", "PickupBooking", 
-					"MonthArray","totalActiveLicense",
+					"MonthArray","BookingDataArr","totalActiveLicense",
 					"totalLicenseProduct","suspendedlicensecount"
 					));
     }

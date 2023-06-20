@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 
 use Session;
 use Mail;
+use Log;
 
 use App\Models\BookingInvite;
 use App\Models\User;
@@ -18,13 +19,30 @@ class BookingInviteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(){
+    public function index(Request $request){
         if(session("AdminID") == ""){
             return redirect("/");
         }
         
         $Data = BookingInvite::where("company_id", session("CompanyLinkID"))->where("user_id", session("AdminID"))->latest()->get();
-        //$Data = BookingInvite::where("company_id", session("CompanyLinkID"))->latest()->get();
+
+        if($request->from_date != ""){
+            $Data = $Data->where("created_at", ">=", $request->from_date." 00:00:00");
+        }
+
+        if($request->to_date != ""){
+            $Data = $Data->where("created_at", "<=", $request->to_date." 23:59:59");
+        }
+
+        if($request->status != ""){
+            $Data = $Data->where("status", $request->status);
+        }
+
+        if($request->status != ""){
+            $Data = $Data->where("status", $request->status);
+        }
+
+
         $ActiveAction = "booking-invite";
         return view('booking-invite.view', compact("Data", "ActiveAction"));
     }
@@ -73,6 +91,32 @@ class BookingInviteController extends Controller
         return redirect("booking-invite");
     }
 
+    public function add(Request $request){
+        try {
+            
+            $Input = $request->all();
+
+            // echo '<pre>';print_r($Input);echo '</pre>';die();
+
+            $Input["link"] = URL("CustomerRegister")."/".base64_encode($Input["email"]);
+            $Input["user_id"] = session("AdminID");
+            $Input["company_id"] = session("CompanyLinkID");
+            $Office = BookingInvite::create($Input);
+
+            $data = array("Name" => $Input["name"], "Link" => $Input["link"]);
+            Mail::send("EmailTemplates.BookingInvite", $data, function ($m) use($Input){
+                $m->from("no-reply@nucleuz.app", "Nucleuz");
+                $m->to($Input['email'])->subject("Invite for Car Booking");
+            });
+            Log::debug("inside add......d.d...");
+            $response = array("status"=>"success");
+
+            return json_encode($response);
+        } catch(Exception $e){
+            echo $e.getMessage();
+        }
+    }
+    
     /**
      * Display the specified resource.
      *
