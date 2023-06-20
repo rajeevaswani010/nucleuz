@@ -91,6 +91,7 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Created On</th>
+                                        <th>Updated On</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -103,6 +104,7 @@
                                             <td>{{ $DT->name }}</td>
                                             <td>{{ $DT->email }}</td>
                                             <td>{{ $DT->created_at }}</td>
+                                            <td>{{ $DT->updated_at }}</td>
                                             <td>
                                                 @if($DT->status == 0)
                                                     {{ __("Pending") }}
