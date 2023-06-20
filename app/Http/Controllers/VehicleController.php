@@ -23,15 +23,26 @@ class VehicleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(){
+    public function index(Request $request){
         if(session("AdminID") == ""){
             return redirect("/");
         }
         
         $Data = Vehicle::where("company_id", session("CompanyLinkID"))->latest()->get();
+
+        if($request->car_type != ""){
+            $Data = $Data->where("car_type", $request->car_type);
+        }
+
+        if($request->make != ""){
+            $Data = $Data->where("make", $request->make);
+        }
+
+        $AllBrands = Brand::get();
+        $AllCarTypes = CarType::get();
         // echo $Data; die;
         $ActiveAction = "vehicle";
-        return view('vehicle.view', compact("Data", "ActiveAction"));
+        return view('vehicle.view', compact("Data","AllBrands","AllCarTypes","ActiveAction"));
     }
 
     /**

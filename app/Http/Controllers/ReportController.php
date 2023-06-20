@@ -69,7 +69,7 @@ class ReportController extends Controller{
             case "Available":
                 Log::debug("inside available");
                 $GetAllVehicles = DB::table('vehicles')
-                            ->selectRaw('lower(car_type) as car_type, count(*) as count')
+                            ->selectRaw('car_type, count(*) as count')
                             ->where("company_id",session("CompanyLinkID"))
                             ->groupBy('car_type')
                             ->orderBy('car_type')
@@ -78,8 +78,8 @@ class ReportController extends Controller{
 
                 Log::debug(json_encode($GetAllVehicles));
                 if($request->vehicle_type != null){
-                    Log::info("vehicle type - ".strtolower($request->vehicle_type));
-                    $GetAllVehicles = $GetAllVehicles->where("car_type",strtolower($request->vehicle_type));       
+                    // Log::info("vehicle type - ".strtolower($request->vehicle_type));
+                    $GetAllVehicles = $GetAllVehicles->where("car_type",$request->vehicle_type);       
                 }
 
                 if ($request->from_date != null){
@@ -100,20 +100,14 @@ class ReportController extends Controller{
                     $getAllVehicleResp[$obj->car_type] = $obj->count;
                 }
 
-                // $query = 'select lcase(car_type) as car_type from bookings where company_id = '.session("CompanyLinkID")
-                //         .' and status in (1,2) and pickup_date_time <= \''.$dropDateTime.'\' and dropoff_date >= \''.$pickupDateTime.'\'';
-                // $GetAllBookings = DB::select($query);   
-                $GetAllBookings = Booking::selectRaw('lower(car_type) as car_type')
-                            ->where("company_id",session("CompanyLinkID"))
-                            ->whereIn("status",[1,2])
-                            ->where("pickup_date_time","<=",$dropDateTime)
-                            ->where("dropoff_date",">=",$pickupDateTime)
-                            ->get()
-                            ;
-
+                $query = 'select car_type from bookings where company_id = '.session("CompanyLinkID")
+                .' and ((status = 1 and pickup_date_time <= \''.$dropDateTime.'\' and dropoff_date >= \''.$pickupDateTime.'\') or ' 
+                .' ( status = 2 and pickup_date_time <= \''.$dropDateTime.'\' ))';
+                
+                $GetAllBookings = DB::select($query);
                 // Log::info($query);
                 if($request->vehicle_type != null){
-                    $GetAllBookings = $GetAllBookings->where("car_type",strtolower($request->vehicle_type));       
+                    $GetAllBookings = $GetAllBookings->where("car_type",$request->vehicle_type);       
                 }
 
                 Log::info(json_encode($GetAllBookings));

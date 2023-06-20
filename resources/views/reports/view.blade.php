@@ -73,7 +73,7 @@
                     <div class="col-lg-2">
                         <label>{{ __("From") }}</label>
                         <input type="date" class="form-control" id="from_date" onchange="validateDateRange()" name="from_date" value="{{ @$_GET['from_date'] }}">
-                        <!-- <script>
+                        <script>
                                 console.log(urlParams.get('from_date'));
                                 if(urlParams.get('from_date') == ""){
                                     curDate = new Date().toISOString().substr(0,10);
@@ -81,14 +81,14 @@
                                 } else {
                                     $("#from_date").val(urlParams.get('from_date'));
                                 }
-                        </script> -->
+                        </script>
                     </div>
 
                     <div class="col-lg-2">
                         <label>{{ __("To") }}</label>
                         <input type="date" class="form-control" id="to_date" onchange="validateDateRange()" name="to_date" value="{{ @$_GET['to_date'] }}">
                     </div>
-                    <!-- <script>
+                        <script>
                                 console.log(urlParams.get('to_date'));
                                 if(urlParams.get('to_date') == ""){
                                     curDate = new Date().toISOString().substr(0,10);
@@ -96,7 +96,7 @@
                                 } else {
                                     $("#to_date").val(urlParams.get('to_date'));
                                 }
-                        </script> -->
+                        </script>
                     <div class="col"><button class="btn btn-success mt-4" type="submit" name="search" value="search" role="button"><i class="fa fa-sech"> Search</i></button></div>
                 </div>
             </div>
@@ -337,19 +337,30 @@
             case "Returns":
                 $("#to_date").prop("disabled",false);
                 $("#from_date").prop("disabled",false);
-                // curDate = new Date().toISOString().substr(0,10);
-                // $("#to_date").val(curDate);
-                // $("#from_date").val(curDate)
+                if( $("#from_date").val() == ""){
+                    curDate = new Date().toISOString().substr(0,10);
+                    $("#from_date").val(curDate);
+                }
+                
+                if( $("#to_date").val() == ""){
+                    curDate = new Date().toISOString().substr(0,10);
+                    $("#to_date").val(curDate);
+                }
                 break;
             case "Available":
                 $("#to_date").prop("disabled",false);
                 $("#from_date").prop("disabled",false);
-                // curDate = new Date().toISOString().substr(0,10);
-                // $("#to_date").val(curDate);
-                // $("#from_date").val(curDate)
 
-                // $("#to_date").attr("min",curDate);
-                // $("#from_date").attr("min",curDate );    
+                if( $("#from_date").val() == ""){
+                    curDate = new Date().toISOString().substr(0,10);
+                    $("#from_date").val(curDate);
+                }
+                
+                if( $("#to_date").val() == ""){
+                    curDate = new Date().toISOString().substr(0,10);
+                    $("#to_date").val(curDate);
+                }
+        
                 break;
             case "Billing":
             default :
