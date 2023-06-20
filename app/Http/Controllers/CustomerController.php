@@ -145,6 +145,11 @@ class CustomerController extends Controller
             Log::info('customer id: '.$CustomerID);
         }
 
+        date_default_timezone_set("Asia/Muscat");# setting current time zone
+        if($Input["PickupDate"]." ".$Input["PickupTime"] < date("Y-m-d H:i:s")){
+            return json_encode(array("Status" =>  0, "Message" => "Pickup Date Can't Be in Past"));
+        }
+
         if($Input["dob"]." ".$Input["dob"] > date('Y-m-d', strtotime('-18 year'))){
             return json_encode(array("Status" =>  0, "Message" => "Date Of Birth Can't Be Less Than 18 Years"));
         }

@@ -136,6 +136,7 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
+        Log::debug("bookingcontroller store - enter");
         if(session("AdminID") == ""){
             return redirect("/");
         }
@@ -235,6 +236,7 @@ class BookingController extends Controller
             return json_encode(array("Status" =>  0, "Message" => "Additional KM Amount Must Be > 0"));
         }
         
+        date_default_timezone_set("Asia/Muscat"); # setting current time zone
         if($Input["PickupDate"]." ".$Input["PickupTime"] < date("Y-m-d H:i:s")){
             return json_encode(array("Status" =>  0, "Message" => "Pickup Date Can't Be in Past"));
         }
@@ -294,11 +296,20 @@ class BookingController extends Controller
             }
         }
 
+        if($BasePrice == 0){
+            return json_encode(array("Status" =>  0, "Message" => "Base Price Can't Be 0, Please Set It In Price Manager"));
+        }
+
         $Amount = $BasePrice * $Input["tarrif_detail"];
         $Amount -= $Input["discount_amount"];
         
         $TaxAmount = ($Amount * 5) / 100;
         $SubTotal = $Amount;
+
+        if($SubTotal < 0){
+            return json_encode(array("Status" =>  0, "Message" => "Sub Total Amount Can't Be < 0 "));
+        }
+
         $Amount += $TaxAmount;
         
 
