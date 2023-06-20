@@ -43,7 +43,7 @@
 
         <form>
             <div class="card">
-                <div class="row align-items-center  mt-1 mb-1">
+                <div class="row align-items-end  mt-1 mb-1">
                     <div class="col-lg-2">
                         <label>{{ __("Status") }}</label>
                         <select class="form-control" name="status" id="status">
@@ -68,8 +68,9 @@
                         <input type="date" class="form-control" id="to_date" name="to_date"
                             onchange="validateDateRange()">
                     </div>
-                    <div class="col-lg-4"><button style="float: right;" title="search" class="btn btn-primary"
-                            role="button"><i class="fa fa-search"></i></button></div>
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-4"><button title="search" class="btn btn-primary"
+                            role="button">Search</i></button></div>
                 </div>
             </div>
             <script>

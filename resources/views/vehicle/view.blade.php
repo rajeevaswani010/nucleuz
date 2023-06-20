@@ -43,8 +43,8 @@
 <div class="row">
 <div class="col-sm-12">
 
-<div class="card mt-5">
-        <div class="card-body">
+<div class="card">
+        <div class="card-body p-1">
             
             <div class="row align-items-end">
                 <div class="col-lg-5">

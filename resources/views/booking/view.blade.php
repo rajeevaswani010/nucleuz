@@ -57,7 +57,7 @@
 
 <form>
             <div class="card">
-                <div class="row row align-items-center m-1">
+                <div class="row row align-items-end m-1">
                     <div class="col">
                         <label>{{ __("Vehicle Type") }}</label>
                         <select class="form-control" name="vehicle_type">
@@ -91,7 +91,7 @@
                         </select>
                     </div>
                     <div class="col"><button class="btn btn-primary" role="button">Search</button></div>
-                    <div class="col"><button class="btn btn-primary float-lg-right" role="button" name="export" value="Export">{{ __("Export") }}</button></div>
+                    <div class="col"><button class="btn btn-primary float-lg-right" style="float:right;" role="button" name="export" value="Export">{{ __("Export") }}</button></div>
                 </div>
             </div>
         </form>
