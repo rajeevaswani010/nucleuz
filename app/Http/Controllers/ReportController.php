@@ -78,7 +78,7 @@ class ReportController extends Controller{
 
                 Log::debug(json_encode($GetAllVehicles));
                 if($request->vehicle_type != null){
-                    // Log::info("vehicle type - ".strtolower($request->vehicle_type));
+                    Log::info("vehicle type - ".$request->vehicle_type);
                     $GetAllVehicles = $GetAllVehicles->where("car_type",$request->vehicle_type);       
                 }
 
@@ -100,6 +100,8 @@ class ReportController extends Controller{
                     $getAllVehicleResp[$obj->car_type] = $obj->count;
                 }
 
+                Log::debug(json_encode($getAllVehicleResp));
+
                 $query = 'select car_type from bookings where company_id = '.session("CompanyLinkID")
                 .' and ((status = 1 and pickup_date_time <= \''.$dropDateTime.'\' and dropoff_date >= \''.$pickupDateTime.'\') or ' 
                 .' ( status = 2 and pickup_date_time <= \''.$dropDateTime.'\' ))';
@@ -112,6 +114,7 @@ class ReportController extends Controller{
 
                 Log::info(json_encode($GetAllBookings));
                 foreach ($GetAllBookings as $obj){
+                    Log::info("car_type - ".$obj->car_type);
                     $getAllVehicleResp[$obj->car_type] -= 1;
                 }
 
