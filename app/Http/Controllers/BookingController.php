@@ -300,6 +300,31 @@ class BookingController extends Controller
             return json_encode(array("Status" =>  0, "Message" => "Base Price Can't Be 0, Please Set It In Price Manager"));
         }
 
+
+        # calculation for store
+
+        #if(fixed){
+            #$Amount =  $DailyBasePrice * $Input["tarrif_detail"]
+        #} else if(hybrid){
+           # $Month = floor((int)$NoOfDays/30);
+          #  $Week = floor(((int)$NoOfDays - (int)$Month * 30)/7);
+           # $Days = (int)$NoOfDays - (int)$Month * 30 - (int)$Week * 7;
+    
+           # $Amount = 0;
+           # if(isset($GetPricing->monthly_pricing)){
+               # $Amount += (float)$Month * $GetPricing->monthly_pricing;
+           # }
+           # if(isset($GetPricing->weekly_pricing)){
+                #$Amount += (float)$Week * $GetPricing->weekly_pricing;
+            #}
+            #if(isset($GetPricing->daily_pricing)){
+               # $Amount += (float)$Days * $GetPricing->daily_pricing;
+            #}
+        #}else{ pro
+            
+
+        #}
+
         $Amount = $BasePrice * $Input["tarrif_detail"];
         $Amount -= $Input["discount_amount"];
         
