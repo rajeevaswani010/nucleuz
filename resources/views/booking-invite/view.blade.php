@@ -85,7 +85,7 @@
                     <div class="card-body table-border-style">
                         <div class="table-responsive">
                             <?php //echo '<pre>';print_r($Data); die; ?>
-                            <table class="table datatable">
+                            <table class="table datatable table-hover">
                                 <thead>
                                     <tr>
                                         <th>Name</th>
