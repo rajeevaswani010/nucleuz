@@ -22,6 +22,9 @@
 .booking-error {
     background: #ffc4c4;
 }
+.table-hover .booking-error{
+    background: #fbe7e7 !important;
+}
 </style>
 
 <!-- [ Main Content ] start -->
@@ -107,7 +110,7 @@
 <div class="card">
 <div class="card-body table-border-style">
 <div class="table-responsive">
-<table class="table datatable">
+<table class="table datatable  table-hover">
 <thead>
 <tr>
 <th>Booking ID</th>
