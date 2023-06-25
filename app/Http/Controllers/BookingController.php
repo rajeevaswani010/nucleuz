@@ -254,16 +254,17 @@ class BookingController extends Controller
         $BookingObj->tarrif_type = $Input["tarrif_type"];
         $BookingObj->discount_amount = $Input["discount_amount"];
 
-        $MultiplyDay = 1;
-        if($Input["tarrif_type"] == "Weekly"){
-            $MultiplyDay = 7;
-        }
-        if($Input["tarrif_type"] == "Monthly"){
-            $MultiplyDay = 30;
-        }
+        //$MultiplyDay = 1;
+        //if($Input["tarrif_type"] == "Weekly"){
+        //    $MultiplyDay = 7;
+        //}
+        //if($Input["tarrif_type"] == "Monthly"){
+        //    $MultiplyDay = 30;
+        //}
 
-        $Day = $Input["tarrif_detail"] * $MultiplyDay;
-        $DopDate = date("Y-m-d H:i:s", strtotime("+".$Day." days", strtotime($Input["PickupDate"])));
+        //$Day = $Input["tarrif_detail"] * $MultiplyDay;
+        $Day = $Input["tarrif_detail"];
+        $DopDate = date("Y-m-d", strtotime("+".$Day." days", strtotime($Input["PickupDate"]))). " 23:59:59";
         
         $BookingObj->dropoff_date = $DopDate;
         $BookingObj->additional_info = $Input["additional_info"];
@@ -277,55 +278,76 @@ class BookingController extends Controller
         
         $GetPricing = Pricing::where("car_type", $Input["vehicle_id"])->where("company_id", session("CompanyLinkID"))->first();
 
-        $BasePrice = 0;
-        if($Input["tarrif_type"] == "Daily"){
+        $DailyBasePrice = $WeeklyBasePrice = $MonthlyBasePrice = 0;
+        //if($Input["tarrif_type"] == "Daily"){
             if(isset($GetPricing->daily_pricing)){
-                $BasePrice = $GetPricing->daily_pricing;
+                $DailyBasePrice = $GetPricing->daily_pricing;
             }
-        }
+       // }
 
-        if($Input["tarrif_type"] == "Weekly"){
+        //if($Input["tarrif_type"] == "Weekly"){
             if(isset($GetPricing->weekly_pricing)){
-                $BasePrice = $GetPricing->weekly_pricing;
+                $WeeklyBasePrice = $GetPricing->weekly_pricing;
             }
-        }
+        //}
 
-        if($Input["tarrif_type"] == "Monthly"){
+        //if($Input["tarrif_type"] == "Monthly"){
             if(isset($GetPricing->monthly_pricing)){
-                $BasePrice = $GetPricing->monthly_pricing;
+                $MonthlyBasePrice = $GetPricing->monthly_pricing;
             }
-        }
+        //}
 
-        if($BasePrice == 0){
+        if(($DailyBasePrice == 0) && ($WeeklyBasePrice == 0) && ($MonthlyBasePrice == 0) ){
             return json_encode(array("Status" =>  0, "Message" => "Base Price Can't Be 0, Please Set It In Price Manager"));
         }
 
+        //
+        $Amount = 0;
+        $CalculationMethod = "Prodata";
+        switch($CalculationMethod){
+            case "Fixed" :
+                Log::debug("Your favorite CalculationMethod is Fixed!");
+                //$Amount =  $DailyBasePrice * $Input["tarrif_detail"];
+                $Amount =  $DailyBasePrice * $Day;
+                break;
+            case "Hybrid" :
+                Log::debug("Your favorite CalculationMethod is Hybrid!");
+                $Month = floor((int)$Day/30);
+                $Week = floor(((int)$Day - (int)$Month * 30)/7);
+                $Days = (int)$Day - (int)$Month * 30 - (int)$Week * 7;
+                
+                if(isset($GetPricing->monthly_pricing)){
+                    $Amount += (float)$Month * $GetPricing->monthly_pricing;
+                }
+                if(isset($GetPricing->weekly_pricing)){
+                    $Amount += (float)$Week * $GetPricing->weekly_pricing;
+                }
+                if(isset($GetPricing->daily_pricing)){
+                    $Amount += (float)$Days * $GetPricing->daily_pricing;
+                }
+                break; 
+            case "Prodata" :
+                Log::debug("Your favorite CalculationMethod is Prodata!");
+                if($Day > 29){
+                    $Month = floor((int)$Day/30);
+                    $Amount += (float)$Month * $MonthlyBasePrice;
+                    $RemainingDays = (int)$Day - (int)$Month * 30 ;
+                    $Amount += (float)($MonthlyBasePrice * $RemainingDays)/30;
+                }elseif($Day > 6){
+                    $Week = floor(((int)$Day)/7);
+                    $Amount += (float)$Week * $WeeklyBasePrice;
+                    $RemainingDays = (int)$Day - (int)$Week * 7 ;
+                    $Amount += (float)($WeeklyBasePrice * $RemainingDays)/7;
+                }else{
+                    $Amount = (float)$Day * $DailyBasePrice;
+                }
+                break;  
+            default :
+                Log::debug("Your favorite CalculationMethod is non of above!");      
 
-        # calculation for store
+        }
 
-        #if(fixed){
-            #$Amount =  $DailyBasePrice * $Input["tarrif_detail"]
-        #} else if(hybrid){
-           # $Month = floor((int)$NoOfDays/30);
-          #  $Week = floor(((int)$NoOfDays - (int)$Month * 30)/7);
-           # $Days = (int)$NoOfDays - (int)$Month * 30 - (int)$Week * 7;
-    
-           # $Amount = 0;
-           # if(isset($GetPricing->monthly_pricing)){
-               # $Amount += (float)$Month * $GetPricing->monthly_pricing;
-           # }
-           # if(isset($GetPricing->weekly_pricing)){
-                #$Amount += (float)$Week * $GetPricing->weekly_pricing;
-            #}
-            #if(isset($GetPricing->daily_pricing)){
-               # $Amount += (float)$Days * $GetPricing->daily_pricing;
-            #}
-        #}else{ pro
-            
-
-        #}
-
-        $Amount = $BasePrice * $Input["tarrif_detail"];
+        //$Amount = $BasePrice * $Input["tarrif_detail"];
         $Amount -= $Input["discount_amount"];
         
         $TaxAmount = ($Amount * 5) / 100;
@@ -337,10 +359,9 @@ class BookingController extends Controller
 
         $Amount += $TaxAmount;
         
-
         $BookingObj->sub_total = $SubTotal;
         $BookingObj->grand_total = $Amount;
-        $BookingObj->tarrif_amount = $BasePrice;
+        //$BookingObj->tarrif_amount = $BasePrice;
         $BookingObj->save();
 
         $InviteId = $Input["invite_id"];
@@ -417,13 +438,17 @@ class BookingController extends Controller
      */
     public function edit($id)
     {
+        Log::debug("bookingcontroller edit - enter");
+
         if(session("AdminID") == ""){
             return redirect("/");
         }
         
         $Booking = Booking::find($id);
+        Log::debug("discout edit :".$Booking->discount_amount);
         
         $ActiveAction = "booking";
+        Log::debug("bookingcontroller edit - exit");
         return view('booking.edit', compact("Booking", "ActiveAction"));
     }
 
@@ -444,7 +469,7 @@ class BookingController extends Controller
         $Booking = Booking::find($id);
 
         $Input = $request->all();
-        
+
         if(isset($Input["km_drop_time"])){
             if($Input["km_drop_time"] < $Booking->km_reading_pickup){
                 Session::flash('Danger', "Dropp of KM is less then KM at Pickup");
@@ -462,7 +487,7 @@ class BookingController extends Controller
             
             $ExtraAmount = ($Booking->additional_kilometers_amount * $Extra);
             $ExtraAmount = $ExtraAmount + trim($Input["additional_charges"]);
-        
+            
             #$Amount = $Booking->sub_total + $ExtraAmount + $Input["additional_charges"];
             $Amount = $Booking->sub_total + $ExtraAmount ;
             #$Amount -= $Input["discount_amount"];
@@ -560,24 +585,111 @@ class BookingController extends Controller
         unset($Input["_token"]);
         
         $GetBooking = Booking::find($id);
-        $Input["dropoff_date"] = $Input["dropoff_date"]." ".$Input["dropoff_time"];
+
+       // $Input["dropoff_date"] = $Input["dropoff_date"]." ".$Input["dropoff_time"];
         $ExtraDay = $this->time_difference ($GetBooking->dropoff_date, $Input["dropoff_date"], "day");
         Log::debug("ExtraDay : ".$ExtraDay);
-        #calculation for month , week and days
-        $Month = floor((int)$ExtraDay/30);
-        $Week = floor(((int)$ExtraDay - (int)$Month * 30)/7);
-        $Days = (int)$ExtraDay - (int)$Month * 30 - (int)$Week * 7;
 
-        $ExtraAmount = 0;
+        $GetBooking->tarrif_detail += (int)$ExtraDay;
+        $Input["tarrif_detail"] = $GetBooking->tarrif_detail;
+
+        Log::debug("Input : ".$Input["tarrif_detail"]);
+
         if(isset($GetPricing->monthly_pricing)){
-            $ExtraAmount += (float)$Month * $GetPricing->monthly_pricing;
+            $MonthlyBasePrice = $GetPricing->monthly_pricing;
         }
         if(isset($GetPricing->weekly_pricing)){
-            $ExtraAmount += (float)$Week * $GetPricing->weekly_pricing;
+            $WeeklyBasePrice = $GetPricing->weekly_pricing;
         }
         if(isset($GetPricing->daily_pricing)){
-            $ExtraAmount += (float)$Days * $GetPricing->daily_pricing;
+            $DailyBasePrice = $GetPricing->daily_pricing;
         }
+
+        $Amount = 0;
+        $Day = $ExtraDay;
+        $Month = $Week = $Days =0;
+        $IsNegative = false;
+        $CalculationMethod = "Fixed";
+        switch($CalculationMethod){
+            case "Fixed" :
+                Log::debug("Your favorite CalculationMethod is Fixed!");
+                //$Amount =  $DailyBasePrice * $Input["tarrif_detail"];
+                $Amount =  $DailyBasePrice * $Day;
+                break;
+            case "Hybrid" :
+                Log::debug("Your favorite CalculationMethod is Hybrid!");
+                if($Day > 0){
+                    $Month = floor((int)$Day/30);
+                    $Week = floor(((int)$Day - (int)$Month * 30)/7);
+                    $Days = (int)$Day - (int)$Month * 30 - (int)$Week * 7;
+                }elseif($Day < 0 ){
+                    $DaysInPositive = -$Day;
+                    $Month = floor((int)$DaysInPositive/30);
+                    $Week = floor(((int)$DaysInPositive - (int)$Month * 30)/7);
+                    $Days = (int)$DaysInPositive - (int)$Month * 30 - (int)$Week * 7;
+
+                    $Month = -$Month;
+                    $Week = -$Week;
+                    $Days = -$Days;
+                }else{
+                    $Month = $Week = $Days =0;
+                }
+                
+                if(isset($GetPricing->monthly_pricing)){
+                    $Amount += (float)$Month * $GetPricing->monthly_pricing;
+                }
+                if(isset($GetPricing->weekly_pricing)){
+                    $Amount += (float)$Week * $GetPricing->weekly_pricing;
+                }
+                if(isset($GetPricing->daily_pricing)){
+                    $Amount += (float)$Days * $GetPricing->daily_pricing;
+                }
+                break; 
+            case "Prodata" :
+                Log::debug("Your favorite CalculationMethod is Prodata!");
+                if($Day < 0){
+                    $IsNegative = true;
+                    $Day = -$Day;
+                }
+                if($Day > 29){
+                    $Month = floor((int)$Day/30);
+                    $RemainingDays = (int)$Day - (int)$Month * 30 ;
+
+                    if($IsNegative){
+                        $Month = -$Month ;
+                        $RemainingDays = -$RemainingDays;
+                        $Amount += (float)$Month * $MonthlyBasePrice;
+                        $Amount += (float)($MonthlyBasePrice * $RemainingDays)/30;
+                    }else{
+                        $Amount += (float)$Month * $MonthlyBasePrice;
+                        $Amount += (float)($MonthlyBasePrice * $RemainingDays)/30;
+                    }
+                }elseif($Day > 6){
+                    $Week = floor(((int)$Day)/7);
+                    $RemainingDays = (int)$Day - (int)$Week * 7 ;
+
+                    if($IsNegative){
+                        $Week  = -$Week ;
+                        $RemainingDays = - $RemainingDays;  
+                        $Amount += (float)$Week * $WeeklyBasePrice;
+                        $Amount += (float)($WeeklyBasePrice * $RemainingDays)/7;
+                    }else{
+                        $Amount += (float)$Week * $WeeklyBasePrice;
+                        $Amount += (float)($WeeklyBasePrice * $RemainingDays)/7;
+                    }
+                }else{
+                    if($IsNegative){
+                        $Day = -$Day;
+                    }
+                    $Amount = (float)$Day * $DailyBasePrice;
+                }
+                break;  
+            default :
+                Log::debug("Your favorite CalculationMethod is non of above!");      
+
+        }
+
+        $ExtraAmount = $Amount;
         
         #$ExtraAmount = (float)$ExtraDay * $GetBooking->tarrif_amount;
         Log::debug("ExtraAmount :".$ExtraAmount);
@@ -597,31 +709,9 @@ class BookingController extends Controller
     function time_difference($time_1, $time_2, $limit = null){
         $val_1 = new \DateTime($time_1);
         $val_2 = new \DateTime($time_2);
+
         $days = $val_1->diff($val_2)->format('%r%a');
         return $days;
-        
-        // $interval = $val_1->diff($val_2);
-
-        // $output = array(
-        //     "year" => $interval->y,
-        //     "month" => $interval->m,
-        //     "day" => $interval->d,
-        //     "hour" => $interval->h,
-        //     "minute" => $interval->i,
-        //     "second" => $interval->s
-        // );
-
-        // $return = "";
-        // foreach ($output AS $key => $value) {
-        //     if ($value == 1)
-        //         $return .= $value;
-        //     elseif ($value >= 1)
-        //         $return .= $value;
-            
-        //     if ($key == $limit)
-        //         return trim($return);
-        // }
-        // return trim($return);
         }
 
 
@@ -632,30 +722,75 @@ class BookingController extends Controller
             $Input = $request->all();
             $GetPricing = Pricing::where("company_id", session("CompanyLinkID"))->where("car_type", $Input["vehicle"])->first();
 
-            $BasePrice = 0;
-            if($Input["tarrif"] == "Daily"){
+            $DailyBasePrice = $WeeklyBasePrice = $MonthlyBasePrice = 0;
+            //if($Input["tarrif"] == "Daily"){
                 if(isset($GetPricing->daily_pricing)){
-                    $BasePrice = $GetPricing->daily_pricing;
+                    $DailyBasePrice = $GetPricing->daily_pricing;
                 }
-            }
+            //}
 
-            if($Input["tarrif"] == "Weekly"){
+            //if($Input["tarrif"] == "Weekly"){
                 if(isset($GetPricing->weekly_pricing)){
-                    $BasePrice = $GetPricing->weekly_pricing;
+                    $WeeklyBasePrice = $GetPricing->weekly_pricing;
                 }
-            }
+            //}
 
-            if($Input["tarrif"] == "Monthly"){
+            //if($Input["tarrif"] == "Monthly"){
                 if(isset($GetPricing->monthly_pricing)){
-                    $BasePrice = $GetPricing->monthly_pricing;
+                    $MonthlyBasePrice = $GetPricing->monthly_pricing;
                 }
-            }
+            //}
 
-            if($BasePrice==0){
+            if(($DailyBasePrice == 0) && ($WeeklyBasePrice == 0) && ($MonthlyBasePrice == 0) ){
                 return json_encode(array("GrandTotal" => 0, "Tax" => 0, "SubTotal" => 0, "Discount" => 0, "Due" => 0, "Advance" => 0));
             }
 
-            $Amount = $BasePrice * $Input["days"];
+            $Amount = 0;
+            $Day = $Input["days"];
+            $CalculationMethod = "Prodata";
+            switch($CalculationMethod){
+                case "Fixed" :
+                    Log::debug("Your favorite CalculationMethod is Fixed!");
+                    //$Amount =  $DailyBasePrice * $Input["tarrif_detail"];
+                    $Amount =  $DailyBasePrice * $Day;
+                    break;
+                case "Hybrid" :
+                    Log::debug("Your favorite CalculationMethod is Hybrid!");
+                    $Month = floor((int)$Day/30);
+                    $Week = floor(((int)$Day - (int)$Month * 30)/7);
+                    $Days = (int)$Day - (int)$Month * 30 - (int)$Week * 7;
+                    
+                    if(isset($GetPricing->monthly_pricing)){
+                        $Amount += (float)$Month * $GetPricing->monthly_pricing;
+                    }
+                    if(isset($GetPricing->weekly_pricing)){
+                        $Amount += (float)$Week * $GetPricing->weekly_pricing;
+                    }
+                    if(isset($GetPricing->daily_pricing)){
+                        $Amount += (float)$Days * $GetPricing->daily_pricing;
+                    }
+                    break; 
+                case "Prodata" :
+                    Log::debug("Your favorite CalculationMethod is Prodata!");
+                    if($Day > 29){
+                        $Month = floor((int)$Day/30);
+                        $Amount += (float)$Month * $MonthlyBasePrice;
+                        $RemainingDays = (int)$Day - (int)$Month * 30 ;
+                        $Amount += (float)($MonthlyBasePrice * $RemainingDays)/30;
+                    }elseif($Day > 6){
+                        $Week = floor(((int)$Day)/7);
+                        $Amount += (float)$Week * $WeeklyBasePrice;
+                        $RemainingDays = (int)$Day - (int)$Week * 7 ;
+                        $Amount += (float)($WeeklyBasePrice * $RemainingDays)/7;
+                    }else{
+                        $Amount = (float)$Day * $DailyBasePrice;
+                    }
+                    break;  
+                default :
+                    Log::debug("Your favorite CalculationMethod is non of above!");      
+    
+            }
+            //$Amount = $BasePrice * $Input["days"];
             
             $DiscountAmount = number_format($Input["discount"], 2);
             $Amount -= $Input["discount"];
@@ -731,6 +866,7 @@ class BookingController extends Controller
     
     public function ReviewCustomer(Request $request){
         try{
+            Log::debug("bookingcontroller ReviewCustomer - enter");
             $Input = $request->all();
             $GetPricing = Pricing::where("company_id", $Input["company"])->where("car_type", $Input["vehicle"])->first();
 
@@ -763,7 +899,7 @@ class BookingController extends Controller
             $AdvanceAmount = 0;
             $DueAmount = number_format($Amount, 2);
             $Amount = number_format($Amount, 2);
-
+            Log::debug("bookingcontroller ReviewCustomer - exit");
             return json_encode(array("GrandTotal" => $Amount, "Tax" => $TaxAmount, "SubTotal" => $SubTotal, "Discount" => $DiscountAmount, "Due" => number_format($DueAmount, 2), "Advance" => $AdvanceAmount));
         }catch(\Exception $e){
 

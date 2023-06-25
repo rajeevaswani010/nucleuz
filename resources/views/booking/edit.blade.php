@@ -219,7 +219,8 @@
     <div class="row">
         <div class="col-lg-6">
             <label>{{ __("Drop off Date") }} <span class="text-danger">*</span></label>
-            <input type="date" class="form-control" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" required>
+            <input type="date" class="form-control" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" required>
+           <!-- <input type="date" class="form-control" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" required> -->
         </div>
         
         <div class="col-lg-6">
