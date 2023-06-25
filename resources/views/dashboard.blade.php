@@ -527,6 +527,17 @@
                             type: 'donut',
                             height: '100%',
                         },
+                        plotOptions: {
+                            donut: {
+                                expandOnClick: false
+                            }
+                        },
+                        dataLabels:{
+                            enabled: false,
+                            formatter: function(val){
+                                return val;
+                            }
+                        },
                         labels: data2.labels,
                         responsive: [{
                             breakpoint: 480,

@@ -5,9 +5,9 @@
 /vendor
 /node_modules
 /license-server
-/BookimngImages/
-/CustomersImages/
-/VehicleImages/
+/BookimngImages
+/CustomersImages
+/VehicleImages
 /public/BookimngImages
 /public/CustomersImages
 /public/VehicleImages
