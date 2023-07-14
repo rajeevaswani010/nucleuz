@@ -264,7 +264,7 @@ class BookingController extends Controller
 
         //$Day = $Input["tarrif_detail"] * $MultiplyDay;
         $Day = $Input["tarrif_detail"];
-        $DopDate = date("Y-m-d", strtotime("+".$Day." days", strtotime($Input["PickupDate"]))). " 23:59:59";
+        $DopDate = date("Y-m-d", strtotime("+".$Day." days", strtotime($Input["PickupDate"]))). " 00:00:00";
         
         $BookingObj->dropoff_date = $DopDate;
         $BookingObj->additional_info = $Input["additional_info"];
@@ -303,7 +303,7 @@ class BookingController extends Controller
 
         //
         $Amount = 0;
-        $CalculationMethod = "Prodata";
+        $CalculationMethod = "Hybrid";
         switch($CalculationMethod){
             case "Fixed" :
                 Log::debug("Your favorite CalculationMethod is Fixed!");
@@ -609,7 +609,7 @@ class BookingController extends Controller
         $Day = $ExtraDay;
         $Month = $Week = $Days =0;
         $IsNegative = false;
-        $CalculationMethod = "Fixed";
+        $CalculationMethod = "Hybrid";
         switch($CalculationMethod){
             case "Fixed" :
                 Log::debug("Your favorite CalculationMethod is Fixed!");
@@ -709,8 +709,11 @@ class BookingController extends Controller
     function time_difference($time_1, $time_2, $limit = null){
         $val_1 = new \DateTime($time_1);
         $val_2 = new \DateTime($time_2);
+        Log::debug("val_1  ".$time_1);
+        Log::debug("val_2 ".$time_2);
 
         $days = $val_1->diff($val_2)->format('%r%a');
+        Log::debug("days ".$days);
         return $days;
         }
 
@@ -747,7 +750,7 @@ class BookingController extends Controller
 
             $Amount = 0;
             $Day = $Input["days"];
-            $CalculationMethod = "Prodata";
+            $CalculationMethod = "Hybrid";
             switch($CalculationMethod){
                 case "Fixed" :
                     Log::debug("Your favorite CalculationMethod is Fixed!");
