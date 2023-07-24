@@ -221,7 +221,7 @@
             <label>{{ __("Drop off Date") }} <span class="text-danger">*</span></label>
         <!--  <input type="date" class="form-control" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" required> -->
         <!--  <input type="date" class="form-control" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" required>  -->
-         <input type="date" class="form-control" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime($Booking->pickup_date_time)) }}" required> 
+         <input type="date" class="form-control" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime('+1 day', strtotime($Booking->pickup_date_time ))) }}" required> 
         </div>
         
         <div class="col-lg-6">

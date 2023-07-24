@@ -302,6 +302,8 @@ class BookingController extends Controller
         }
 
         //
+
+        $Total = 0;
         $Amount = 0;
         $CalculationMethod = "Hybrid";
         switch($CalculationMethod){
@@ -348,6 +350,7 @@ class BookingController extends Controller
         }
 
         //$Amount = $BasePrice * $Input["tarrif_detail"];
+        $Total = $Amount;
         $Amount -= $Input["discount_amount"];
         
         $TaxAmount = ($Amount * 5) / 100;
@@ -361,7 +364,12 @@ class BookingController extends Controller
         
         $BookingObj->sub_total = $SubTotal;
         $BookingObj->grand_total = $Amount;
+        $BookingObj->total = $Total;
         //$BookingObj->tarrif_amount = $BasePrice;
+        Log::debug("Total : ".$Total); 
+        Log::debug("discount_amount : ".$Input["discount_amount"]);
+        Log::debug("SubTotal : ".$SubTotal); 
+        Log::debug("grand_total : ".$Amount); 
         $BookingObj->save();
 
         $InviteId = $Input["invite_id"];
@@ -471,6 +479,7 @@ class BookingController extends Controller
         $Input = $request->all();
 
         if(isset($Input["km_drop_time"])){
+            Log::debug("if discount_amount :".$Input["discount_amount"]);
             if($Input["km_drop_time"] < $Booking->km_reading_pickup){
                 Session::flash('Danger', "Dropp of KM is less then KM at Pickup");
                 return redirect()->back()->withInput();
@@ -489,16 +498,41 @@ class BookingController extends Controller
             $ExtraAmount = $ExtraAmount + trim($Input["additional_charges"]);
             
             #$Amount = $Booking->sub_total + $ExtraAmount + $Input["additional_charges"];
-            $Amount = $Booking->sub_total + $ExtraAmount ;
+             $SubTotal = $Booking->total  - $Input["discount_amount"] + $ExtraAmount;
+            // $Amount = $SubTotal  + $ExtraAmount
+            //$Amount = $Booking->sub_total + $ExtraAmount ;
             #$Amount -= $Input["discount_amount"];
+            $Amount = $SubTotal;
             $TaxAmount = ($Amount * 5) / 100;
-            $SubTotal = $Amount;
+            //$SubTotal = $Amount;
             $Amount += $TaxAmount;
-            
+
+            Log::debug("SubTotal :".$SubTotal);
+            Log::debug("grand_total :".$Amount);
+            Log::debug("discount_amount :".$Input["discount_amount"]);
+
             $Input["sub_total"] = $SubTotal;
             $Input["grand_total"] = $Amount;
             $Input["additional_km_reunning"] = $Extra;
             $Input["dropoff_date"] = date("Y-m-d H:i:s");
+        } else{
+            if(isset($Input["discount_amount"])){
+            // $Total = $Booking->total ;
+             $SubTotal = $Booking->total - $Input["discount_amount"];
+             $TaxAmount = ($SubTotal * 5) / 100;
+             $Amount = $SubTotal + $TaxAmount;
+
+            Log::debug("SubTotal1 :".$SubTotal);
+            Log::debug("grand_total1 :".$Amount);
+            Log::debug("discount_amount1 :".$Input["discount_amount"]);
+
+            $Input["sub_total"] = $SubTotal;
+            $Input["grand_total"] = $Amount;
+           // Log::debug("bookingcontroller update - else part");
+            //if(isset($Input["discount_amount"])){
+               // Log::debug(" else discount_amount :".$Input["discount_amount"]);
+               // Log::debug("bookingcontroller update - other part");
+            }
         }
 
         unset($Input["_method"]);
@@ -700,6 +734,9 @@ class BookingController extends Controller
         
         $Input["sub_total"] = $SubTotal;
         $Input["grand_total"] = $GrandTotal;
+
+        Log::debug("SubTotal :".$SubTotal);
+        Log::debug("GrandTotal :".$GrandTotal);
         
         unset($Input["dropoff_time"]);
         Booking::where('id', $id)->update($Input);
@@ -794,6 +831,9 @@ class BookingController extends Controller
     
             }
             //$Amount = $BasePrice * $Input["days"];
+
+            Log::debug("Total : ".$Amount);
+            Log::debug("discount : ".$Input["discount"]);
             
             $DiscountAmount = number_format($Input["discount"], 2);
             $Amount -= $Input["discount"];
@@ -811,6 +851,9 @@ class BookingController extends Controller
 
             $DueAmount = $Amount;
             $Amount = number_format($Amount, 2);
+
+            Log::debug("SubTotal : ".$SubTotal);
+            Log::debug("GrandTotal : ".$Amount);
 
             Log::debug("bookingcontroller review - exit");
 
@@ -869,26 +912,26 @@ class BookingController extends Controller
     
     public function ReviewCustomer(Request $request){
         try{
-            Log::debug("bookingcontroller ReviewCustomer - enter");
+            Log::debug("bookingcontroller ReviewCustomer - enter1111111");
             $Input = $request->all();
             $GetPricing = Pricing::where("company_id", $Input["company"])->where("car_type", $Input["vehicle"])->first();
 
-            $BasePrice = 0;
+            $BasePrice = $DailyPrice = $WeeklyPrice = $MonthlyPrice = 0;
             if($Input["tarrif"] == "Daily"){
                 if(isset($GetPricing->daily_pricing)){
-                    $BasePrice = $GetPricing->daily_pricing;
+                    $DailyPrice = $GetPricing->daily_pricing;
                 }
             }
 
             if($Input["tarrif"] == "Weekly"){
                 if(isset($GetPricing->weekly_pricing)){
-                    $BasePrice = $GetPricing->weekly_pricing;
+                    $WeeklyPrice = $GetPricing->weekly_pricing;
                 }
             }
 
             if($Input["tarrif"] == "Monthly"){
                 if(isset($GetPricing->monthly_pricing)){
-                    $BasePrice = $GetPricing->monthly_pricing;
+                    $MonthlyPrice = $GetPricing->monthly_pricing;
                 }
             }
 
