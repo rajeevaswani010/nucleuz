@@ -5,4 +5,5 @@ VALUES
 ;
 
 
-ALTER TABLE bookings ADD COLUMN total double DEFAULT NULL;
+ALTER TABLE bookings ADD COLUMN total double DEFAULT NULL AFTER discount_note;
+ALTER TABLE bookings ADD COLUMN residence_expiry_date date DEFAULT NULL AFTER total;

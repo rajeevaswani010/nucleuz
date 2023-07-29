@@ -262,6 +262,11 @@
                     <label>{{ __("Residency Card ID") }}<span class="text-danger">*</span></label>
                     <input type="text" name="residency_card_id" class="form-control number" required>
                 </div>
+
+                <div class="col-lg-4 mb-4">
+                    <label>{{ __("Residence Expiry Date") }}<span class="text-danger">*</span></label>
+                    <input type="date" class="form-control number" name="residence_expiry_date" value="{{ $Booking->residence_expiry_date }}" required min="{{ date('Y-m-d') }}">
+                </div>
     </div>
     <button class="btn btn-success mt-4">{{ __("Save") }}</button>
     {!! Form::close() !!}
