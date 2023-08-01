@@ -200,17 +200,17 @@
 
                         <div class="row">
 
-                            <div class="form-group col-6">
-                                <label for="subject" class="col-form-label text-dark">Name</label>
-                                <input class="form-control font-style" required name="name" id="name" type="text"
-                                    value="{{ old('name') }}" />
-                            </div>
                             <div class="form-group col-md-6">
                                 <label for="from" class="col-form-label text-dark">Email</label>
                                 <input class="form-control font-style" name="email" type="text" id="email"
                                     value="{{ old('email') }}" required />
                             </div>
 
+                            <div class="form-group col-6">
+                                <label for="subject" class="col-form-label text-dark">Name</label>
+                                <input class="form-control font-style" required name="name" id="name" type="text"
+                                    value="{{ old('name') }}" />
+                            </div>
                             @if(Session::has('Danger'))
                                 <div class="alert alert-danger" role="alert">
                                     <div class="alert-icon"><i class="flaticon2-check-mark"></i></div>
@@ -225,7 +225,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                <input class="btn btn-xs btn-primary" type="submit" value="Save">
+                <input class="btn btn-xs btn-primary" type="submit" value="Send">
             </div>
             {!! Form::close() !!}
         </div>
@@ -254,7 +254,6 @@ $.ajax({
         // redirect("{{ URL('booking-invite') }}");
         $('#inviteCustomerModal').modal('hide');
         window.location.reload();
-        toastr["success"]("Invitation send successfully")
     },
     error: function( jqXHR, textStatus, errorThrown ) {
         hideloading();
@@ -283,7 +282,7 @@ function deleteInvite(id){
             }, 400, function () {
                 row.remove();
             });
-            
+
             toastr["success"]("Invite deleted successfully")
           },
           error: function( jqXHR, textStatus, errorThrown ) {

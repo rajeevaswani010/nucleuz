@@ -31,15 +31,15 @@ class CustomerController extends Controller
             return redirect("404");
         }else{
             $InviteObj = BookingInvite::where("email", $Email)->where("status", 0)->first();
-            $CustomerIfExits = Customer::where("email", $Email )->where("company_id",session("CompanyLinkID"))->count();
-            if( $CustomerIfExits > 0 )
-                $Customer = Customer::where("email", $Email)->where("company_id",session("CompanyLinkID"))->first();
-            else {
+            // $CustomerIfExits = Customer::where("email", $Email )->where("company_id",session("CompanyLinkID"))->count();
+            // if( $CustomerIfExits > 0 )
+            //     $Customer = Customer::where("email", $Email)->where("company_id",session("CompanyLinkID"))->first();
+            // else {
                 $Customer = new Customer();
                 $Customer->company_id = session("CompanyLinkID");
                 $Customer->email = $Email;
-                $Customer->name = $InviteObj->name;
-            }
+                $Customer->first_name = $InviteObj->name;
+            // }
 
             $Conuntry = Country::orderBy("name")->get();
             $VehicleTypes = DB::table('vehicles')
@@ -66,9 +66,9 @@ class CustomerController extends Controller
                 ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->email == $Input["email"])
                 || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
                 || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"])
-                || ($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
-                || ($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"])
-                || ($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+                // || ($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+                // || ($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"])
+                // || ($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
             ){
                 $CustomerFound = 1;
             }

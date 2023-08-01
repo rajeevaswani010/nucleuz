@@ -146,7 +146,7 @@
         <div class="card-header"><h4>Booking Details</h4></div>
         <div class="card-body">
             <div class="row">
-                <div class="col-lg-4 mb-4">
+                <div class="col-lg-8 mb-8">
                     <label>Vehicle <span class="text-danger">*</span></label>
                     <select class="form-control" required id="VehicleData" onchange="fetchReviews()" name="vehicle_id">
                         <option value="">Select</option>
@@ -156,7 +156,7 @@
                     </select>
                 </div>
 
-                <div class="col-lg-4 mb-4">
+                <!-- <div class="col-lg-4 mb-4">
                     <label>Tarrif <span class="text-danger">*</span></label>
                     <select class="form-control" required id="TarrifData" onchange="fetchReviews()" name="tarrif_type">
                         <option value="">Select</option>
@@ -164,7 +164,7 @@
                         <option>Weekly</option>
                         <option>Monthly</option>
                     </select>
-                </div>
+                </div> -->
 
                 <div class="col-lg-4 mb-4">
                     <label id="UpdateTextDay">No of Days <span class="text-danger">*</span></label>
@@ -173,12 +173,12 @@
 
                 <div class="col-lg-6 mb-4">
                     <label>Date of Pickup <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" required name="PickupDate" min="{{ date('Y-m-d') }}">
+                    <input type="date" class="form-control" required name="PickupDate" id="pickupDate" min="{{ date('Y-m-d') }}">
                 </div>
 
                 <div class="col-lg-6 mb-4">
                     <label>Time of Pickup <span class="text-danger">*</span></label>
-                    <input type="time" class="form-control" required name="PickupTime">
+                    <input type="time" class="form-control" required name="PickupTime" id="pickupTime">
                 </div>
 
                 <div class="col-lg-4 mb-4">
@@ -248,18 +248,29 @@
     $('#nationality').val('{{ $Customer->nationality }}');
     $('#country_code').val('{{ $Customer->country_code }}');
 
+    $("#pickupDate").on('change', function(){
+        if ( $("#pickupTime").val() == '' ){
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const curTime = `${hours}:${minutes}`
+            console.log(curTime);
+            $("#pickupTime").val(curTime);
+        }
+    });
+
     function fetchReviews(){
-        if($("#TarrifData").val() == "Daily"){
-            $("#UpdateTextDay").html('No of Days <span class="text-danger">*</span>');
-        }
+        // if($("#TarrifData").val() == "Daily"){
+        //     $("#UpdateTextDay").html('No of Days <span class="text-danger">*</span>');
+        // }
         
-        if($("#TarrifData").val() == "Weekly"){
-            $("#UpdateTextDay").html('No of Weeks <span class="text-danger">*</span>');
-        }
+        // if($("#TarrifData").val() == "Weekly"){
+        //     $("#UpdateTextDay").html('No of Weeks <span class="text-danger">*</span>');
+        // }
         
-        if($("#TarrifData").val() == "Monthly"){
-            $("#UpdateTextDay").html('No of Months <span class="text-danger">*</span>');
-        }
+        // if($("#TarrifData").val() == "Monthly"){
+        //     $("#UpdateTextDay").html('No of Months <span class="text-danger">*</span>');
+        // }
         
         $.ajax({
           url: "{{ URL('Customer/Review') }}",
@@ -269,7 +280,7 @@
           },
           data: {
             vehicle: $("#VehicleData").val(),
-            tarrif: $("#TarrifData").val(),
+            // tarrif: $("#TarrifData").val(),
             days: $("#NoOfDays").val(),
             company: "{{ $InviteObj->company_id }}",
             tax: 5,

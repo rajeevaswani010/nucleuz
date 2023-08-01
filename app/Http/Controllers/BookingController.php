@@ -251,7 +251,7 @@ class BookingController extends Controller
         $BookingObj->customer_id = $CustomerID;
         $BookingObj->car_type = $Input["vehicle_id"];
         $BookingObj->tarrif_detail = $Input["tarrif_detail"];
-        $BookingObj->tarrif_type = $Input["tarrif_type"];
+        // $BookingObj->tarrif_type = $Input["tarrif_type"];
         $BookingObj->discount_amount = $Input["discount_amount"];
 
         //$MultiplyDay = 1;

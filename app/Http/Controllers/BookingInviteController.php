@@ -108,7 +108,6 @@ class BookingInviteController extends Controller
                 $m->from("no-reply@nucleuz.app", "Nucleuz");
                 $m->to($Input['email'])->subject("Invite for Car Booking");
             });
-            Log::debug("inside add......d.d...");
             $response = array("status"=>"success");
 
             return json_encode($response);

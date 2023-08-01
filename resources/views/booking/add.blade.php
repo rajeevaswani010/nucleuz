@@ -144,7 +144,9 @@
                 <div class="col-lg-3 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Passport Details") }}</label>
                     <input type="file" class="form-control font-style" name="passport_detail" id="passport_detail">
+                    @if(@$CustomerData->passport_detail != "")
                     <img src="{{ URL('public') }}/{{ @$CustomerData->passport_detail }}" style="width: 100px" id="img_passport_detail">
+                    @endif
                 </div>
 
                 <div class="col-lg-3 mb-4">
@@ -172,17 +174,17 @@
         <div class="card-header"><h4>{{ __("Booking Details") }}</h4></div>
         <div class="card-body">
             <div class="row">
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-4 mb-4">
                     <label>{{ __("Date of Pickup") }} <span class="text-danger">*</span></label>
                     <input type="date" class="form-control" required onchange="fetchAvailableVehicles(event)" id="pickupDate" name="PickupDate" min="{{ date('Y-m-d') }}" >
                 </div>
 
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-4 mb-4">
                     <label>{{ __("Time of Pickup") }} <span class="text-danger">*</span></label>
                     <input type="time" class="form-control" id="pickupTime" onchange="fetchAvailableVehicles()" required name="PickupTime">
                 </div>
 
-                <div class="col-lg-3 mb-4">
+                <!-- <div class="col-lg-3 mb-4">
                     <label>{{ __("Tarrif") }} <span class="text-danger">*</span></label>
                     <select class="form-control" required id="TarrifData" onchange="fetchAvailableVehicles()" name="tarrif_type">
                         <option value="">{{ __("Select") }}</option>
@@ -190,9 +192,9 @@
                         <option value="Weekly">{{ __("Weekly") }}</option>
                         <option value="Monthly">{{ __("Monthly") }}</option>
                     </select>
-                </div>
+                </div> -->
 
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-4 mb-4">
                     <label id="UpdateTextDay">{{ __("No of Days") }} <span class="text-danger">*</span></label>
                     <input type="number" step="0" class="form-control" name="tarrif_detail" required id="NoOfDays" onblur="fetchAvailableVehicles()" min=1 value=1>
                 </div>
@@ -342,7 +344,7 @@
         $("#NoOfDays").val({{ @$Requirements["tarrif_detail"] }});
     @endif
     @if(!empty($Requirements["tarrif_type"])) 
-        $("#TarrifData").val('{{ @$Requirements["tarrif_type"] }}');
+        // $("#TarrifData").val('{{ @$Requirements["tarrif_type"] }}');
     @endif
     @if(!empty($Requirements["payment_mode"])) 
         $("#payment_mode").val('{{ @$Requirements["payment_mode"] }}');
@@ -359,39 +361,54 @@
     @endif
     
 
-    document.getElementById("TarrifData").addEventListener('change', (event) => {
-        console.log("onchange");
-        if($("#TarrifData").val() == "Daily"){
-            $("#UpdateTextDay").html('No of Days <span class="text-danger">*</span>');
+    $("#pickupDate").on('change', function(){
+        if ( $("#pickupTime").val() == '' ){
+            console.log("setup pickup time");
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const curTime = `${hours}:${minutes}`
+            console.log(curTime);
+            $("#pickupTime").val(curTime);
+            
+            fetchAvailableVehicles();
         }
-        
-        if($("#TarrifData").val() == "Weekly"){
-            console.log("change label")
-            $("#UpdateTextDay").html('No of Weeks <span class="text-danger">*</span>');
-        }
-        
-        if($("#TarrifData").val() == "Monthly"){
-            $("#UpdateTextDay").html('No of Months <span class="text-danger">*</span>');
-        }
+
     });
+
+    // document.getElementById("TarrifData").addEventListener('change', (event) => {
+    //     console.log("onchange");
+    //     if($("#TarrifData").val() == "Daily"){
+    //         $("#UpdateTextDay").html('No of Days <span class="text-danger">*</span>');
+    //     }
+        
+    //     if($("#TarrifData").val() == "Weekly"){
+    //         console.log("change label")
+    //         $("#UpdateTextDay").html('No of Weeks <span class="text-danger">*</span>');
+    //     }
+        
+    //     if($("#TarrifData").val() == "Monthly"){
+    //         $("#UpdateTextDay").html('No of Months <span class="text-danger">*</span>');
+    //     }
+    // });
 
     function fetchAvailableVehicles( e ){
         
         $pickupDate = $("#pickupDate").val();
         $pickupTime = $("#pickupTime").val();
-        $tarrif = $("#TarrifData").val();
+        // $tarrif = $("#TarrifData").val();
         $tarrifDetail = $("#NoOfDays").val();
 
-        if($pickupDate && $pickupTime && $tarrif && $tarrifDetail){
+        if($pickupDate && $pickupTime && $tarrifDetail){
 
             $numOfDays = $tarrifDetail;
-            if($("#TarrifData").val() == "Daily"){
-                $numOfDays = $tarrifDetail;
-            } else if($("#TarrifData").val() == "Weekly"){
-                $numOfDays = $tarrifDetail*7;
-            } else if($("#TarrifData").val() == "Monthly"){
-                $numOfDays = $tarrifDetail*30;
-            }
+            // if($("#TarrifData").val() == "Daily"){
+            //     $numOfDays = $tarrifDetail;
+            // } else if($("#TarrifData").val() == "Weekly"){
+            //     $numOfDays = $tarrifDetail*7;
+            // } else if($("#TarrifData").val() == "Monthly"){
+            //     $numOfDays = $tarrifDetail*30;
+            // }
         
             $.ajax({
                 url: "{{ URL('Booking/GetAvailableCarTypes') }}",
@@ -434,7 +451,6 @@
                                 alert("Customer required cartype - "+carType+" is not available for selected dates."); //style this
                             }
                         @endif
-        
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     alert("Fail to fetch vehicles for selected date. Please contact company for assistance. Error: " + errorThrown);             
@@ -443,6 +459,13 @@
         } else {
             console.log("not enough params defined");
         }
+        $("#LoadSubTotal").html('<b>0.0</b>');
+        $("#LoadTax").html('<b>0.0</b>');
+        $("#LoadGrandTotal").html('<b>0.0</b>');
+        $("#LoadDiscount").html('<b>0.0</b>');
+        //$("#LoadAdvance").html('<b>0.0</b>');
+        $("#LoadDue").html('<b>0.0</b>');
+
     }
 
     function fetchReviews(){
@@ -457,7 +480,7 @@
           },
           data: {
             vehicle: $("#VehicleData").val(),
-            tarrif: $("#TarrifData").val(),
+            //tarrif: $("#TarrifData").val(),
             days: $("#NoOfDays").val(),
             tax: 5,
             discount: $("#DiscountAmount").val(),
@@ -465,12 +488,12 @@
           },
           success: function( data, textStatus, jqXHR ) {
               JsData = JSON.parse(data);
-              $("#LoadSubTotal").html(JsData.SubTotal);
-              $("#LoadTax").html(JsData.Tax);
-              $("#LoadGrandTotal").html(JsData.GrandTotal);
-              $("#LoadDiscount").html(JsData.Discount);
-              //$("#LoadAdvance").html(JsData.Advance);
-              $("#LoadDue").html(JsData.Due);
+              $("#LoadSubTotal").html('<b>'+JsData.SubTotal+'</b>');
+              $("#LoadTax").html('<b>'+JsData.Tax+'</b>');
+              $("#LoadGrandTotal").html('<b>'+JsData.GrandTotal+'</b>');
+              $("#LoadDiscount").html('<b>'+JsData.Discount+'</b>');
+              //$("#LoadAdvance").html('<b>'+JsData.Advance+'</b>');
+              $("#LoadDue").html('<b>'+JsData.Due+'</b>');
           },
           error: function( jqXHR, textStatus, errorThrown ) {
               
