@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/plugins/style.css') }}">
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/plugins/flatpickr.min.css') }}">
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/plugins/animate.min.css') }}">
+
     <!-- font css -->
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/fonts/tabler-icons.min.css') }}">
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/fonts/feather.css') }}">
@@ -29,13 +30,39 @@
     <!--bootstrap switch-->
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/plugins/bootstrap-switch-button.min.css') }}">
 
+    <!-- toastr css -->
+    <link rel="stylesheet" href="{{ URL('public/newasserts/plugins/toastr/toastr.css') }}">
+
     <!-- vendor css -->
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/style.css') }}" id="main-style-link">
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/customizer.css') }}">
     <link rel="stylesheet" href="{{ URL('public/newasserts/css/custom.css') }}" id="main-style-link">
+
     <script src="{{ URL('public/newasserts/js/jquery.min.js') }}"></script>
+    <script src="{{ URL('public/newasserts/plugins/toastr/toastr.min.js') }}"></script>
     
+    <script>
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "500",
+            "timeOut": "1000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+    </script>
+    <!-- app css -->
     <link rel="stylesheet" href="{{ URL('resources/css/app.css') }}">
+
     </head>
 <body class="theme-4">
 

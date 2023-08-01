@@ -143,10 +143,8 @@
 
                 <div class="col-lg-3 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Passport Details") }}</label>
-                    <input type="file" class="form-control font-style" name="passport_detail">
-                    @if(@$CustomerData->passport_detail != "")
-                    <img src="{{ URL('public') }}/{{ @$CustomerData->passport_detail }}" style="width: 100px">
-                    @endif
+                    <input type="file" class="form-control font-style" name="passport_detail" id="passport_detail">
+                    <img src="{{ URL('public') }}/{{ @$CustomerData->passport_detail }}" style="width: 100px" id="img_passport_detail">
                 </div>
 
                 <div class="col-lg-3 mb-4">
@@ -569,6 +567,7 @@
                   $("#temp_address").val(JsData.temp_address);
                   $("#title").val(JsData.title);
                   $("#label_file_residency_card").html(JsData.residency_card);
+                  $("#img_passport_detail").src = "/public/"+JsData.passport_detail;
               }else{
                 $("#errormsg").html("Customer Not Found");
               }

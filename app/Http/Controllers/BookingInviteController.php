@@ -161,13 +161,21 @@ class BookingInviteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function delete(Request $request)
     {
-        if(session("AdminID") == ""){
-            return redirect("/");
+        try {
+
+            if(session("AdminID") == ""){
+                return redirect("/");
+            }
+    
+            $Input = $request->all();
+            BookingInvite::find($Input["id"])->delete();
+            $response = array("status"=>"success");    
+        } catch (Exception $e){
+            $response = array("status"=>"Error");
         }
-        
-        BookingInvite::find($id)->delete();
-        return redirect("vehicle");
+
+        return json_encode($response);
     }
 }

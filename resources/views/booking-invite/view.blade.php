@@ -1,7 +1,6 @@
 @extends("layout.default")
 
 @section("content")
-
 <script>
     //get parameters
     const urlParams = new URLSearchParams(window.location.search);
@@ -100,7 +99,7 @@
                                 <tbody>
 
                                     @foreach($Data as $DT)
-                                        <tr class="font-style">
+                                        <tr class="font-style" id="inviteId-{{$DT->id}}" >
                                             <td>{{ $DT->name }}</td>
                                             <td>{{ $DT->email }}</td>
                                             <td>{{ $DT->created_at }}</td>
@@ -128,11 +127,11 @@
                                                         <div class="action-btn bg-primary ms-2" style="opacity: 0.5;">
                                                             <a href="{{ URL('booking') }}/create?inviteId={{ @$DT->id }}"
                                                                 class="disabled mx-3 btn btn-sm align-items-center"
-                                                                data-url="{{ URL('booking') }}/create"
+                                                                data-url="{{ URL('booking-invite') }}/destroy"
                                                                 data-ajax-popup="true" data-title="Edit Coupon"
                                                                 data-bs-toggle="tooltip" title="Edit"
                                                                 data-original-title="Edit">
-                                                                <i class="ti ti-pencil text-white"></i>
+                                                                <i class="fa fa-pencil-alt text-white"></i>
                                                             </a>
                                                         </div>
                                                     @elseif($DT->status == 1)
@@ -141,12 +140,22 @@
                                                                 class="mx-3 btn btn-sm align-items-center"
                                                                 data-url="{{ URL('booking') }}/create"
                                                                 data-ajax-popup="true" data-title="Edit Coupon"
-                                                                data-bs-toggle="tooltip" title="Edit"
+                                                                data-bs-toggle="tooltip" title="Delete"
                                                                 data-original-title="Edit">
-                                                                <i class="ti ti-pencil text-white"></i>
+                                                                <i class="fa fa-pencil-alt text-white"></i>
                                                             </a>
                                                         </div>
                                                     @endif
+                                                    <div class="action-btn bg-danger ms-2">
+                                                            <a href="#" onclick="deleteInvite({{ @$DT->id }})"
+                                                                class="mx-3 btn btn-sm align-items-center"
+                                                                data-url="{{ URL('booking-invite') }}/destroy"
+                                                                data-ajax-popup="true" data-title="Edit Coupon"
+                                                                data-bs-toggle="tooltip" title="Delete"
+                                                                data-original-title="Edit">
+                                                                <i class="fa fa-trash-alt text-white"> </i>
+                                                            </a>
+                                                    </div>
 
                                                 </span>
                                             </td>
@@ -245,6 +254,7 @@ $.ajax({
         // redirect("{{ URL('booking-invite') }}");
         $('#inviteCustomerModal').modal('hide');
         window.location.reload();
+        toastr["success"]("Invitation send successfully")
     },
     error: function( jqXHR, textStatus, errorThrown ) {
         hideloading();
@@ -253,5 +263,34 @@ $.ajax({
 })
 event.preventDefault();
 });
+
+function deleteInvite(id){
+    console.log("delete invite id - " + id);
+    $.ajax({
+          url: "{{ URL('booking-invite/delete') }}",
+          method: "POST",
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          data: {
+            id: id
+          },
+          success: function( data, textStatus, jqXHR ) {
+            var row = $("tr#inviteId-"+id); // Get the  row
+
+            row.animate({
+                opacity: 0
+            }, 400, function () {
+                row.remove();
+            });
+            
+            toastr["success"]("Invite deleted successfully")
+          },
+          error: function( jqXHR, textStatus, errorThrown ) {
+            toastr["error"]("Failed to delete Invite")
+          }
+        });
+    
+}
 </script>
 @endsection
