@@ -35,7 +35,7 @@
             <td>{{ $DT->vehicle->make }}</td>
             <td>{{ $DT->vehicle->model }}</td>
             <td>{{ $DT->vehicle->reg_no }}</td>
-            <td>{{ $DT->tarrif_type }}</td>
+           <!-- <td>{{ $DT->tarrif_type }}</td> -->
             <td>{{ $DT->tarrif_detail }}</td>
             <td>{{ $DT->tarrif_amount }}</td>
             <td>{{ date("d/m/Y H:i A", strtotime($DT->pickup_date_time)) }}</td>

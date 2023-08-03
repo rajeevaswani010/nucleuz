@@ -159,7 +159,7 @@
 
     <td>
     <div class="d-flex flex-column">
-        <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->tarrif_type }}</strong></p>
+      <!--  <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->tarrif_type }}</strong></p> -->
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->pickup_location }}</strong></p>
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ __("Pickup") }} : {{ date("d/m/Y H:i A", strtotime($DT->pickup_date_time)) }}</strong></p>
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ __("Drop") }}: {{ date("d/m/Y", strtotime($DT->dropoff_date)) }}</strong></p>

@@ -88,14 +88,14 @@
             <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 400px;">
                 <div style="flex: 1 1 auto; padding: 1rem 1rem;">
                     <h2>{{ __("Booking Details") }}</h2>
-                    <div class="mt-4"><b>{{ __("Tarrif") }}</b> {{ $Booking->tarrif_type }}</div>
+                   <!-- <div class="mt-4"><b>{{ __("Tarrif") }}</b> {{ $Booking->tarrif_type }}</div>
                     @if($Booking->tarrif_type == "Weekly")
                     <div class="mt-2"><b>{{ __("No. of Weeks") }}</b> {{ $Booking->tarrif_detail }}</div>
                     @elseif ($Booking->tarrif_type == "Monthly")
                     <div class="mt-2"><b>{{ __("No. of Months") }}</b> {{ $Booking->tarrif_detail }}</div>
                     @else
                     <div class="mt-2"><b>{{ __("No. of Days") }}</b> {{ $Booking->tarrif_detail }}</div>
-                    @endif
+                    @endif -->
                     <div class="mt-2"><b>{{ __("Per Day KM Allocations") }}</b> {{ $Booking->km_allocation }}</div>
                     <div class="mt-2"><b>{{ __("Date & Time of Pickup") }}</b> {{ date("d F, Y H:i A", strtotime($Booking->pickup_date_time)) }}</div>
                     <div class="mt-2"><b>{{ __("Drop Off Date") }}</b> {{ date("d F, Y ", strtotime($Booking->dropoff_date)) }}</div>

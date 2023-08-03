@@ -160,7 +160,7 @@ class CustomerController extends Controller
            
             $requirements["car_type"] = $Input["vehicle_id"];
             $requirements["tarrif_detail"] = $Input["tarrif_detail"];
-            $requirements["tarrif_type"] = $Input["tarrif_type"];
+            #$requirements["tarrif_type"] = $Input["tarrif_type"];
             $requirements["PickupDate"] = $Input["PickupDate"];
             $requirements["PickupTime"] = $Input["PickupTime"];
             $requirements["pickup_location"] = $Input["pickup_location"];
@@ -175,37 +175,38 @@ class CustomerController extends Controller
             $InviteObj["requirements"] = $req;
 
             
-            $MultiplyDay = 1;
-            if($Input["tarrif_type"] == "Weekly"){
-                $MultiplyDay = 7;
-            }
-            if($Input["tarrif_type"] == "Monthly"){
-                $MultiplyDay = 30;
-            }
+            #$MultiplyDay = 1;
+            #if($Input["tarrif_type"] == "Weekly"){
+             #   $MultiplyDay = 7;
+           # }
+           # if($Input["tarrif_type"] == "Monthly"){
+               # $MultiplyDay = 30;
+          #  }
     
-            $Day = $Input["tarrif_detail"] * $MultiplyDay;
+            #$Day = $Input["tarrif_detail"] * $MultiplyDay;
+            $Day = $Input["tarrif_detail"] ;
             $DopDate = date("Y-m-d H:i:s", strtotime("+".$Day." days", strtotime($Input["PickupDate"])));
             
             $GetPricing = Pricing::where("car_type", $Input["vehicle_id"])->where("company_id", $InviteObj->company_id)->first();
     
-            $BasePrice = 0;
-            if($Input["tarrif_type"] == "Daily"){
+            $DailyPrice = $WeeklyPrice = $MonthlyPrice = 0;
+            //if($Input["tarrif_type"] == "Daily"){
                 if(isset($GetPricing->daily_pricing)){
-                    $BasePrice = $GetPricing->daily_pricing;
+                    $DailyPrice = $GetPricing->daily_pricing;
                 }
-            }
+            //}
     
-            if($Input["tarrif_type"] == "Weekly"){
+            //if($Input["tarrif_type"] == "Weekly"){
                 if(isset($GetPricing->weekly_pricing)){
                     $BasePrice = $GetPricing->weekly_pricing;
                 }
-            }
+            //}
     
-            if($Input["tarrif_type"] == "Monthly"){
+            //if($Input["tarrif_type"] == "Monthly"){
                 if(isset($GetPricing->monthly_pricing)){
-                    $BasePrice = $GetPricing->monthly_pricing;
+                    $MonthlyPrice = $GetPricing->monthly_pricing;
                 }
-            }
+           // }
     
             $InviteObj->customer_id = $CustomerID;
             $InviteObj->status = 1;
