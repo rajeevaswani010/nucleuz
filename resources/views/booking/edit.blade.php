@@ -226,7 +226,7 @@
         
         <div class="col-lg-6">
             <label>{{ __("Drop off Time") }} <span class="text-danger">*</span></label>
-            <input type="time" class="form-control" name="dropoff_time"  value="{{ date('H:i:s') }}" required>
+            <input type="time" class="form-control" name="dropoff_time"  value="{{ date('H:i:s', strtotime('+4 hours')) }}" required>
             <!-- <input type="time" class="form-control" name="dropoff_time" min="{{ date('H:i:s') }}" value="{{ date('H:i:s') }}" required> -->
         </div>
         
