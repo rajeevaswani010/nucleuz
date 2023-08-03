@@ -87,7 +87,7 @@
                         <label>{{ __("Status") }}</label>
                         <select class="form-control" name="status">
                             <option value="">{{ __("All") }}</option>
-                            <option @if(@$_GET['status'] == 1) selected @endif value=1>Assigned</option>
+                            <option @if(@$_GET['status'] == 1) selected @endif value=1>Reserved</option>
                             <option @if(@$_GET['status'] == 2) selected @endif value=2>Delivered</option>
                             <option @if(@$_GET['status'] == 3) selected @endif value=3>Completed</option>
                             <option @if(@$_GET['status'] == 4) selected @endif value=4>Cancelled</option>
@@ -173,7 +173,7 @@
     @endif
 
     @if($DT->status == 1)
-    <span class="indicator-line rounded bg-secondary booking-status assigned" >{{ __("Assigned") }}</span>
+    <span class="indicator-line rounded bg-secondary booking-status assigned" >{{ __("Reserved") }}</span>
     @endif
 
     @if($DT->status == 2)
