@@ -495,7 +495,13 @@ class BookingController extends Controller
             }
             
             $ExtraAmount = ($Booking->additional_kilometers_amount * $Extra);
+            Log::debug("ExtraAmount :".$ExtraAmount);
             $ExtraAmount = $ExtraAmount + trim($Input["additional_charges"]);
+            Log::debug("ExtraAmount with additional_charges :".$ExtraAmount);
+            
+            Log::debug("Total --:".$Booking->total);
+
+            Log::debug("SubTotal -- :".$Booking->sub_total);
             
             #$Amount = $Booking->sub_total + $ExtraAmount + $Input["additional_charges"];
              $SubTotal = $Booking->total  - $Input["discount_amount"] + $ExtraAmount;
@@ -725,6 +731,9 @@ class BookingController extends Controller
 
         $ExtraAmount = $Amount;
         
+        Log::debug("Total :".$GetBooking->total);
+        $GetBooking->total = $GetBooking->total + $ExtraAmount;
+        Log::debug("Total with extra:".$GetBooking->total);
         #$ExtraAmount = (float)$ExtraDay * $GetBooking->tarrif_amount;
         Log::debug("ExtraAmount :".$ExtraAmount);
         $SubTotal = $GetBooking->sub_total + $ExtraAmount;
@@ -739,6 +748,8 @@ class BookingController extends Controller
         Log::debug("GrandTotal :".$GrandTotal);
         
         unset($Input["dropoff_time"]);
+        $GetBooking->save();
+        Log::debug("Total after save:".$GetBooking->total);
         Booking::where('id', $id)->update($Input);
         return redirect("booking/".$id."/edit");
     }
