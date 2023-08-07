@@ -74,7 +74,7 @@
                     <div class="mt-2"><b>Advance Amount : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->advance_amount, 2) }}</div>
                     <div class="mt-2"><b>Grand Total : &nbsp;OMR {{ number_format(($Booking->grand_total - $Booking->advance_amount), 2) }}</b> </div>
                     
-                    <div class="mt-2"><b>Final Paid Amount : &nbsp;OMR {{ number_format(($Booking->final_amount_paid), 2) }}</b> </div>
+                    <div class="mt-2"><b>Final Paid Amount : &nbsp;OMR {{ number_format($Booking->final_amount_paid, 2) }}</b> </div>
                 </div>
             </div>
         </div>
