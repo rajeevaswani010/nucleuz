@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 
 use Session;
 use Mail;
+use Log;
 
 use App\Models\Office;
 use App\Models\Admin;
@@ -93,9 +94,43 @@ class OfficeController extends Controller
         
         $Data = Office::find($id);
         $Subscription = Subscription::where("company_id", $id)->latest()->get();
-        
+        Log::debug("Data - ". $Data);
+
         $ActiveAction = "office";
         return view('office.edit', compact("Data", "ActiveAction", "Subscription"));
+    }
+
+    public function getSettings()
+    {
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        
+        $Data = Office::find(session("CompanyLinkID"));
+
+        $ActiveAction = "office";
+        return view('office.settings', compact("Data", "ActiveAction"));
+    }
+
+    public function updateSettings(Request $request)
+    {
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        $Input = $request->all();
+        $Input["id"] = session("CompanyLinkID");
+        // echo '<pre>';print_r($Input);echo '</pre>';die();
+        unset($Input["_method"]);
+        unset($Input["_token"]);
+        unset($Input["lang"]);
+
+        if($request->file('logo') != null){
+            $path = $request->file('logo')->store('officeImages');
+            $Input['logo'] = $path;
+        }
+        //Log::debug($Input);
+        $office = Office::where('id',session("CompanyLinkID"))->update($Input);
+        return redirect("settings");
     }
 
     /**
@@ -115,7 +150,13 @@ class OfficeController extends Controller
         unset($Input["_method"]);
         unset($Input["_token"]);
         unset($Input["lang"]);
-        Office::where('id', $id)->update($Input);
+
+        if($request->file('logo') != null){
+            $path = $request->file('logo')->store('officeImages');
+            $Input['logo'] = $path;
+        }
+        //Log::debug($Input);
+        $office = Office::where('id', $id)->update($Input);
         return redirect("office");
     }
 

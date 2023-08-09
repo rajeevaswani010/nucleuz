@@ -361,21 +361,6 @@
     @endif
     
 
-    $("#pickupDate").on('change', function(){
-        if ( $("#pickupTime").val() == '' ){
-            console.log("setup pickup time");
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const curTime = `${hours}:${minutes}`
-            console.log(curTime);
-            $("#pickupTime").val(curTime);
-            
-            fetchAvailableVehicles();
-        }
-
-    });
-
     // document.getElementById("TarrifData").addEventListener('change', (event) => {
     //     console.log("onchange");
     //     if($("#TarrifData").val() == "Daily"){
@@ -434,7 +419,7 @@
                         for (const key in JsData) {
                             var opt = document.createElement('option');
                             opt.value = key;
-                            opt.innerHTML = key.toUpperCase();
+                            opt.innerHTML = key;
                             if(JsData[key]<=0) {
                                 opt.disabled = "disabled";
                                 opt.style = "color:red; font-style: italic;";
@@ -443,7 +428,7 @@
                         }
 
                         @if(!empty($Requirements["car_type"])) 
-                            carType = '{{ @$Requirements["car_type"] }}'.toLowerCase();
+                            carType = '{{ @$Requirements["car_type"] }}';
                             if(JsData[carType] > 0) {
                                 $("#VehicleData").val(carType);
                                 fetchReviews();

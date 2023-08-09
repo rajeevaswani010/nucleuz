@@ -43,7 +43,7 @@ class CustomerController extends Controller
 
             $Conuntry = Country::orderBy("name")->get();
             $VehicleTypes = DB::table('vehicles')
-                        ->selectRaw('upper(car_type) as car_type')
+                        ->selectRaw('car_type as car_type')
                         ->where("company_id",session("CompanyLinkID"))
                         ->groupBy('car_type')
                         ->orderBy('car_type')

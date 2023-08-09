@@ -248,17 +248,6 @@
     $('#nationality').val('{{ $Customer->nationality }}');
     $('#country_code').val('{{ $Customer->country_code }}');
 
-    $("#pickupDate").on('change', function(){
-        if ( $("#pickupTime").val() == '' ){
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const curTime = `${hours}:${minutes}`
-            console.log(curTime);
-            $("#pickupTime").val(curTime);
-        }
-    });
-
     function fetchReviews(){
         // if($("#TarrifData").val() == "Daily"){
         //     $("#UpdateTextDay").html('No of Days <span class="text-danger">*</span>');

@@ -190,10 +190,9 @@
 
     <div class="action-btn bg-primary ms-2">
             <a href="{{ URL('booking') }}/{{ $DT->id }}/edit" class="mx-3 btn btn-sm align-items-center" data-url="{{ URL('booking') }}/{{ $DT->id }}/edit" data-ajax-popup="true" data-title="Edit Coupon" data-bs-toggle="tooltip"  title="Edit" data-original-title="Edit">
-            <i class="ti ti-pencil text-white"></i>
-        </a>
+                <i class="fa fa-pencil-alt text-white"></i>
+            </a>
     </div>
-
     </span>
     </td>
     </tr>

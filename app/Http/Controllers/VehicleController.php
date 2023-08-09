@@ -204,7 +204,7 @@ class VehicleController extends Controller
     public function GetAllCarTypes(){
         try {
             $GetAllVehicles = DB::table('vehicles')
-                        ->selectRaw('lower(car_type) as car_type, count(*) as count')
+                        ->selectRaw('car_type as car_type, count(*) as count')
                         ->where("company_id",session("CompanyLinkID"))
                         ->groupBy('car_type')
                         ->orderBy('car_type')

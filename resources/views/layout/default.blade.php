@@ -43,22 +43,22 @@
     
     <script>
         toastr.options = {
-            "closeButton": false,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": false,
-            "positionClass": "toast-bottom-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "1000",
-            "hideDuration": "500",
-            "timeOut": "1000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        }
+  "closeButton": false,
+  "debug": false,
+  "newestOnTop": false,
+  "progressBar": false,
+  "positionClass": "toast-bottom-center",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "1000",
+  "hideDuration": "1000",
+  "timeOut": "5000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+}
     </script>
     <!-- app css -->
     <link rel="stylesheet" href="{{ URL('resources/css/app.css') }}">
@@ -167,6 +167,11 @@
     <li class="dash-item dash-hasmenu @if($ActiveAction == 'reports') active @endif">
         <a href="{{ URL('reports') }}" class="dash-link">
             <span class="dash-micon"><i class="ti ti-share"></i></span><span class="dash-mtext">Reports</span>
+        </a>
+    </li>
+    <li class="dash-item dash-hasmenu @if($ActiveAction == 'settings') active @endif">
+        <a href="{{ URL('settings') }}" class="dash-link">
+            <span class="dash-micon"><i class="fa fa-cog"></i></span><span class="dash-mtext">Settings</span>
         </a>
     </li>
     <li class="dash-item dash-hasmenu

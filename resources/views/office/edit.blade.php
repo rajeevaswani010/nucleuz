@@ -43,12 +43,11 @@
                             <label for="from" class="col-form-label text-dark">Address</label>
                             <input class="form-control font-style"  name="address" type="text" value="{{ $Data->address }}" required />
                         </div>
-
                         <div class="modal-footer">
                             <input name="lang" type="hidden" value="en">
-                            <a href="{{url()->previous()}}" class="btn btn-default btn-light">Cancel</a>
                             <input class="btn btn-xs btn-primary" type="submit" value="Save">
                         </div>
+
                         {!! Form::close() !!}
 
 
