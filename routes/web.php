@@ -85,7 +85,7 @@ Route::post('Booking/Review', [BookingController::class, 'review']);
 Route::post('Booking/GetAvailableCarTypes', [BookingController::class, 'GetAvailableCarTypes']);
 Route::get('Vehicle/GetAllCarTypes', [VehicleController::class, 'GetAllCarTypes']);
 Route::get("BookingCancel/{ID}", [BookingController::class, 'CancelBooking']);
-Route::post('Customer/Review', [BookingController::class, ' ']);
+Route::post('Customer/Review', [BookingController::class, 'ReviewCustomer']);
 Route::post('BookingExceed/{id}', [BookingController::class, 'BookingExceed']);
 Route::get('Booking/Get', [DashboardController::class, 'GetBookings']);
 

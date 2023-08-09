@@ -749,7 +749,8 @@ class BookingController extends Controller
         $Amount = 0;
         $DailyBasePrice = $WeeklyBasePrice = $MonthlyBasePrice = 0;
         #$Day = $Input["days"];
-        $CalculationMethod = "Hybrid";
+        //$CalculationMethod = "Hybrid";
+        $CalculationMethod = Office::find(session("CompanyLinkID"))->billing_method;
 
         if(isset($GetPricing->daily_pricing)){
             $DailyBasePrice = $GetPricing->daily_pricing;
@@ -784,7 +785,7 @@ class BookingController extends Controller
                     $Amount += (float)$Days * $GetPricing->daily_pricing;
                 }
                 break; 
-            case "Prodata" :
+            case "Pro-Rata" :
                 Log::debug("Your favorite CalculationMethod is Prodata!");
                 if($Day > 29){
                     $Month = floor((int)$Day/30);
@@ -812,7 +813,8 @@ class BookingController extends Controller
         //$Day = $ExtraDay;
         $Month = $Week = $Days =0;
         $IsNegative = false;
-        $CalculationMethod = "Hybrid";
+        //$CalculationMethod = "Hybrid";
+        $CalculationMethod = Office::find(session("CompanyLinkID"))->billing_method;
 
         if(isset($GetPricing->monthly_pricing)){
             $MonthlyBasePrice = $GetPricing->monthly_pricing;
@@ -858,7 +860,7 @@ class BookingController extends Controller
                     $Amount += (float)$Days * $GetPricing->daily_pricing;
                 }
                 break; 
-            case "Prodata" :
+            case "Pro-Rata" :
                 Log::debug("Your favorite CalculationMethod is Prodata!");
                 if($Day < 0){
                     $IsNegative = true;
