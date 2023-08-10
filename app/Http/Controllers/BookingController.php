@@ -390,7 +390,6 @@ class BookingController extends Controller
         }
         
         $Booking = Booking::find($id);
-        Log::debug("discout edit :".$Booking->discount_amount);
         
         $ActiveAction = "booking";
         Log::debug("bookingcontroller edit - exit");
@@ -498,6 +497,7 @@ class BookingController extends Controller
         }
 
         Booking::where('id', $id)->update($Input);
+        $Booking = Booking::find($id);
         
         
         if(isset($Input["final_amount_paid"])){

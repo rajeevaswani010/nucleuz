@@ -68,8 +68,11 @@
             <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 400px;">
                 <div style="flex: 1 1 auto; padding: 1rem 1rem;">
                     <h2>{{ __("Vehicle Details") }}</h2>
+                    @if($Booking->status == 1)
                     <div class="mt-4"><b>{{ __("Car Type") }}</b> {{ $Booking->car_type }}</div>
-                    <div class="mt-2"><b>{{ __("Make") }}</b> {{ @$Booking->vehicle->make }}</div>
+                    @else
+                    <div class="mt-4"><b>{{ __("Car Type") }}</b> {{ $Booking->car_type }}</div>
+                    <div class="mt-2"><b>{{ __("Make") }}</b> {{ @$Booking->vehicle->make }}</div> 
                     <div class="mt-2"><b>{{ __("Model") }}</b> {{ @$Booking->vehicle->model }}</div>
                     <div class="mt-2"><b>{{ __("Variant") }}</b> {{ @$Booking->vehicle->variant }}</div>
                     <div class="mt-2"><b>{{ __("Chasis Number") }}</b> {{ @$Booking->vehicle->chasis_no }}</div>
@@ -78,6 +81,7 @@
                     <div class="mt-2"><b>{{ __("Audio") }}</b> {{ @$Booking->vehicle->audio }}</div>
                     <div class="mt-2"><b>{{ __("GPS") }}</b> {{ @$Booking->vehicle->gps }}</div>
                     <div class="mt-2"><b>{{ __("Insurance Details") }}</b> {{ @$Booking->vehicle->insurance_detail }}</div>
+                    @endif
                 </div>
             </div>
         </div>
