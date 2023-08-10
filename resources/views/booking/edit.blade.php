@@ -299,7 +299,7 @@
     <div class="row">
         <div class="col-lg-6 mb-4">
             <label>{{ __("Final Amount Paid") }} <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="final_amount_paid" readonly required value="{{ $Booking->grand_total - $Booking->advance_amount }}" id="final_amount_paid">
+            <input type="text" class="form-control" name="final_amount_paid" readonly required value="{{ number_format(($Booking->grand_total - $Booking->advance_amount), 2) }}" id="final_amount_paid">
         </div>
     </div>
 

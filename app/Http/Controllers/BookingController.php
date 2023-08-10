@@ -786,7 +786,7 @@ class BookingController extends Controller
                 }
                 break; 
             case "Pro-Rata" :
-                Log::debug("Your favorite CalculationMethod is Prodata!");
+                Log::debug("Your favorite CalculationMethod is Pro-Rata!");
                 if($Day > 29){
                     $Month = floor((int)$Day/30);
                     $Amount += (float)$Month * $MonthlyBasePrice;
