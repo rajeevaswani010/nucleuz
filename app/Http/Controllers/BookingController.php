@@ -764,11 +764,10 @@ class BookingController extends Controller
         }
 
         switch($CalculationMethod){
-            case "Fixed" :
-                Log::debug("Your favorite CalculationMethod is Fixed!");
-                //$Amount =  $DailyBasePrice * $Input["tarrif_detail"];
-                $Amount =  $DailyBasePrice * $Day;
-                break;
+            //case "Fixed" :
+              //  Log::debug("Your favorite CalculationMethod is Fixed!");
+               // $Amount =  $DailyBasePrice * $Day;
+               // break;
             case "Hybrid" :
                 Log::debug("Your favorite CalculationMethod is Hybrid!");
                 $Month = floor((int)$Day/30);
@@ -802,8 +801,8 @@ class BookingController extends Controller
                 }
                 break;  
             default :
-                Log::debug("Your favorite CalculationMethod is Not Set!");
-
+                Log::debug("Your favorite CalculationMethod is Fixed!");
+                $Amount =  $DailyBasePrice * $Day;
         }
         return $Amount;
     }
@@ -826,11 +825,10 @@ class BookingController extends Controller
         }
 
         switch($CalculationMethod){
-            case "Fixed" :
-                Log::debug("Your favorite CalculationMethod is Fixed!");
-                //$Amount =  $DailyBasePrice * $Input["tarrif_detail"];
-                $Amount =  $DailyBasePrice * $Day;
-                break;
+            //case "Fixed" :
+              //  Log::debug("Your favorite CalculationMethod is Fixed!");
+                //$Amount =  $DailyBasePrice * $Day;
+                //break;
             case "Hybrid" :
                 Log::debug("Your favorite CalculationMethod is Hybrid!");
                 if($Day > 0){
@@ -900,7 +898,8 @@ class BookingController extends Controller
                 }
                 break;  
             default :
-                Log::debug("Your favorite CalculationMethod is non of above!");
+                Log::debug("Your favorite CalculationMethod is Fixed!");
+                $Amount =  $DailyBasePrice * $Day;
         }
         return $Amount;
     }
