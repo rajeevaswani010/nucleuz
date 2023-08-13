@@ -67,7 +67,7 @@
         <div style="float: left; margin-left: 5%; width: 45%;">
             <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 250px;">
                 <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-                    <h2>Payment Details</h2>
+                    <h2>Tentative Payment Details</h2>
                     <div class="mt-4"><b>Sub Total : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->sub_total, 2) }}</div>
                     <div class="mt-2"><b>VAT ({{ $Booking->tax_percentage }}%) : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format((($Booking->sub_total * $Booking->tax_percentage) / 100), 2) }}</div>
                     <div class="mt-2"><b>Discount : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->discount_amount, 2) }}</div>
@@ -76,6 +76,7 @@
                     <div class="mt-2"><b>{{ __("Additional Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->additional_charges, 2) }}</div>
                     <div class="mt-2"><b>Grand Total : &nbsp;OMR {{ number_format(($Booking->grand_total - $Booking->advance_amount), 2) }}</b> </div>
                     <div class="mt-2"><b>Final Paid Amount : &nbsp;OMR {{ number_format($Booking->final_amount_paid, 2) }}</b> </div>
+                    <div class="mt-2"><b><span style="float:left; font-style:italic; color:red;">*The above value may change at the time of vehicle return</span> </b> </div>
                 </div>
             </div>
         </div>
