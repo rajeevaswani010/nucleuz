@@ -143,6 +143,13 @@ class CustomerController extends Controller
             $CustObj->save();
             $CustomerID = $CustObj->id;
             Log::info('customer id: '.$CustomerID);
+        }else{
+            Log::debug("customercontroller old CustomerID - ".$CustomerID);
+            $UpdatedInput = $this->unset_variables($Input);
+            Customer::where('id', $CustomerID)->update($UpdatedInput);
+            $Customer = Customer::find($CustomerID);
+            Log::debug("customercontroller updated dob  - ".$Customer->dob);
+
         }
 
         date_default_timezone_set("Asia/Muscat");# setting current time zone
@@ -262,5 +269,23 @@ class CustomerController extends Controller
         }else{
             return json_encode(array());
         }
+    }
+
+    function unset_variables($Input){
+        $UpdatedInput = $Input;
+        unset($UpdatedInput["_token"]);
+        unset($UpdatedInput["PickupDate"]);
+        unset($UpdatedInput["PickupTime"]);
+        unset($UpdatedInput["tarrif_detail"]);
+        unset($UpdatedInput["vehicle_id"]);
+        unset($UpdatedInput["pickup_location"]);
+        unset($UpdatedInput["km_allocation"]);
+        unset($UpdatedInput["payment_mode"]);
+        unset($UpdatedInput["additional_info"]);
+        unset($UpdatedInput["booking_note"]);
+        unset($UpdatedInput["discount_amount"]);
+        unset($UpdatedInput["additional_kilometers_amount"]);
+        unset($UpdatedInput["invite_id"]);
+        return $UpdatedInput;
     }
 }

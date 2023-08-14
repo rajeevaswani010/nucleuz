@@ -160,9 +160,9 @@ class BookingController extends Controller
                 || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
                 || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"])
                 || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"])
-                || ($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
-                || ($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"])
-                || ($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+                //|| ($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+                //|| ($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"])
+                //|| ($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
             )
             {
                 $CustomerID = $Cms->id;
@@ -230,6 +230,14 @@ class BookingController extends Controller
 
             $CustObj->save();
             $CustomerID = $CustObj->id;
+            Log::debug("bookingcontroller store  new CustomerID - ".$CustomerID);
+        }else{
+            Log::debug("bookingcontroller store  old CustomerID - ".$CustomerID);
+            $UpdatedInput = $this->unset_variables($Input);
+            Customer::where('id', $CustomerID)->update($UpdatedInput);
+            $Customer = Customer::find($CustomerID);
+            Log::debug("bookingcontroller store  updated dob  - ".$Customer->dob);
+
         }
         
         if($Input["additional_kilometers_amount"] <= 0){
@@ -904,6 +912,24 @@ class BookingController extends Controller
                 $Amount =  $DailyBasePrice * $Day;
         }
         return $Amount;
+    }
+
+    function unset_variables($Input){
+        $UpdatedInput = $Input;
+        unset($UpdatedInput["_token"]);
+        unset($UpdatedInput["PickupDate"]);
+        unset($UpdatedInput["PickupTime"]);
+        unset($UpdatedInput["tarrif_detail"]);
+        unset($UpdatedInput["vehicle_id"]);
+        unset($UpdatedInput["pickup_location"]);
+        unset($UpdatedInput["km_allocation"]);
+        unset($UpdatedInput["payment_mode"]);
+        unset($UpdatedInput["additional_info"]);
+        unset($UpdatedInput["booking_note"]);
+        unset($UpdatedInput["discount_amount"]);
+        unset($UpdatedInput["additional_kilometers_amount"]);
+        unset($UpdatedInput["invite_id"]);
+        return $UpdatedInput;
     }
 
 
