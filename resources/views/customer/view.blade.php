@@ -45,7 +45,7 @@
 <th>Email</th>
 <th>Mobile</th>
 <th>Total Amount</th>
-<th>Action</th>
+   <!--<th>Action</th> -->
 </tr>
 </thead>
 
@@ -68,7 +68,7 @@
     <td>+{{ $DT->country_code }}{{ $DT->mobile }}</td>
     <td>{{ $totalAmt }}</td>
 
-    <td class="Action">
+   <!-- <td class="Action">
                                                 <span>
                                                     <div class="action-btn bg-danger ms-2">
                                                             <a href="#" onclick="deleteCustomer({{ @$DT->id }})"
@@ -81,7 +81,7 @@
                                                     </div>
 
                                                 </span>
-                                            </td>
+                                            </td> -->
 
     {{--<td class="Action">
         <span>
