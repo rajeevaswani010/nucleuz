@@ -45,6 +45,7 @@
 <th>Email</th>
 <th>Mobile</th>
 <th>Total Amount</th>
+<th>Action</th>
 </tr>
 </thead>
 
@@ -59,13 +60,28 @@
         $totalAmt=$customerBookingArr->grand_total;
     }
     ?>
-    <tr class="font-style">
+    <tr class="font-style" id="customerId-{{$DT->id}}">
     <td>{{ $DT->customer_id }}</td>
     <td>{{ $DT->title }} {{ $DT->first_name }} {{ $DT->last_name }}</td>
     <td>{{ $DT->nationality }}</td>
     <td>{{ $DT->email }}</td>
     <td>+{{ $DT->country_code }}{{ $DT->mobile }}</td>
     <td>{{ $totalAmt }}</td>
+
+    <td class="Action">
+                                                <span>
+                                                    <div class="action-btn bg-danger ms-2">
+                                                            <a href="#" onclick="deleteCustomer({{ @$DT->id }})"
+                                                                class="mx-3 btn btn-sm align-items-center"
+                                                                data-ajax-popup="true" data-title="Edit Coupon"
+                                                                data-bs-toggle="tooltip" title="Delete"
+                                                                data-original-title="Edit">
+                                                                <i class="fa fa-trash-alt text-white"> </i>
+                                                            </a>
+                                                    </div>
+
+                                                </span>
+                                            </td>
 
     {{--<td class="Action">
         <span>
@@ -90,5 +106,34 @@
 </div>
 </div>
 
+<script>
+   function deleteCustomer(id){
+    console.log("delete customer id - " + id);
+    $.ajax({
+          url: "{{ URL('customer/delete') }}",
+          method: "POST",
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          data: {
+            id: id
+          },
+          success: function( data, textStatus, jqXHR ) {
+            var row = $("tr#customerId-"+id); // Get the  row
 
+            row.animate({
+                opacity: 0
+            }, 400, function () {
+                row.remove();
+            });
+
+            toastr["success"]("customer deleted successfully")
+          },
+          error: function( jqXHR, textStatus, errorThrown ) {
+            toastr["error"]("Failed to delete customer")
+          }
+        });
+    
+}
+</script> 
 @endsection

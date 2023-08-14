@@ -271,6 +271,36 @@ class CustomerController extends Controller
         }
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        
+    }
+
+    public function delete(Request $request)
+    {
+        try {
+
+            if(session("AdminID") == ""){
+                return redirect("/");
+            }
+    
+            $Input = $request->all();
+            Log::debug("Input id  - ".$Input["id"]);
+            Customer::find($Input["id"])->delete();
+            $response = array("status"=>"success");    
+        } catch (Exception $e){
+            $response = array("status"=>"Error");
+        }
+
+        return json_encode($response);
+    }
+
     function unset_variables($Input){
         $UpdatedInput = $Input;
         unset($UpdatedInput["_token"]);
