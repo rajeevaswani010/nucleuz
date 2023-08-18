@@ -1,1 +1,102 @@
-import './bootstrap';
+//import './bootstrap';
+
+
+// multiple file upload support javascript functions.. 
+
+   //utility function which formats byte size in required unit.
+   function formatBytes(size, decimals = 2) {
+    if (size === 0) return '0 bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+    const i = Math.floor(Math.log(size) / Math.log(k));
+
+    return parseFloat((size / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+// call this function on fileinput element 'change' event...   
+// arg1 - this (fileinput item itself)
+// arg2 - fileinput id.  Make sure gallery id is mentioned as  <fileinputid>-gallery
+//
+// example ui
+//
+		// <input type="file" id="fileInput" multiple >
+		// <div id="fileInput-gallery" class="gallery">
+
+		// </div>
+        // <script>
+        //      document.getElementById('fileInput').addEventListener('change', function () {
+		//          updateFileList(this,'fileInput-gallery');
+	    //      });
+        //  </script>
+        // 
+        // 
+
+
+function updateFileList(fileinput,gallery_id) {
+    var gallery = $('#'+gallery_id);
+    gallery.empty();
+    const files = fileinput.files;
+
+    for (let i = 0; i < files.length; i++) {
+        var file = files[i];
+        var reader = new FileReader();
+        reader.filename = file.name;
+        
+        //reader onload is called for every file read.. 
+        reader.onload = function (e) {
+            addImageToGallary(
+                e.target.filename,
+                e.target.result,
+                e.total,
+                gallery,
+                    function () { //delete click handler
+                        var index = i;
+                        const dt = new DataTransfer();
+                        const files = fileinput.files;
+                        console.log(files.length);
+
+                        if (index >= 0 && index < files.length) {
+
+                            for (let i = 0; i < files.length; i++) {
+                                if (i !== index) {
+                                    dt.items.add(files[i]);
+                                } else {
+                                    console.log("ignoring file - " + i); 
+                                }
+                            }
+
+                            fileinput.files = dt.files;
+                            updateFileList(fileinput,gallery_id);
+                        }
+                    }
+            );
+        }
+
+        reader.readAsDataURL(file);
+    }
+}
+
+function addImageToGallary(imgName,imgSrc,imgSize,parentDiv, delEventHandler){
+    const div = document.createElement('div');
+    div.classList.add("gallery-item")
+    const divImg = document.createElement('div');
+    divImg.classList.add('image');
+    divImg.innerHTML = `
+        <img src="${imgSrc}" alt="${imgName}">
+    `;
+    // <p><b>${imgName}</b>  <i>[${formatBytes(imgSize)}]</i></p>
+    div.appendChild(divImg);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.classList.add('btn');
+    deleteButton.classList.add('btn-danger');
+    deleteButton.classList.add('btn-sm');
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', delEventHandler);
+    div.appendChild(deleteButton);
+    parentDiv.append(div);
+}
+
+// ---------------------------------------------------

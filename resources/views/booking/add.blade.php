@@ -132,37 +132,38 @@
 
                 <div class="col-lg-3 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Resident Card Details") }}</label>
-                    <!-- <input type="file" name="residency_card" class="col-form-label text-dark custom-file-input" 
-                        style="display:none;" id="file_residency_card">
-                    <label class="btn btn-light form-control font-style custom-file-label" for="file_residency_card" id="label_file_residency_card">Choose file</label> -->
-                    <input type="file" class="form-control font-style" name="residency_card" id="file_residency_card" capture>
-                    @if(@$CustomerData->residency_card != "")
-                    <img src="{{ URL('public') }}/{{ @$CustomerData->residency_card }}" style="width: 100px">
-                    @endif
+                    <input type="file" multiple class="form-control font-style" name="residency_card[]" 
+                            id="file_residency_card" capture onchange="updateFileList(this,'file_residency_card-gallery')"
+                            accept=".jpg,.jpeg,.png" >
+                    <div id="file_residency_card-gallery" class="gallery">
+                    </div>
                 </div>
 
                 <div class="col-lg-3 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Passport Details") }}</label>
-                    <input type="file" class="form-control font-style" name="passport_detail" id="passport_detail">
-                    @if(@$CustomerData->passport_detail != "")
-                    <img src="{{ URL('public') }}/{{ @$CustomerData->passport_detail }}" style="width: 100px" id="img_passport_detail">
-                    @endif
+                    <input type="file" multiple class="form-control font-style" name="passport_detail[]" 
+                            id="file_passport_detail" capture onchange="updateFileList(this,'file_passport_detail-gallery')"
+                            accept=".jpg,.jpeg,.png" >
+                    <div id="file_passport_detail-gallery" class="gallery">
+                    </div>
                 </div>
 
                 <div class="col-lg-3 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Driving License") }} <span class="text-danger">*</span></label>
-                    <input type="file" class="form-control font-style" name="driving_license">
-                    @if(@$CustomerData->driving_license != "")
-                    <img src="{{ URL('public') }}/{{ @$CustomerData->driving_license }}" style="width: 100px">
-                    @endif
+                    <input type="file" multiple class="form-control font-style" name="driving_license[]" 
+                            id="file_driving_license" capture onchange="updateFileList(this,'file_driving_license-gallery')"
+                            accept=".jpg,.jpeg,.png" >
+                    <div id="file_driving_license-gallery" class="gallery">
+                    </div>
                 </div>
 
                 <div class="col-lg-3 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Visa") }}</label>
-                    <input type="file" class="form-control font-style" name="visa_detail">
-                    @if(@$CustomerData->visa_detail != "")
-                    <img src="{{ URL('public') }}/{{ @$CustomerData->visa_detail }}" style="width: 100px">
-                    @endif
+                    <input type="file" multiple class="form-control font-style" name="visa_detail[]" 
+                            id="file_visa_detail" capture onchange="updateFileList(this,'file_visa_detail-gallery')"
+                            accept=".jpg,.jpeg,.png" >
+                    <div id="file_visa_detail-gallery" class="gallery">
+                    </div>
                 </div>
             </div>
         </div>

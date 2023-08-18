@@ -62,9 +62,6 @@
             </div>
         </div>
 
-
-
-
         <div style="float: left; margin-left: 5%; width: 45%;">
             <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 400px;">
                 <div style="flex: 1 1 auto; padding: 1rem 1rem;">
@@ -132,49 +129,92 @@
 
         <div style="clear: both; margin-top: 40px;">&nbsp;</div>
         
-        @if($Booking->customer->residency_card != "")
-        <div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
-            <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;">
-                <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-                    <b>{{ __("Resident Card") }}</b>
-                    <a href="{{ URL('public') }}/{{ $Booking->customer->residency_card }}" target="_blank"><img src="{{ URL('public') }}/{{ $Booking->customer->residency_card }}" style="max-width: 100%"></a>
-                </div>
+        <div class="panel col-lg-3 mb-4">
+            <div class="panel-heading">
+                <b>{{ __("Resident Card") }}</b>
             </div>
+            <div class="panel-body">
+            <div id="file_residency_card-gallery" class="gallery">
+                @if( array_key_exists('residency_card',$CustImagesArr))
+                    @foreach($CustImagesArr['residency_card'] as $CustImg)
+                        <!-- <script>console.log({{ $CustImg }});</script> -->
+                        <div class="gallery-item">
+                            <div class="image">
+                                <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                                    <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                                </a>                        
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+           </div>
         </div>
-        @endif
         
-        @if($Booking->customer->passport_detail != "")
-        <div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
-            <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;">
-                <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-                    <b>{{ __("Passport Details") }}</b>
-                    <a href="{{ URL('public') }}/{{ $Booking->customer->passport_detail }}" target="_blank"><img src="{{ URL('public') }}/{{ $Booking->customer->passport_detail }}" style="max-width: 100%"></a>
-                </div>
+        <div class="panel col-lg-3 mb-4">
+            <div class="panel-heading">
+                <b>{{ __("Passport Details") }}</b>
             </div>
+            <div class="panel-body">
+            <div id="file_residency_card-gallery" class="gallery">
+                @if( array_key_exists('passport_detail',$CustImagesArr))
+                    @foreach($CustImagesArr['passport_detail'] as $CustImg)
+                        <!-- <script>console.log({{ $CustImg }});</script> -->
+                        <div class="gallery-item">
+                            <div class="image">
+                                <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                                    <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                                </a>                        
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+           </div>
         </div>
-        @endif
         
-        @if($Booking->customer->driving_license != "")
-        <div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
-            <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;">
-                <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-                    <b>{{ __("Driving License") }}</b>
-                    <a href="{{ URL('public') }}/{{ $Booking->customer->driving_license }}" target="_blank"><img src="{{ URL('public') }}/{{ $Booking->customer->driving_license }}" style="max-width: 100%"></a>
-                </div>
+        <div class="panel col-lg-3 mb-4">
+            <div class="panel-heading">
+                <b>{{ __("Driving Licence") }}</b>
             </div>
-        </div>
-        @endif
-        
-        @if($Booking->customer->visa_detail != "")
-        <div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
-            <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;">
-                <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-                    <b>{{ __("Visa") }}</b>
-                    <a href="{{ URL('public') }}/{{ $Booking->customer->visa_detail }}" target="_blank"><img src="{{ URL('public') }}/{{ $Booking->customer->visa_detail }}" style="max-width: 100%"></a>
-                </div>
+            <div class="panel-body">
+            <div id="file_residency_card-gallery" class="gallery">
+                @if( array_key_exists('driving_licence',$CustImagesArr))
+                    @foreach($CustImagesArr['driving_licence'] as $CustImg)
+                        <div class="gallery-item">
+                            <div class="image">
+                                <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                                    <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                                </a>                        
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
+           </div>
         </div>
-        @endif
+
+        <div class="panel col-lg-3 mb-4">
+            <div class="panel-heading">
+                <b>{{ __("Visa Detail") }}</b>
+            </div>
+            <div class="panel-body">
+            <div id="file_residency_card-gallery" class="gallery">
+                @if( array_key_exists('visa_detail',$CustImagesArr))
+                    @foreach($CustImagesArr['visa_detail'] as $CustImg)
+                        <!-- <script>console.log({{ $CustImg }});</script> -->
+                        <div class="gallery-item">
+                            <div class="image">
+                                <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                                    <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                                </a>                        
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+           </div>
+        </div>
         
         @if($Booking->car_image != "")
         <div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
