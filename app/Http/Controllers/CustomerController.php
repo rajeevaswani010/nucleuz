@@ -63,9 +63,9 @@ class CustomerController extends Controller
         
         foreach($CheckCustomer as $Cms){
             if(
-                ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->email == $Input["email"])
-                || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
-                || ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"])
+                ($Cms->first_name == $Input["first_name"] && $Cms->email == $Input["email"])
+                || ($Cms->first_name == $Input["first_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+                || ($Cms->first_name == $Input["first_name"] && $Cms->dob == $Input["dob"])
                 // || ($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
                 // || ($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"])
                 // || ($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
@@ -107,8 +107,8 @@ class CustomerController extends Controller
             $CustObj->customer_id = $NewCode;
             $CustObj->title = $Input["title"];
             $CustObj->first_name = $Input["first_name"];
-            $CustObj->middle_name = $Input["middle_name"];
-            $CustObj->last_name = $Input["last_name"];
+            //$CustObj->middle_name = $Input["middle_name"];
+            //$CustObj->last_name = $Input["last_name"];
             $CustObj->permanent_address = $Input["permanent_address"];
             $CustObj->temp_address = $Input["temp_address"];
             $CustObj->nationality = $Input["nationality"];

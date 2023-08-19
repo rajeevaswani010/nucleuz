@@ -36,7 +36,8 @@
 <div style="float: left; width: 45%;">
     <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 400px;">
         <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-            <h2>{{ $Booking->customer->title }} {{ $Booking->customer->first_name }} {{ $Booking->customer->last_name }}</h2>
+            <!--<h2>{{ $Booking->customer->title }} {{ $Booking->customer->first_name }} {{ $Booking->customer->last_name }}</h2> -->
+            <h2>{{ $Booking->customer->title }} {{ $Booking->customer->first_name }}</h2>
             <div class="mt-4"><b>{{ __("Gender") }}</b> {{ $Booking->customer->gender }}</div>
             <div class="mt-2"><b>{{ __("DOB") }}</b> {{ date("d/m/Y", strtotime($Booking->customer->dob)) }}</div>
             <div class="mt-2"><b>{{ __("Nationality") }}</b> {{ $Booking->customer->nationality }}</div>

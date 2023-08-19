@@ -48,7 +48,8 @@ class ReportController extends Controller{
                         ->join('customers', 'customers.id', '=','bookings.customer_id')
                         ->get(['bookings.id','vehicles.make as veh_make','vehicles.model as veh_model','vehicles.variant as veh_variant',
                                 'vehicles.car_type','vehicles.reg_no','customers.first_name AS cust_first_name',
-                                'customers.last_name as cust_last_name','customers.mobile as cust_mobile',
+                                //'customers.last_name as cust_last_name','customers.mobile as cust_mobile',
+                                'customers.mobile as cust_mobile',
                                 'customers.email as cust_email','bookings.pickup_date_time','bookings.dropoff_date'
                             ])  ;
         
@@ -133,7 +134,8 @@ class ReportController extends Controller{
                 $Data = Booking::where('bookings.company_id', session("CompanyLinkID"))->where('bookings.status', 1)
                         ->join('customers','customers.id','=','bookings.customer_id')
                         ->get(['bookings.id','bookings.car_type','customers.first_name AS cust_first_name',
-                                'customers.last_name as cust_last_name','customers.mobile as cust_mobile',
+                                //'customers.last_name as cust_last_name','customers.mobile as cust_mobile',
+                                'customers.mobile as cust_mobile',
                                 'customers.email as cust_email','bookings.pickup_date_time','bookings.dropoff_date'
                             ])  ;
 
@@ -157,7 +159,8 @@ class ReportController extends Controller{
                         ->join('customers', 'customers.id', '=','bookings.customer_id')
                         ->get(['bookings.id','vehicles.make as veh_make','vehicles.model as veh_model','vehicles.variant as veh_variant',
                                 'vehicles.car_type','vehicles.reg_no','customers.first_name AS cust_first_name',
-                                'customers.last_name as cust_last_name','customers.mobile as cust_mobile',
+                                //'customers.last_name as cust_last_name','customers.mobile as cust_mobile',
+                                'customers.mobile as cust_mobile',
                                 'customers.email as cust_email','bookings.pickup_date_time','bookings.dropoff_date'
                             ])  ;
 
@@ -186,7 +189,8 @@ class ReportController extends Controller{
                         ->join('customers', 'customers.id', '=','bookings.customer_id')
                         ->get(['bookings.id','vehicles.make as veh_make','vehicles.model as veh_model','vehicles.variant as veh_variant',
                                 'vehicles.car_type','vehicles.reg_no','customers.first_name AS cust_first_name',
-                                'customers.last_name as cust_last_name','customers.mobile as cust_mobile',
+                                //'customers.last_name as cust_last_name','customers.mobile as cust_mobile',
+                                'customers.mobile as cust_mobile',
                                 'customers.email as cust_email','bookings.pickup_date_time','bookings.dropoff_date',
                                 'bookings.discount_amount','bookings.grand_total'
                             ])  ;

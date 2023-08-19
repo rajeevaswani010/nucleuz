@@ -27,7 +27,8 @@
         @foreach($Data as $DT)
         <tr>
             <td>{{ $DT->id }}</td>
-            <td>{{ $DT->customer->title }} {{ $DT->customer->first_name }} {{ $DT->customer->last_name }}</td>
+            <!--<td>{{ $DT->customer->title }} {{ $DT->customer->first_name }} {{ $DT->customer->last_name }}</td>-->
+            <td>{{ $DT->customer->title }} {{ $DT->customer->first_name }}</td>
             <td>{{ $DT->customer->nationality }}</td>
             <td>{{ $DT->customer->mobile }}</td>
             <td>{{ $DT->customer->email }}</td>

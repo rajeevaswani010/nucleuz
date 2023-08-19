@@ -140,7 +140,8 @@
     <td>B000{{ $DT->id }}</td>
     <td>
         <div class="d-flex flex-column">
-        <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->customer->first_name }} {{ $DT->customer->last_name }}</strong></p>
+        <!--<p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->customer->first_name }} {{ $DT->customer->last_name }}</strong></p> -->
+        <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->customer->first_name }}</strong></p>
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->customer->mobile }}</strong></p>
         <p class="mb-0"><strong class="js-lists-values-employee-name">{{ $DT->customer->email }}</strong></p>
         </div>

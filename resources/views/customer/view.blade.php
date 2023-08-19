@@ -62,7 +62,8 @@
     ?>
     <tr class="font-style" id="customerId-{{$DT->id}}">
     <td>{{ $DT->customer_id }}</td>
-    <td>{{ $DT->title }} {{ $DT->first_name }} {{ $DT->last_name }}</td>
+    <!--<td>{{ $DT->title }} {{ $DT->first_name }} {{ $DT->last_name }}</td> -->
+    <td>{{ $DT->title }} {{ $DT->first_name }}</td>
     <td>{{ $DT->nationality }}</td>
     <td>{{ $DT->email }}</td>
     <td>+{{ $DT->country_code }}{{ $DT->mobile }}</td>

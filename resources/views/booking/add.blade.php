@@ -57,11 +57,11 @@
                 </div>
 
                 <div class="col-lg-3 mb-4">
-                    <label for="subject" class="col-form-label text-dark">{{ __("First Name") }} <span class="text-danger">*</span></label>
+                    <label for="subject" class="col-form-label text-dark">{{ __("Name") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control font-style" name="first_name" id="first_name" value="{{ @$CustomerData->first_name }}" required>
                 </div>
 
-                <div class="col-lg-3 mb-4">
+               <!-- <div class="col-lg-3 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Middle Name") }}</label>
                     <input type="text" class="form-control font-style" name="middle_name" id="middle_name" value="{{ @$CustomerData->middle_name }}">
                 </div>
@@ -69,7 +69,7 @@
                 <div class="col-lg-3 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Last Name") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control font-style" name="last_name" id="last_name" value="{{ @$CustomerData->last_name }}" required>
-                </div>
+                </div> -->
 
                 <div class="col-lg-4 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Gender") }} <span class="text-danger">*</span></label>
@@ -566,8 +566,8 @@
                   $("#first_name").val(JsData.first_name);
                   $("#gender").val(JsData.gender);
                   $("#insurance").val(JsData.insurance);
-                  $("#last_name").val(JsData.last_name);
-                  $("#middle_name").val(JsData.middle_name);
+                  //$("#last_name").val(JsData.last_name);
+                  //$("#middle_name").val(JsData.middle_name);
                   $("#mobile").val(JsData.mobile);
                   $("#country_code").val(JsData.country_code);
                   $("#nationality").val(JsData.nationality);

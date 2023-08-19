@@ -43,11 +43,11 @@
                 </div>
 
                 <div class="col-lg-3 mb-4">
-                    <label>First Name <span class="text-danger">*</span></label>
+                    <label>Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="first_name" value="{{ $Customer->first_name }}" required>
                 </div>
 
-                <div class="col-lg-3 mb-4">
+               <!-- <div class="col-lg-3 mb-4">
                     <label>Middle Name</label>
                     <input type="text" class="form-control" name="middle_name" value="{{ $Customer->middle_name }}">
                 </div>
@@ -55,7 +55,7 @@
                 <div class="col-lg-3 mb-4">
                     <label>Last Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="last_name" value="{{ $Customer->last_name }}" required>
-                </div>
+                </div> -->
 
                 <div class="col-lg-4 mb-4">
                     <label>Gender <span class="text-danger">*</span></label>

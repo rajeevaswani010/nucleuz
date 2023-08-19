@@ -61,7 +61,8 @@
     if($customerTotal!=0){
         $customerArr=DB::table('customers')->where('id',$DT->customer_id)->first();
         $customerCode=$customerArr->customer_id;
-        $customerName=$customerArr->title." ".$customerArr->first_name." ".$customerArr->middle_name." ".$customerArr->last_name;
+        //$customerName=$customerArr->title." ".$customerArr->first_name." ".$customerArr->middle_name." ".$customerArr->last_name; 
+        $customerName=$customerArr->title." ".$customerArr->first_name;
         $customerMobile="+".$customerArr->country_code."-".$customerArr->mobile;
         $customerEmail=$customerArr->email;
     }

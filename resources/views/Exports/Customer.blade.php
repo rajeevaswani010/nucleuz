@@ -15,7 +15,8 @@
     <tbody>
         @foreach($Data as $DT)
         <tr>
-            <td>{{ $DT->title }} {{ $DT->first_name }} {{ $DT->middle_name }} {{ $DT->last_name }}</td>
+            <!--<td>{{ $DT->title }} {{ $DT->first_name }} {{ $DT->middle_name }} {{ $DT->last_name }}</td>-->
+            <td>{{ $DT->title }} {{ $DT->first_name }}</td>
             <td>{{ $DT->permanent_address }}</td>
             <td>{{ $DT->temp_address }}</td>
             <td>{{ $DT->nationality }}</td>
