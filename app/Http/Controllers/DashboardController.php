@@ -92,18 +92,19 @@ class DashboardController extends Controller
 		}
 
 		$query = 'SELECT Month(pickup_date_time) as month, COUNT(*) as count FROM `bookings`'. 
-				' where company_id='.session("CompanyLinkID").' group BY month';
+				' where company_id='.session("CompanyLinkID"). ' AND status !=4'.' group BY month';
+			
 		$BookingData2 = DB::select($query);
-		$months = array("Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec");
+		$months = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
 		$BookingDataArr = collect();
 		foreach($months as $m){
 			$BookingDataArr[$m] = 0;
 		}
 		foreach($BookingData2 as $elmt){
 			$BookingDataArr[$months[$elmt->month-1]] = $elmt->count; 
+			$MonthArray[$months[$elmt->month-1]] = $elmt->count; 
 		}
 		Log::debug(json_encode($BookingDataArr));
-
 		
 		$ActiveAction = "dashboard";
 		

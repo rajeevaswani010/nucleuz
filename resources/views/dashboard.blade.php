@@ -397,7 +397,7 @@
                             'Sep',
                             'Oct',
                             'Nov',
-                            'Dev',
+                            'Dec',
                         ],
                         datasets: [{
                             label: 'Sale Status',
