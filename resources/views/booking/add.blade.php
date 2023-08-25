@@ -36,7 +36,9 @@
                 <div class="col-lg-3">{{ __('Search by Mobile Number or Email') }}</div>
                 <div class="col-lg-6"><input type="text" id="SearchTerm" class="form-control font-style"></div>
                 <div class="col-lg-3">
-                    <button type="button" onclick="SearchCustomer()" class="btn btn-primary">{{ __('Search') }}</button></div>
+                    <button type="button" onclick="SearchCustomer()" class="btn btn-primary">{{ __('Search') }}</button>
+                    <button type="button" onclick="ClearCustomerForm()" class="btn btn-danger">{{ __('Clear Form') }}</button>
+                </div>
             </div>
             <div class="text-danger" id="errormsg"></div>
             <hr>
@@ -136,6 +138,18 @@
                             id="file_residency_card" capture onchange="updateFileList(this,'file_residency_card-gallery')"
                             accept=".jpg,.jpeg,.png" >
                     <div id="file_residency_card-gallery" class="gallery">
+                    @if( array_key_exists('residency_card',$CustImagesArr))
+                    @foreach($CustImagesArr['residency_card'] as $CustImg)
+                        <!-- <script>console.log({{ $CustImg }});</script> -->
+                        <div class="gallery-item">
+                            <div class="image">
+                                <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                                    <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                                </a>                        
+                            </div>
+                        </div>
+                    @endforeach
+                    @endif
                     </div>
                 </div>
 
@@ -145,6 +159,18 @@
                             id="file_passport_detail" capture onchange="updateFileList(this,'file_passport_detail-gallery')"
                             accept=".jpg,.jpeg,.png" >
                     <div id="file_passport_detail-gallery" class="gallery">
+                    @if( array_key_exists('passport_detail',$CustImagesArr))
+                    @foreach($CustImagesArr['passport_detail'] as $CustImg)
+                        <!-- <script>console.log({{ $CustImg }});</script> -->
+                        <div class="gallery-item">
+                            <div class="image">
+                                <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                                    <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                                </a>                        
+                            </div>
+                        </div>
+                    @endforeach
+                    @endif
                     </div>
                 </div>
 
@@ -154,6 +180,18 @@
                             id="file_driving_license" capture onchange="updateFileList(this,'file_driving_license-gallery')"
                             accept=".jpg,.jpeg,.png" >
                     <div id="file_driving_license-gallery" class="gallery">
+                    @if( array_key_exists('driving_license',$CustImagesArr))
+                    @foreach($CustImagesArr['driving_license'] as $CustImg)
+                        <!-- <script>console.log({{ $CustImg }});</script> -->
+                        <div class="gallery-item">
+                            <div class="image">
+                                <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                                    <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                                </a>                        
+                            </div>
+                        </div>
+                    @endforeach
+                    @endif
                     </div>
                 </div>
 
@@ -163,6 +201,18 @@
                             id="file_visa_detail" capture onchange="updateFileList(this,'file_visa_detail-gallery')"
                             accept=".jpg,.jpeg,.png" >
                     <div id="file_visa_detail-gallery" class="gallery">
+                    @if( array_key_exists('visa_detail',$CustImagesArr))
+                    @foreach($CustImagesArr['visa_detail'] as $CustImg)
+                        <!-- <script>console.log({{ $CustImg }});</script> -->
+                        <div class="gallery-item">
+                            <div class="image">
+                                <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                                    <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                                </a>                        
+                            </div>
+                        </div>
+                    @endforeach
+                    @endif
                     </div>
                 </div>
             </div>
@@ -561,6 +611,8 @@
           },
           success: function( data, textStatus, jqXHR ) {
               JsData = JSON.parse(data);
+              //console.log(JsData);
+              $CustomerId = JsData.id;
               if(JsData.title != null){
                   $("#dob").val(JsData.dob);
                   $("#email").val(JsData.email);
@@ -575,8 +627,34 @@
                   $("#permanent_address").val(JsData.permanent_address);
                   $("#temp_address").val(JsData.temp_address);
                   $("#title").val(JsData.title);
-                  $("#label_file_residency_card").html(JsData.residency_card);
-                  $("#img_passport_detail").src = "/public/"+JsData.passport_detail;
+                  //$("#label_file_residency_card").html(JsData.residency_card);
+                  //$("#img_passport_detail").src = "/public/"+JsData.passport_detail;
+
+                  $(".gallery").empty(); //clear off gallery
+                  //get images
+                    $.ajax({
+                        url: "{{ URL('getCustomerImages') }}",
+                        method: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            customerId: $CustomerId,
+                        },
+                        success: function( data, textStatus, jqXHR ) {
+                            JsData = JSON.parse(data);
+                            for (var key in JsData) {
+                                for (var i = 0; i < JsData[key].length; i++) {
+                                    addImageHrefToGallery(JsData[key][i], "file_"+key+"-gallery", null);
+                                }
+                            }
+                        },
+                        error: function( jqXHR, textStatus, errorThrown ) {
+                            alert("fail to get images");
+                            $(".gallery").empty();
+                        }              
+                    });
+
               }else{
                 $("#errormsg").html("Customer Not Found");
               }
@@ -586,6 +664,28 @@
           }
         });
     }
+
+    function ClearCustomerForm(){
+        $("#dob").val(null);
+        $("#email").val(null);
+        $("#first_name").val(null);
+        $("#gender").val(null);
+        $("#insurance").val(null);
+        //$("#last_name").val(JsData.last_name);
+        //$("#middle_name").val(JsData.middle_name);
+        $("#mobile").val(null);
+        $("#country_code").val(null);
+        $("#nationality").val(null);
+        $("#permanent_address").val(null);
+        $("#temp_address").val(null);
+        $("#title").val(null);
+        //$("#label_file_residency_card").html(JsData.residency_card);
+        //$("#img_passport_detail").src = "/public/"+JsData.passport_detail;
+
+        $(".gallery").empty();
+        $("input[type='file']").val("");
+    }
+
 
     $('.number').keyup(function(){
     var val = $(this).val();

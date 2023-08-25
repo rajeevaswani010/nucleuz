@@ -46,7 +46,7 @@ function updateFileList(fileinput,gallery_id) {
         
         //reader onload is called for every file read.. 
         reader.onload = function (e) {
-            addImageToGallary(
+            addImageToGallery(
                 e.target.filename,
                 e.target.result,
                 e.total,
@@ -78,24 +78,47 @@ function updateFileList(fileinput,gallery_id) {
     }
 }
 
-function addImageToGallary(imgName,imgSrc,imgSize,parentDiv, delEventHandler){
-    const div = document.createElement('div');
+function openImage(imgSrc){
+    var image = new Image();
+    image.src = "data:image/jpg;base64," + imgSrc;
+
+    var w = window.open("");
+    w.document.write(image.outerHTML);
+}
+
+function addImageToGallery(imgName,imgSrc,imgSize,parentDiv, delEventHandler){
+    const div = document.createElement('div');    
     div.classList.add("gallery-item")
     const divImg = document.createElement('div');
     divImg.classList.add('image');
     divImg.innerHTML = `
-        <img src="${imgSrc}" alt="${imgName}">
+        <img src="${imgSrc}" alt="${imgName}" />
     `;
     // <p><b>${imgName}</b>  <i>[${formatBytes(imgSize)}]</i></p>
     div.appendChild(divImg);
 
-    const deleteButton = document.createElement('button');
-    deleteButton.classList.add('btn');
-    deleteButton.classList.add('btn-danger');
-    deleteButton.classList.add('btn-sm');
-    deleteButton.textContent = 'Delete';
-    deleteButton.addEventListener('click', delEventHandler);
-    div.appendChild(deleteButton);
+    // const deleteButton = document.createElement('button');
+    // deleteButton.classList.add('btn');
+    // deleteButton.classList.add('btn-danger');
+    // deleteButton.classList.add('btn-sm');
+    // deleteButton.textContent = 'Delete';
+    // deleteButton.addEventListener('click', delEventHandler);
+    // div.appendChild(deleteButton);
+    parentDiv.append(div);
+}
+
+function addImageHrefToGallery(imgLink,parentDivId,delEventHandler){
+    const parentDiv = $("#"+parentDivId);
+    const div = document.createElement('div');    
+    div.classList.add("gallery-item")
+    const divImg = document.createElement('div');
+    divImg.classList.add('image');
+    divImg.innerHTML = `
+            <a href="/public/${imgLink}" target="_blank">
+                <img src="/public/${imgLink}" style="max-width: 100%" />
+            </a>                        
+    `;
+    div.appendChild(divImg);
     parentDiv.append(div);
 }
 

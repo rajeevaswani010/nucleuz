@@ -103,6 +103,7 @@ class BookingController extends Controller
         $CustomerData = array();
         $Requirements = array();
         $InviteId = 0;//default  0 means no invite
+        $CustImagesArr = [];
         if (array_key_exists("inviteId",$Input)){
             $InviteId = $Input["inviteId"];
             $InviteObj = BookingInvite::where("company_id", session("CompanyLinkID"))->find($InviteId);
@@ -111,7 +112,17 @@ class BookingController extends Controller
                 Log::debug("customerid - ".$CustomerID);
                 $CustomerData = Customer::where("company_id", session("CompanyLinkID"))->find($CustomerID);
 
-                Log::debug($InviteObj->requirements);
+                $CustomerImages = CustomerImages::select("type","link")->where("company_id", session("CompanyLinkID"))->where('customer_id',$CustomerID)->get();
+                foreach ($CustomerImages as $imageRow) {
+                    $type = $imageRow->type;
+                    if(!isset($CustImagesArr[$type])){
+                        $CustImagesArr[$type] = []; 
+                    }
+                    array_push($CustImagesArr[$type], $imageRow->link);
+                }
+                // Log::debug($CustImagesArr);        
+
+                // Log::debug($InviteObj->requirements);
                 $arr= explode("|", $InviteObj->requirements);
                 foreach($arr as $item){
                     $arr2 = explode("=",$item);
@@ -126,7 +137,7 @@ class BookingController extends Controller
         $AllVehicles = Vehicle::where("company_id", session("CompanyLinkID"))->get();
         $AllPricing = Pricing::where("company_id", session("CompanyLinkID"))->get();
         $Conuntry = Country::orderBy("name")->get();
-        return view('booking.add', compact("ActiveAction", "AllVehicles", "AllPricing", "CustomerData", "Conuntry", "Requirements", "InviteId"));
+        return view('booking.add', compact("ActiveAction", "AllVehicles", "AllPricing", "CustomerData", "CustImagesArr", "Conuntry", "Requirements", "InviteId"));
     }
 
     /**
@@ -211,10 +222,27 @@ class BookingController extends Controller
            $CustObj->save();
            $CustomerID = $CustObj->id;
 
-           if(sizeof($request->file('residency_card')) > 0){
+        }else{
+
+            $UpdatedInput = $this->unset_variables($Input);
+            Log::debug($UpdatedInput); //just check what is there.. 
+            Customer::where('id', $CustomerID)->update($UpdatedInput);
+            $Customer = Customer::find($CustomerID);
+        }
+
+
+        if( $Input["invite_id"] == "" ) {  // TODO this hack has to be removed
+            Log::debug("invite id is null");
+
+            //this section has to be in separte api... upload files.. 
+            CustomerImages::where('customer_id',$CustomerID)->delete();
+
+            //upload files..
+            if($request->file('residency_card') && sizeof($request->file('residency_card')) > 0){
                 for($i = 0; $i < sizeof($request->file('residency_card')); $i++ ){
                     $CustImages = new CustomerImages();
                     $CustImages->customer_id = $CustomerID;
+                    $CustImages->company_id = session("CompanyLinkID");
                     $CustImages->type = "residency_card";
 
                     $path = $request->file('residency_card')[$i]->store('CustomersImages');
@@ -223,10 +251,11 @@ class BookingController extends Controller
                 }
             }
 
-            if(sizeof($request->file('passport_detail')) > 0){
+            if($request->file('passport_detail') && sizeof($request->file('passport_detail')) > 0){
                 for($i = 0; $i < sizeof($request->file('passport_detail')); $i++ ){
                     $CustImages = new CustomerImages();
                     $CustImages->customer_id = $CustomerID;
+                    $CustImages->company_id = session("CompanyLinkID");
                     $CustImages->type = "passport_detail";
 
                     $path = $request->file('passport_detail')[$i]->store('CustomersImages');
@@ -235,10 +264,11 @@ class BookingController extends Controller
                 }
             }
 
-            if(sizeof($request->file('driving_license')) > 0){
+            if($request->file('driving_license') && sizeof($request->file('driving_license')) > 0){
                 for($i = 0; $i < sizeof($request->file('driving_license')); $i++ ){
                     $CustImages = new CustomerImages();
                     $CustImages->customer_id = $CustomerID;
+                    $CustImages->company_id = session("CompanyLinkID");
                     $CustImages->type = "driving_license";
 
                     $path = $request->file('driving_license')[$i]->store('CustomersImages');
@@ -247,10 +277,11 @@ class BookingController extends Controller
                 }
             }
 
-            if(sizeof($request->file('visa_detail')) > 0){
+            if($request->file('visa_detail') && sizeof($request->file('visa_detail')) > 0){
                 for($i = 0; $i < sizeof($request->file('visa_detail')); $i++ ){
                     $CustImages = new CustomerImages();
                     $CustImages->customer_id = $CustomerID;
+                    $CustImages->company_id = session("CompanyLinkID");
                     $CustImages->type = "visa_detail";
 
                     $path = $request->file('visa_detail')[$i]->store('CustomersImages');
@@ -258,16 +289,10 @@ class BookingController extends Controller
                     $CustImages->save();
                 }
             }
-
-            Log::debug("bookingcontroller store  new CustomerID - ".$CustomerID);
-        }else{
-
-            $UpdatedInput = $this->unset_variables($Input);
-            Log::debug($UpdatedInput); //just check what is there.. 
-            Customer::where('id', $CustomerID)->update($UpdatedInput);
-            $Customer = Customer::find($CustomerID);
+        }  else {
+            Log::debug("booking for invite id - ".$Input["invite_id"]);
         }
-        
+
         if($Input["additional_kilometers_amount"] <= 0){
             return json_encode(array("Status" =>  0, "Message" => "Additional KM Amount Must Be > 0"));
         }
@@ -346,14 +371,13 @@ class BookingController extends Controller
         $BookingObj->save();
 
         $InviteId = $Input["invite_id"];
-        if($InviteId != 0){
+        if($InviteId != 0){ 
             //lets not delete but update invite obj.. 
             //BookingInvite::where('id',$InviteId)->delete();
-            BookingInvite::where('id',$InviteId)->update(['status' => 2, 'link' => "" ]);
+            BookingInvite::where('id',$InviteId)->update(['status' => 2, 'link' => "", 'booking_id' => $BookingObj->id ]);
         }
 
         $BookingObj = Booking::find($BookingObj->id);
-
         $data = array("Booking" => $BookingObj);
         try {
             Mail::send("EmailTemplates.Booking", $data, function ($m) use($BookingObj){
@@ -430,7 +454,6 @@ class BookingController extends Controller
         }
         
         $Booking = Booking::find($id);
-        $Customer = Customer::find($Booking->customer_id);
         $CustomerImages = CustomerImages::select("type","link")->where('customer_id',$Booking->customer_id)->get();
         $CustImagesArr = [];
         foreach ($CustomerImages as $imageRow) {
@@ -440,8 +463,7 @@ class BookingController extends Controller
             }
             array_push($CustImagesArr[$type], $imageRow->link);
         }
-        // Log::debug($Customer);
-        // Log::debug($CustImagesArr);
+        Log::debug($CustImagesArr);
 
         $ActiveAction = "booking";
         Log::debug("bookingcontroller edit - exit");

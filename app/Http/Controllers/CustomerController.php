@@ -16,6 +16,7 @@ use App\Models\Notification;
 use App\Models\Pricing;
 use App\Models\Office;
 use App\Export\CustomerExport;
+use App\Models\CustomerImages;
 
 use Log;
 use DB;
@@ -44,11 +45,10 @@ class CustomerController extends Controller
             $Conuntry = Country::orderBy("name")->get();
             $VehicleTypes = DB::table('vehicles')
                         ->selectRaw('car_type as car_type')
-                        ->where("company_id",session("CompanyLinkID"))
+                        ->where("company_id",session("CompanyLinkID"))  //TODO remove session information from here.. store this info in invite only.. 
                         ->groupBy('car_type')
                         ->orderBy('car_type')
                         ->get();
-            //Log::info(json_encode($VehicleTypes));
 
             return view("CustomerRegister", compact("InviteObj", "Customer" , "Conuntry", "VehicleTypes"));
         }
@@ -120,28 +120,9 @@ class CustomerController extends Controller
             $CustObj->email = $Input["email"];
             $CustObj->insurance = $Input["insurance"];
 
-            if($request->file('residency_card') != null){
-                $path = $request->file('residency_card')->store('CustomersImages');
-                $CustObj->residency_card = $path;
-            }
-
-            if($request->file('driving_license') != null){
-                $path = $request->file('driving_license')->store('CustomersImages');
-                $CustObj->driving_license = $path;
-            }
-
-            if($request->file('passport_detail') != null){
-                $path = $request->file('passport_detail')->store('CustomersImages');
-                $CustObj->passport_detail = $path;
-            }
-
-            if($request->file('visa_detail') != null){
-                $path = $request->file('visa_detail')->store('CustomersImages');
-                $CustObj->visa_detail = $path;
-            }
-
             $CustObj->save();
             $CustomerID = $CustObj->id;
+                        
             Log::info('customer id: '.$CustomerID);
         }else{
             Log::debug("customercontroller old CustomerID - ".$CustomerID);
@@ -149,10 +130,66 @@ class CustomerController extends Controller
             Customer::where('id', $CustomerID)->update($UpdatedInput);
             $Customer = Customer::find($CustomerID);
             Log::debug("customercontroller updated dob  - ".$Customer->dob);
-
+            Log::debug($Customer);
         }
 
-        date_default_timezone_set("Asia/Muscat");# setting current time zone
+        CustomerImages::where('customer_id',$CustomerID)->delete();
+
+        //upload files..
+        if( $request->file('residency_card') && sizeof($request->file('residency_card')) > 0){
+            for($i = 0; $i < sizeof($request->file('residency_card')); $i++ ){
+                $CustImages = new CustomerImages();
+                $CustImages->customer_id = $CustomerID;
+                $CustImages->company_id = session("CompanyLinkID");
+                $CustImages->type = "residency_card";
+
+                $path = $request->file('residency_card')[$i]->store('CustomersImages');
+                $CustImages->link = $path;
+                $CustImages->save();
+            }
+        }
+
+        if($request->file('passport_detail') && sizeof($request->file('passport_detail')) > 0){
+            for($i = 0; $i < sizeof($request->file('passport_detail')); $i++ ){
+                $CustImages = new CustomerImages();
+                $CustImages->customer_id = $CustomerID;
+                $CustImages->company_id = session("CompanyLinkID");
+                $CustImages->type = "passport_detail";
+
+                $path = $request->file('passport_detail')[$i]->store('CustomersImages');
+                $CustImages->link = $path;
+                $CustImages->save();
+            }
+        }
+
+        if($request->file('driving_license') && sizeof($request->file('driving_license')) > 0){
+            for($i = 0; $i < sizeof($request->file('driving_license')); $i++ ){
+                $CustImages = new CustomerImages();
+                $CustImages->customer_id = $CustomerID;
+                $CustImages->company_id = session("CompanyLinkID");
+                $CustImages->type = "driving_license";
+
+                $path = $request->file('driving_license')[$i]->store('CustomersImages');
+                $CustImages->link = $path;
+                $CustImages->save();
+            }
+        }
+
+        if($request->file('visa_detail') && sizeof($request->file('visa_detail')) > 0){
+            for($i = 0; $i < sizeof($request->file('visa_detail')); $i++ ){
+                $CustImages = new CustomerImages();
+                $CustImages->customer_id = $CustomerID;
+                $CustImages->company_id = session("CompanyLinkID");
+                $CustImages->type = "visa_detail";
+
+                $path = $request->file('visa_detail')[$i]->store('CustomersImages');
+                $CustImages->link = $path;
+                $CustImages->save();
+            }
+        }
+
+        date_default_timezone_set("Asia/Muscat");# setting current time zone  ///   this is hack fix it putting this property in settings
+        
         if($Input["PickupDate"]." ".$Input["PickupTime"] < date("Y-m-d H:i:s")){
             return json_encode(array("Status" =>  0, "Message" => "Pickup Date Can't Be in Past"));
         }
@@ -269,6 +306,20 @@ class CustomerController extends Controller
         }else{
             return json_encode(array());
         }
+    }
+
+    public function getImages(Request $request){
+        $CustImages = CustomerImages::where("company_id", session("CompanyLinkID"))->where('customer_id',$request->customerId)->get();
+        $response = [];
+		foreach($CustImages as $Img){
+            if (!isset($response[$Img->type])){
+                $response[$Img->type] = [];
+            }
+            array_push($response[$Img->type],$Img->link);
+        }
+
+        Log::debug($response);
+        return json_encode($response);
     }
 
     /**
