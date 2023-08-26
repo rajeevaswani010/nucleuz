@@ -95,6 +95,7 @@ Route::get('bookinginvoice', [BookingController::class, 'BookingInvoice']);
 
 Route::get('customer/Exports', [CustomerController::class, 'Exports']);
 Route::post('CustomerSearch', [CustomerController::class, 'Search']);
+Route::post('getCustomerImages', [CustomerController::class, 'getImages']);
 Route::resource('customer', CustomerController::class);
 Route::post('customer/delete', [CustomerController::class,'delete']);
 Route::resource('brand', BrandController::class);
