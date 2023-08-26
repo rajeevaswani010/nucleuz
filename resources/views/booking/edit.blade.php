@@ -35,11 +35,11 @@
         
                     @if($Booking->status != 4)
                         @if($Booking->pickup_date_time > date("Y-m-d H:i:s") && $Booking->status != 3)
-                        <div class="float-right"><a href="{{ URL('booking') }}/{{ $Booking->id }}"><button class="btn btn-success">Assign Vehicle</button></a></div>
+                        <div class="float-right"><a href="{{ URL('booking') }}/{{ $Booking->id }}"><button class="btn btn-success">{{ __("Assign Vehicle") }}</button></a></div>
                         @endif
                         
                         @if($Booking->status == 1)
-                        <div class="float-right mr-5"><a href="{{ URL('BookingCancel') }}/{{ $Booking->id }}" onClick="return cancelBooking()"><button class="btn btn-danger">Cancel Booking</button></a></div>
+                        <div class="float-right mr-5"><a href="{{ URL('BookingCancel') }}/{{ $Booking->id }}" onClick="return cancelBooking()"><button class="btn btn-danger">{{ __("Cancel Booking") }}</button></a></div>
                         @endif
                     @endif
                     
