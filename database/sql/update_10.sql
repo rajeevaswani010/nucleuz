@@ -27,6 +27,9 @@ CREATE TABLE `booking_images` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+
+ALTER TABLE customers ALTER COLUMN last_name DROP DEFAULT;
+
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `customerImageMigration`()
 BEGIN
