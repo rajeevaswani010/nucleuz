@@ -85,16 +85,17 @@
 <!--------------------- Start Dashboard ----------------------------------->
     <li class="dash-item dash-hasmenu dash-trigger">
 
-    <a href="#!" class="dash-link "><span class="dash-micon"><i class="ti ti-home"></i></span><span class="dash-mtext">Dashboard</span>
-        <span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
+    <a href="{{ URL('dashboard') }}" class="dash-link "><span class="dash-micon"><i class="ti ti-home"></i></span><span class="dash-mtext">Dashboard</span>
+        <!-- <span class="dash-arrow"><i data-feather="chevron-right"></i></span> -->
+    </a>
 
-    <ul class="dash-submenu">
+    <!-- <ul class="dash-submenu">
 
             
                <li class="dash-item @if($ActiveAction == 'dashboard') active @endif">
                     <a class="dash-link" href="{{ URL('dashboard') }}">Overview</a>
              </li>                                       
-    </ul>
+    </ul> -->
 </li>
 
     @if(session("AdminRole") == 1)

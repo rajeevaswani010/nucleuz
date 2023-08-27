@@ -15,6 +15,17 @@ CREATE TABLE `customer_images` (
   `updated_at` timestamp NULL DEFAULT NULL
 );
 
+CREATE TABLE `booking_images` (
+  `id` int(11) NOT NULL,
+  `booking_id` int(11) NOT NULL,
+  `company_id` int(11) NOT NULL,
+  `vehicle_id` int(11) NOT NULL,
+  `type` varchar(64) NOT NULL,
+  `caption` varchar(512) DEFAULT NULL COMMENT 'caption for image type "others"',
+  `link` varchar(256) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `customerImageMigration`()

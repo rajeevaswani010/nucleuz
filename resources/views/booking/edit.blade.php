@@ -129,6 +129,7 @@
 
         <div style="clear: both; margin-top: 40px;">&nbsp;</div>
         
+        <div class="row card-body">
         <div class="panel col-lg-3 mb-4">
             <div class="panel-heading">
                 <b>{{ __("Resident Card") }}</b>
@@ -156,7 +157,7 @@
                 <b>{{ __("Passport Details") }}</b>
             </div>
             <div class="panel-body">
-            <div id="file_residency_card-gallery" class="gallery">
+            <div id="file_passport_detail-gallery" class="gallery">
                 @if( array_key_exists('passport_detail',$CustImagesArr))
                     @foreach($CustImagesArr['passport_detail'] as $CustImg)
                         <!-- <script>console.log({{ $CustImg }});</script> -->
@@ -175,12 +176,12 @@
         
         <div class="panel col-lg-3 mb-4">
             <div class="panel-heading">
-                <b>{{ __("Driving Licence") }}</b>
+                <b>{{ __("Driving License") }}</b>
             </div>
             <div class="panel-body">
-            <div id="file_residency_card-gallery" class="gallery">
-                @if( array_key_exists('driving_licence',$CustImagesArr))
-                    @foreach($CustImagesArr['driving_licence'] as $CustImg)
+            <div id="file_driving_license-gallery" class="gallery">
+                @if( array_key_exists('driving_license',$CustImagesArr))
+                    @foreach($CustImagesArr['driving_license'] as $CustImg)
                         <div class="gallery-item">
                             <div class="image">
                                 <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
@@ -194,12 +195,12 @@
            </div>
         </div>
 
-        <div class="panel col-lg-3 mb-4">
+        <div class="panel col-lg-3 mb-4 mt-4">
             <div class="panel-heading">
                 <b>{{ __("Visa Detail") }}</b>
             </div>
             <div class="panel-body">
-            <div id="file_residency_card-gallery" class="gallery">
+            <div id="file_visa_detail-gallery" class="gallery">
                 @if( array_key_exists('visa_detail',$CustImagesArr))
                     @foreach($CustImagesArr['visa_detail'] as $CustImg)
                         <!-- <script>console.log({{ $CustImg }});</script> -->
@@ -211,21 +212,43 @@
                             </div>
                         </div>
                     @endforeach
-                @endif
+                @endif 
             </div>
            </div>
         </div>
-        
+        </div>
         @if($Booking->car_image != "")
-        <div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
+        <!-- <div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
             <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;">
                 <div style="flex: 1 1 auto; padding: 1rem 1rem;">
                     <b>{{ __("Car Image") }}</b>
                     <a href="{{ URL('public') }}/{{ $Booking->car_image }}" target="_blank"><img src="{{ URL('public') }}/{{ $Booking->car_image }}" style="max-width: 100%"></a>
                 </div>
             </div>
+        </div> -->
+        <div class="panel card-body col-lg-12 mb-4 mt-4">
+            <div class="panel-heading">
+                <b>{{ __("Car Image (Assign)") }}</b>
+            </div>
+            <div class="panel-body">
+            <div id="file_car_image-gallery" class="gallery">
+                @if( array_key_exists('car_image',$BookingImagesArr))
+                    @foreach($BookingImagesArr['car_image'] as $BookingImg)
+                        <div class="gallery-item">
+                            <div class="image">
+                                <a href="{{ URL('public') }}/{{ $BookingImg }}" target="_blank">
+                                    <img src="{{ URL('public') }}/{{ $BookingImg }}" style="max-width: 100%">
+                                </a>                        
+                            </div>
+                        </div>
+                    @endforeach
+                @endif 
+            </div>
+           </div>
         </div>
         @endif
+
+
 
         <div class="clearfix"></div>
 
@@ -238,19 +261,40 @@
     @endif
     
     @if($Booking->status == 3)
+     <!-- || ($Booking->status == 2 && $Booking->drop_off_confirm == 1)) -->
     <div class="card">
         <div class="card-body">
             <h3>{{ __("Drop off Detail") }}</h3>
             
             <div><b>{{ __("KM at time of Drop Off") }} :</b> {{ $Booking->km_drop_time }}</div>
             <div><b>{{ __("Dmage") }} :</b> {{ ($Booking->dmage == 0) ? "No Damage" : "Damage" }}</div>
-            <div><b>{{ __("Final Amount Paid") }} :</b> OMR {{ number_format($Booking->final_amount_paid, 2) }}</div>
-            @if($Booking->damge_image != "")
+            <div><b>{{ __("Final Amount Paid") }} :</b> OMR {{ $Booking->final_amount_paid }}</div>
+            <!-- @if($Booking->damge_image != "")
             <div class="mt-3">
                 <b>{{ __("Car Image") }}</b>
                 <a href="{{ URL('public') }}/{{ $Booking->damge_image }}" target="_blank"><img src="{{ URL('public') }}/{{ $Booking->damge_image }}" style="max-width: 100px"></a>
             </div>
-            @endif
+            @endif -->
+            <div class="panel col-lg-12 mb-4 mt-4">
+            <div class="panel-heading">
+                <b>{{ __("Car Image (Drop)") }}</b>
+            </div>
+            <div class="panel-body">
+            <div id="file_damge_image-gallery" class="gallery">
+                @if( array_key_exists('damge_image',$BookingImagesArr))
+                    @foreach($BookingImagesArr['damge_image'] as $BookingImg)
+                        <div class="gallery-item">
+                            <div class="image">
+                                <a href="{{ URL('public') }}/{{ $BookingImg }}" target="_blank">
+                                    <img src="{{ URL('public') }}/{{ $BookingImg }}" style="max-width: 100%">
+                                </a>                        
+                            </div>
+                        </div>
+                    @endforeach
+                @endif 
+            </div>
+           </div>
+        </div>
         </div>
     </div>
     @endif
@@ -321,9 +365,29 @@
             <input type="radio" name="dmage" value="1"> {{ __("Damage") }}
         </div>
 
-        <div class="col-lg-6 mb-4">
+        <!-- <div class="col-lg-6 mb-4">
             <label>{{ __("Image of Car While Drop") }} <span class="text-danger">*</span></label>
             <input type="file" class="form-control" name="damge_image" required>
+        </div> -->
+        <div class="col-lg-3 mb-4">
+            <label for="subject" class="col-form-label text-dark">{{ __("Image of Car While Drop") }} <span class="text-danger">*</span></label>
+            <input type="file" multiple class="form-control font-style" name="damge_image[]" 
+                    id="file_damge_image" capture onchange="updateFileList(this,'file_damge_image-gallery')"
+                    accept=".jpg,.jpeg,.png" >
+        </div>
+        <div id="file_damge_image-gallery" class="gallery">
+            @if( array_key_exists('damge_image',$BookingImagesArr))
+            @foreach($BookingImagesArr['damge_image'] as $BookingImg)
+                <!-- <script>console.log({{ $CustImg }});</script> -->
+                <div class="gallery-item">
+                    <div class="image">
+                        <a href="{{ URL('public') }}/{{ $BookingImg }}" target="_blank">
+                            <img src="{{ URL('public') }}/{{ $BookingImg }}" style="max-width: 100%">
+                        </a>                        
+                    </div>
+                </div>
+            @endforeach
+            @endif
         </div>
         
     </div>
@@ -340,7 +404,7 @@
     <div class="row">
         <div class="col-lg-6 mb-4">
             <label>{{ __("Final Amount Paid") }} <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="final_amount_paid" readonly required value="{{ number_format(($Booking->grand_total - $Booking->advance_amount), 2) }}" id="final_amount_paid">
+            <input type="number" class="form-control" name="final_amount_paid" readonly required value="{{ number_format(($Booking->grand_total - $Booking->advance_amount), 2) }}" id="final_amount_paid">
         </div>
     </div>
 

@@ -18,6 +18,7 @@ use App\Models\Booking;
 use App\Models\BookingInvite;
 use App\Models\Customer;
 use App\Models\CustomerImages;
+use App\Models\BookingImages;
 use App\Models\Office;
 use App\Models\CarType;
 
@@ -186,7 +187,7 @@ class BookingController extends Controller
                 return json_encode(array("Status" =>  0, "Message" => "Upload Driving License File"));
             }
 
-            if($request->file('passport_detail')[0] == null && $request->file('residency_card') == null){
+            if($request->file('passport_detail')[0] == null && $request->file('residency_card')[0] == null){
                 return json_encode(array("Status" =>  0, "Message" => "Upload Passport File or Residency Card"));
             }
             
@@ -223,7 +224,6 @@ class BookingController extends Controller
            $CustomerID = $CustObj->id;
 
         }else{
-
             $UpdatedInput = $this->unset_variables($Input);
             Log::debug($UpdatedInput); //just check what is there.. 
             Customer::where('id', $CustomerID)->update($UpdatedInput);
@@ -231,11 +231,11 @@ class BookingController extends Controller
         }
 
 
-        if( $Input["invite_id"] == "" ) {  // TODO this hack has to be removed
+        if( $Input["invite_id"] == 0 ) {  // TODO this hack has to be removed
             Log::debug("invite id is null");
 
             //this section has to be in separte api... upload files.. 
-            CustomerImages::where('customer_id',$CustomerID)->delete();
+            //CustomerImages::where('customer_id',$CustomerID)->delete();    //right now disabled file deleteion.  TODO fix this behavior
 
             //upload files..
             if($request->file('residency_card') && sizeof($request->file('residency_card')) > 0){
@@ -406,6 +406,7 @@ class BookingController extends Controller
     {
         Log::debug("bookingcontroller show - enter");
         // echo 'sdfjkdsl';die();
+
         $Booking = Booking::find($id);
         $Booking_pickupdate = substr($Booking->pickup_date_time,0,10)." 00:00:00";
         $Booking_dropoffdate = substr($Booking->dropoff_date,0,10)." 23:59:59";
@@ -434,9 +435,20 @@ class BookingController extends Controller
         $AllVehicles = Vehicle::whereNotIn("id", $BookedVehiclesId)->where("car_type", $Booking->car_type)->where("company_id", $Booking->company_id)->get();
         $ActiveAction = "booking";
 
+        $CustomerImages = CustomerImages::select("type","link")->where('customer_id',$Booking->customer_id)->get();
+        $CustImagesArr = [];
+        foreach ($CustomerImages as $imageRow) {
+            $type = $imageRow->type;
+            if(!isset($CustImagesArr[$type])){
+                $CustImagesArr[$type] = []; 
+            }
+            array_push($CustImagesArr[$type], $imageRow->link);
+        }
+        Log::debug($CustImagesArr);
+
         Log::debug("bookingcontroller show - exit");
 
-        return view('booking.show', compact("Booking", "ActiveAction", "AllVehicles"));
+        return view('booking.show', compact("Booking", "ActiveAction", "AllVehicles", "CustImagesArr"));
     }
 
     /**
@@ -465,9 +477,20 @@ class BookingController extends Controller
         }
         Log::debug($CustImagesArr);
 
+        $BookingImages = BookingImages::select("type","link")->where('booking_id',$Booking->id)->get();
+        $BookingImagesArr = [];
+        foreach ($BookingImages as $imageRow) {
+            $type = $imageRow->type;
+            if(!isset($BookingImagesArr[$type])){
+                $BookingImagesArr[$type] = []; 
+            }
+            array_push($BookingImagesArr[$type], $imageRow->link);
+        }
+        Log::debug($BookingImagesArr);
+
         $ActiveAction = "booking";
         Log::debug("bookingcontroller edit - exit");
-        return view('booking.edit', compact("Booking", "CustImagesArr", "ActiveAction"));
+        return view('booking.edit', compact("Booking", "CustImagesArr", "BookingImagesArr", "ActiveAction"));
     }
 
     /**
@@ -487,7 +510,8 @@ class BookingController extends Controller
         $Booking = Booking::find($id);
 
         $Input = $request->all();
-
+        Log::debug($Input);
+        
         if(isset($Input["km_drop_time"])){
             Log::debug("if discount_amount :".$Input["discount_amount"]);
             if($Input["km_drop_time"] < $Booking->km_reading_pickup){
@@ -550,9 +574,24 @@ class BookingController extends Controller
         unset($Input["_method"]);
         unset($Input["_token"]);
         
-        if($request->file('damge_image') != null){
-            $path = $request->file('damge_image')->store('BookimngImages');
-            $Input['damge_image'] = $path;
+        // if($request->file('damge_image') != null){
+        //     $path = $request->file('damge_image')->store('BookimngImages');
+        //     $Input['damge_image'] = $path;
+        // }
+        //upload car damge  files..
+        if($request->file('damge_image') && sizeof($request->file('damge_image')) > 0){
+            for($i = 0; $i < sizeof($request->file('damge_image')); $i++ ){
+                $BookingImages = new BookingImages();
+                $BookingImages->booking_id = $Booking->id;
+                $BookingImages->company_id = session("CompanyLinkID");
+                $BookingImages->vehicle_id = $Booking->vehicle_id;
+                $BookingImages->type = "damge_image";
+
+                $path = $request->file('damge_image')[$i]->store('BookimngImages');
+                Log::debug($path);
+                $BookingImages->link = $path;
+                $BookingImages->save();
+            }
         }
         
         
@@ -561,19 +600,35 @@ class BookingController extends Controller
         }
         
         
-        if($request->file('car_image') != null){
-            $path = $request->file('car_image')->store('BookimngImages');
-            $Input['car_image'] = $path;
-        }
+        // if($request->file('car_image') != null){
+        //     $path = $request->file('car_image')->store('BookimngImages');
+        //     $Input['car_image'] = $path;
+        // }
         
         if(isset($Input["km_reading_pickup"])){
             $Input["status"] = 2;
         }
 
+        // $Input["final_amount_paid"] = doubleval(str_replace(',','',$Input["final_amount_paid"]));
         Booking::where('id', $id)->update($Input);
         $Booking = Booking::find($id);
         
-        
+        //upload car image files..
+        if($request->file('car_image') && sizeof($request->file('car_image')) > 0){
+            for($i = 0; $i < sizeof($request->file('car_image')); $i++ ){
+                $BookingImages = new BookingImages();
+                $BookingImages->booking_id = $Booking->id;
+                $BookingImages->company_id = session("CompanyLinkID");
+                $BookingImages->vehicle_id = $Booking->vehicle_id;
+                $BookingImages->type = "car_image";
+
+                $path = $request->file('car_image')[$i]->store('BookimngImages');
+                Log::debug($path);
+                $BookingImages->link = $path;
+                $BookingImages->save();
+            }
+        }
+                
         if(isset($Input["final_amount_paid"])){
             $data = array("Booking" => $Booking);
             Mail::send("EmailTemplates.BookingComplete", $data, function ($m) use($Booking){

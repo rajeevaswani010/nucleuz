@@ -21,6 +21,10 @@ use DB;
 class DashboardController extends Controller
 {
 	public function index(){
+		if(session("AdminID") == ""){
+            return redirect("/");
+        }
+
 		$TodayPickup = Booking::where("company_id", session("CompanyLinkID"))->where("pickup_date_time", ">=", date("Y-m-d")." 00:00:00")->where("pickup_date_time", "<=", date("Y-m-d")." 23:59:59")->where("status", "!=", 4)->count();
 		
 		$TomorrowPickup = Booking::where("company_id", session("CompanyLinkID"))->where("pickup_date_time", ">=", date("Y-m-d", strtotime("+1 day"))." 00:00:00")->where("pickup_date_time", "<=", date("Y-m-d", strtotime("+1 day"))." 23:59:59")->where("status", "!=", 4)->count();
@@ -34,7 +38,7 @@ class DashboardController extends Controller
 		// 			->where("pickup_date_time","<=",$dropDateTime)->where("dropoff_date",">=",$pickupDateTime)->count();
 		// $VhIDs = Vehicle::select("id")->where("company_id", session("CompanyLinkID"))->count();
 		$GetAllVehicles = DB::table('vehicles')
-					->selectRaw('lower(car_type) as car_type, count(*) as count')
+					->selectRaw('car_type as car_type, count(*) as count')
 					->where("company_id",session("CompanyLinkID"))
 					->orderBy('car_type')
 					->count();

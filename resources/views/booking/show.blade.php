@@ -102,49 +102,93 @@
 
 <div style="clear: both; margin-top: 40px;">&nbsp;</div>
 
-@if($Booking->customer->residency_card != "")
-<div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
-    <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;">
-        <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-            <b>{{ __("Resident Card") }}</b>
-            <a href="{{ URL('public') }}/{{ $Booking->customer->residency_card }}" target="_blank"><img src="{{ URL('public') }}/{{ $Booking->customer->residency_card }}" style="max-width: 100%"></a>
-        </div>
-    </div>
-</div>
-@endif
 
-@if($Booking->customer->passport_detail != "")
-<div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
-    <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;">
-        <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-            <b>{{ __("Passport Details") }}</b>
-            <a href="{{ URL('public') }}/{{ $Booking->customer->passport_detail }}" target="_blank"><img src="{{ URL('public') }}/{{ $Booking->customer->passport_detail }}" style="max-width: 100%"></a>
-        </div>
+<div class="panel col-lg-3 mb-4">
+    <div class="panel-heading">
+        <b>{{ __("Resident Card") }}</b>
+    </div>
+    <div class="panel-body">
+    <div id="file_residency_card-gallery" class="gallery">
+        @if( array_key_exists('residency_card',$CustImagesArr))
+            @foreach($CustImagesArr['residency_card'] as $CustImg)
+                <!-- <script>console.log({{ $CustImg }});</script> -->
+                <div class="gallery-item">
+                    <div class="image">
+                        <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                            <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                        </a>                        
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
     </div>
 </div>
-@endif
 
-@if($Booking->customer->driving_license != "")
-<div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
-    <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;">
-        <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-            <b>{{ __("Driving License") }}</b>
-            <a href="{{ URL('public') }}/{{ $Booking->customer->driving_license }}" target="_blank"><img src="{{ URL('public') }}/{{ $Booking->customer->driving_license }}" style="max-width: 100%"></a>
-        </div>
+<div class="panel col-lg-3 mb-4">
+    <div class="panel-heading">
+        <b>{{ __("Passport Details") }}</b>
+    </div>
+    <div class="panel-body">
+    <div id="file_residency_card-gallery" class="gallery">
+        @if( array_key_exists('passport_detail',$CustImagesArr))
+            @foreach($CustImagesArr['passport_detail'] as $CustImg)
+                <!-- <script>console.log({{ $CustImg }});</script> -->
+                <div class="gallery-item">
+                    <div class="image">
+                        <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                            <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                        </a>                        
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
     </div>
 </div>
-@endif
 
-@if($Booking->customer->visa_detail != "")
-<div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
-    <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;">
-        <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-            <b>{{ __("Visa") }}</b>
-            <a href="{{ URL('public') }}/{{ $Booking->customer->visa_detail }}" target="_blank"><img src="{{ URL('public') }}/{{ $Booking->customer->visa_detail }}" style="max-width: 100%"></a>
-        </div>
+<div class="panel col-lg-3 mb-4">
+    <div class="panel-heading">
+        <b>{{ __("Driving Licence") }}</b>
+    </div>
+    <div class="panel-body">
+    <div id="file_residency_card-gallery" class="gallery">
+        @if( array_key_exists('driving_license',$CustImagesArr))
+            @foreach($CustImagesArr['driving_license'] as $CustImg)
+                <div class="gallery-item">
+                    <div class="image">
+                        <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                            <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                        </a>                        
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
     </div>
 </div>
-@endif
+
+<div class="panel col-lg-3 mb-4">
+    <div class="panel-heading">
+        <b>{{ __("Visa Detail") }}</b>
+    </div>
+    <div class="panel-body">
+    <div id="file_residency_card-gallery" class="gallery">
+        @if( array_key_exists('visa_detail',$CustImagesArr))
+            @foreach($CustImagesArr['visa_detail'] as $CustImg)
+                <!-- <script>console.log({{ $CustImg }});</script> -->
+                <div class="gallery-item">
+                    <div class="image">
+                        <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                            <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                        </a>                        
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
+    </div>
+</div>
 
 @if($Booking->car_image != "")
 <div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
@@ -211,7 +255,7 @@
     
     <div class="row">
         
-    <div class="col-lg-12 mb-4">
+    <div class="col-lg-9 mb-12">
         <label>Vehicle <span class="text-danger">*</span></label>
         <select class="form-control" required id="VehicleData" onchange="fetchReviews()" name="vehicle_id">
             <option value="">{{ __("Select") }}</option>
@@ -221,39 +265,34 @@
         </select>
     </div>
     
-    <div class="col-lg-4 mb-4">
+                <div class="col-lg-3 mb-3">
+                    <label>{{ __("KM Reading at time of pickup") }} <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" required name="km_reading_pickup">
+                </div>
+
+                <div class="col-lg-3 mb-3">
                     <label>{{ __("Per day KM Allocation") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" required name="km_allocation" value="{{ $Booking->km_allocation }}">
                 </div>
                 
     
-    <div class="col-lg-4 mb-4">
-                    <label>{{ __("KM Reading at time of pickup") }} <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" required name="km_reading_pickup">
-                </div>
-
-                <div class="col-lg-4 mb-4">
-                    <label>{{ __("Car Image") }} <span class="text-danger">*</span></label>
-                    <input type="file" class="form-control" required name="car_image">
-                </div>
-                
-                <div class="col-lg-4 mb-4">
-                    <label>{{ __("Advance Amount") }}</label>
-                    <input type="text" name="advance_amount" class="form-control number" value="0" id="AdvaneAmount" required onblur="fetchReviews()">
-                </div>
-
-                <div class="col-lg-4 mb-4">
-                    <label>{{ __("Discount") }}<span class="text-danger">*</span></label>
-                    <input type="text" name="discount_amount" class="form-control number" id="DiscountAmount" required value="{{ $Booking->discount_amount }}" onblur="fetchReviews()">
-                </div>
-                
-                
-                <div class="col-lg-4 mb-4">
+                <div class="col-lg-3 mb-3">
                     <label>{{ __("Additional KM Amount") }}<span class="text-danger">*</span></label>
                     <input type="text" name="additional_kilometers_amount" class="form-control number" required value="{{ $Booking->additional_kilometers_amount }}">
                 </div>
                 
+
+                <div class="col-lg-3 mb-3">
+                    <label>{{ __("Advance Amount") }}</label>
+                    <input type="text" name="advance_amount" class="form-control number" value="0" id="AdvaneAmount" required onblur="fetchReviews()">
+                </div>
+
+                <div class="col-lg-3 mb-3">
+                    <label>{{ __("Discount") }}<span class="text-danger">*</span></label>
+                    <input type="text" name="discount_amount" class="form-control number" id="DiscountAmount" required value="{{ $Booking->discount_amount }}" onblur="fetchReviews()">
+                </div>
                 
+                                
                 <div class="col-lg-4 mb-4">
                     <label>{{ __("Licenses Expiry Date") }}<span class="text-danger">*</span></label>
                     <input type="date" class="form-control number" name="license_expiry_date" value="{{ $Booking->license_expiry_date }}" required min="{{ date('Y-m-d', strtotime('+3 months')) }}">
@@ -267,6 +306,31 @@
                 <div class="col-lg-4 mb-4">
                     <label>{{ __("Residence Expiry Date") }}<span class="text-danger">*</span></label>
                     <input type="date" class="form-control number" name="residence_expiry_date" value="{{ $Booking->residence_expiry_date }}" required min="{{ date('Y-m-d') }}">
+                </div>
+
+                <!-- <div class="col-lg-4 mb-4">
+                    <label>{{ __("Car Image") }} <span class="text-danger">*</span></label>
+                    <input type="file" class="form-control" required name="car_image">
+                </div> -->
+                <div class="col-lg-4 mb-4">
+                    <label for="subject" class="col-form-label text-dark">{{ __("Car Image") }}</label>
+                        <input type="file" multiple class="form-control font-style" name="car_image[]" 
+                                id="file_car_image" capture onchange="updateFileList(this,'file_car_image-gallery')"
+                                accept=".jpg,.jpeg,.png" >
+                </div>    
+                <div id="file_car_image-gallery" class="gallery">
+                        @if( array_key_exists('car_image',$CustImagesArr))
+                        @foreach($CustImagesArr['car_image'] as $CustImg)
+                            <!-- <script>console.log({{ $CustImg }});</script> -->
+                            <div class="gallery-item">
+                                <div class="image">
+                                    <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
+                                        <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
+                                    </a>                        
+                                </div>
+                            </div>
+                        @endforeach
+                        @endif
                 </div>
     </div>
     <button class="btn btn-success mt-4">{{ __("Save") }}</button>
