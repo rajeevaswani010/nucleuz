@@ -64,6 +64,7 @@
 	/* height: 200px; */
 	padding: 6px;
 	display: inline-block;
+	text-align: center;
 }
 
 .gallery-item .image {
@@ -71,8 +72,9 @@
 }
 
 .gallery-item .image img {
-	height: 100px;
+	height: 80px;
 	width: auto;
+	max-width: 100%;
 	box-shadow: 2px 4px 7px 1px gray;
 }
 

@@ -43,7 +43,7 @@
             <div class="text-danger" id="errormsg"></div>
             <hr>
             <div class="row mt-4">
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-1 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Salutation") }} <span class="text-danger">*</span></label>
                     <select class="form-control font-style" name="title" id="title" required>
                         <option value="">{{ __("Select") }}</option>
@@ -58,7 +58,7 @@
                     </select>
                 </div>
 
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-6 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Name") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control font-style" name="first_name" id="first_name" value="{{ @$CustomerData->first_name }}" required>
                 </div>
@@ -73,7 +73,7 @@
                     <input type="text" class="form-control font-style" name="last_name" id="last_name" value="{{ @$CustomerData->last_name }}" required>
                 </div> -->
 
-                <div class="col-lg-4 mb-4">
+                <div class="col-lg-2 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Gender") }} <span class="text-danger">*</span></label>
                     <select class="form-control font-style" name="gender" id="gender" required>
                         <option value="">{{ __("Select") }}</option>
@@ -82,13 +82,7 @@
                     </select>
                 </div>
 
-                <div class="col-lg-4 mb-4">
-                    <label for="subject" class="col-form-label text-dark">{{ __("Date of Birth") }} <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control font-style" name="dob" id="dob" value="{{ @$CustomerData->dob }}" required>
-                   <!-- <input type="date" class="form-control font-style" name="dob" id="dob" value="{{ @$CustomerData->dob }}" required max="{{ date('Y-m-d', strtotime('-18 year')) }}"> -->
-                </div>
-
-                <div class="col-lg-4 mb-4">
+                <div class="col-lg-3 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Nationality") }} <span class="text-danger">*</span></label>
                     <select class="form-control font-style" name="nationality" id="nationality" required>
                         <option value="">{{ __("Select") }}</option>
@@ -98,36 +92,43 @@
                     </select>
                 </div>
 
-                <div class="col-lg-3 mb-4">
+
+                <div class="col-lg-2 mb-4">
+                    <label for="subject" class="col-form-label text-dark">{{ __("Date of Birth") }} <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control font-style" name="dob" id="dob" value="{{ @$CustomerData->dob }}" required>
+                   <!-- <input type="date" class="form-control font-style" name="dob" id="dob" value="{{ @$CustomerData->dob }}" required max="{{ date('Y-m-d', strtotime('-18 year')) }}"> -->
+                </div>
+
+                <div class="col-lg-4 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Email") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control font-style" name="email" id="email" value="{{ @$CustomerData->email }}" required>
                 </div>
                 
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-2 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Country Code") }} <span class="text-danger">*</span></label>
-                    <select class="form-control font-style" name="country_code" id="country_code" required>
+                    <select class="form-control font-style" name="country_code" id="country_code" title="select country code" required>
                         <option value="">{{ __("Select") }}</option>
                         @foreach($Conuntry as $Cont)
-                        <option value="{{ $Cont->phonecode }}">{{ $Cont->name }} - {{ $Cont->phonecode }}</option>
+                        <option value="{{ $Cont->phonecode }}" title="{{ $Cont->name }} - {{ $Cont->phonecode }}">{{ $Cont->name }} - {{ $Cont->phonecode }}</option>
                         @endforeach
                     </select>
                 </div>
 
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-4 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Mobile") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control font-style" name="mobile" id="mobile" value="{{ @$CustomerData->mobile }}" required>
                 </div>
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-4 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Insurance Details") }}</label>
-                    <input type="text" class="form-control font-style" name="insurance" id="insurance" value="{{ @$CustomerData->insurance }}">
+                    <textarea type="text" class="form-control font-style" name="insurance" id="insurance">{{ @$CustomerData->insurance }}</textarea>
                 </div>
 
-                <div class="col-lg-6 mb-4">
+                <div class="col-lg-4 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Permanent Address") }} <span class="text-danger">*</span></label>
                     <textarea type="text" class="form-control font-style" name="permanent_address" id="permanent_address" required>{{ @$CustomerData->permanent_address }}</textarea>
                 </div>
 
-                <div class="col-lg-6 mb-4">
+                <div class="col-lg-4 mb-4">
                     <label for="subject" class="col-form-label text-dark">{{ __("Temp Address") }}</label>
                     <textarea type="text" class="form-control font-style" name="temp_address" id="temp_address">{{ @$CustomerData->temp_address }}</textarea>
                 </div>

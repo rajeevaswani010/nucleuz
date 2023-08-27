@@ -195,7 +195,7 @@
            </div>
         </div>
 
-        <div class="panel col-lg-3 mb-4 mt-4">
+        <div class="panel col-lg-3 mb-4">
             <div class="panel-heading">
                 <b>{{ __("Visa Detail") }}</b>
             </div>
