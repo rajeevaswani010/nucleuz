@@ -15,6 +15,13 @@ CREATE TABLE `customer_images` (
   `updated_at` timestamp NULL DEFAULT NULL
 );
 
+ALTER TABLE `customer_images`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`);
+
+ALTER TABLE `customer_images`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 CREATE TABLE `booking_images` (
   `id` int(11) NOT NULL,
   `booking_id` int(11) NOT NULL,
@@ -27,11 +34,21 @@ CREATE TABLE `booking_images` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+ALTER TABLE `booking_images`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`);
+
+ALTER TABLE `booking_images`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE booking_invites ADD COLUMN booking_id INT(11) DEFAULT NULL;
 
 ALTER TABLE customers ALTER COLUMN last_name DROP DEFAULT;
 
+ALTER TABLE customers ALTER COLUMN driving_license DROP DEFAULT;
+
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `customerImageMigration`()
+CREATE PROCEDURE `customerImageMigration`()
 BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE _company_id INT;
@@ -71,9 +88,10 @@ BEGIN
     CLOSE cur;
 END$$
 DELIMITER ;
+CALL customerImageMigration();
 
 DELIMITER $$
-CREATE DEFINER=`nucleuz`@`%` PROCEDURE `customerNameMigration`()
+CREATE PROCEDURE `customerNameMigration`()
 BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE _customer_id INT(11);
@@ -109,6 +127,42 @@ BEGIN
     CLOSE cur;
 END$$
 DELIMITER ;
-
 CALL customerNameMigration();
-CALL customerImageMigration();
+
+DELIMITER $$
+CREATE PROCEDURE `bookingImageMigration`()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE _company_id INT(11);
+    DECLARE _booking_id INT(11);
+    DECLARE _vehicle_id INT(11);
+    DECLARE _car_image VARCHAR(255);
+    DECLARE _damge_image VARCHAR(255);
+
+    DECLARE cur CURSOR FOR SELECT  id, company_id, vehicle_id, car_image, damge_image FROM bookings where vehicle_id IS NOT NULL;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+
+    read_loop: LOOP
+        FETCH cur INTO _booking_id, _company_id, _vehicle_id, _car_image, _damge_image;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- You can perform operations on userId, userName, and userEmail here
+        -- For example, you can use SELECT or other statements to work with the values
+
+        -- Print the values as an example
+        SELECT CONCAT('ID: ', _booking_id, ' - vehicle: ', _vehicle_id, ' - car image: ', _car_image) AS output;
+
+        INSERT INTO booking_images (booking_id,company_id,vehicle_id,type,link) VALUES (_booking_id,_company_id,_vehicle_id,"car_image",_car_image);
+
+        INSERT INTO booking_images (booking_id,company_id,vehicle_id,type,link) VALUES (_booking_id,_company_id,_vehicle_id,"damge_image",_damge_image);
+
+    END LOOP;
+
+    CLOSE cur;
+END
+DELIMITER ;
+call bookingImageMigration();

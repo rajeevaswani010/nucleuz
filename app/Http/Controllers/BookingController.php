@@ -209,7 +209,7 @@ class BookingController extends Controller
             $CustObj->title = $Input["title"];
             $CustObj->first_name = $Input["first_name"];
             //$CustObj->middle_name = $Input["middle_name"];
-            //$CustObj->last_name = $Input["last_name"];
+            $CustObj->last_name = NULL;
             $CustObj->permanent_address = $Input["permanent_address"];
             $CustObj->temp_address = $Input["temp_address"];
             $CustObj->nationality = $Input["nationality"];

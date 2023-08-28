@@ -108,7 +108,8 @@ class CustomerController extends Controller
             $CustObj->title = $Input["title"];
             $CustObj->first_name = $Input["first_name"];
             //$CustObj->middle_name = $Input["middle_name"];
-            //$CustObj->last_name = $Input["last_name"];
+            //$CustObj->last_name = $Input["last_name"];   //TODO need to check even after removing from UI and setting default NULL in database
+            $CustObj->last_name = NULL;                                //why it is required to set NULL here for last_name
             $CustObj->permanent_address = $Input["permanent_address"];
             $CustObj->temp_address = $Input["temp_address"];
             $CustObj->nationality = $Input["nationality"];
@@ -188,7 +189,7 @@ class CustomerController extends Controller
             }
         }
 
-        date_default_timezone_set("Asia/Muscat");# setting current time zone  ///   this is hack fix it putting this property in settings
+        date_default_timezone_set("Asia/Muscat");# setting current time zone  ///  TODO this is hack fix it putting this property in settings
         
         if($Input["PickupDate"]." ".$Input["PickupTime"] < date("Y-m-d H:i:s")){
             return json_encode(array("Status" =>  0, "Message" => "Pickup Date Can't Be in Past"));
