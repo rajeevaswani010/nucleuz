@@ -20,12 +20,12 @@
 <div class="row align-items-center">
 <div class="col-auto">
 <div class="page-header-title">
-<h4 class="m-b-10">View Vehicle</h4>
+<h4 class="m-b-10">{{ __("View Vehicle") }}</h4>
 </div>
 <ul class="breadcrumb">
 <li class="breadcrumb-item">
-<a href="{{ URL('dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item">View Vehicle Details</li>
+<a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a></li>
+<li class="breadcrumb-item">{{ __("View Vehicle Details") }}</li>
 </ul>
 </div>
 <div class="col">
@@ -76,7 +76,7 @@
 
                     <div class="row">
                         <div class="col-lg-9"><input type="file" name="ExcelFile" required class="form-control"></div>
-                        <div class="col-lg-3"><button class="btn btn-primary">Upload</button></div>
+                        <div class="col-lg-3"><button class="btn btn-primary">{{ __("Upload") }}</button></div>
                     </div>
                     {!! Form::close() !!}
 
@@ -110,13 +110,13 @@ $("#make").on("change",function(){
 <table class="table datatable">
 <thead>
 <tr>
-<th>Type</th>
-<th>Make</th>
-<th>Model</th>
-<th>Mfg. Year</th>
-<th>Reg. No.</th>
-<th>Additional Features</th>
-<th>Action</th>
+<th>{{ __("Type") }}</th>
+<th>{{ __("Make") }}</th>
+<th>{{ __("Model") }}</th>
+<th>{{ __("Mfg. Year") }}</th>
+<th>{{ __("Reg. No.") }}</th>
+<th>{{ __("Additional Features") }}</th>
+<th>{{ __("Action") }}</th>
 </tr>
 </thead>
 

@@ -11,13 +11,13 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <div class="page-header-title">
-                            <h4 class="m-b-10">Create Booking</h4>
+                            <h4 class="m-b-10">{{ __("Create Booking") }}</h4>
                         </div>
                         <ul class="breadcrumb">
                                 <li class="breadcrumb-item">
-                                    <a href="{{ URL('dashboard') }}">Dashboard</a>
+                                    <a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Create Booking</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ __("Create Booking") }}</li>
                         </ul>
                     </div>
 
@@ -340,7 +340,7 @@
                 </div>
 
                 <div class="mt-2">
-                    <b>{{ __("VAT (5%)") }} :</b>
+                    <b>{{ __("VAT") }}(5%) :</b>
                      <div id="LoadTax"><b>0.0</b></div>
                 </div>
 

@@ -14,12 +14,12 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <div class="page-header-title">
-                            <h4 class="m-b-10">Invite Customer</h4>
+                            <h4 class="m-b-10">{{ __("Invite Customer") }}</h4>
                         </div>
                         <ul class="breadcrumb">
                             <li class="breadcrumb-item">
-                                <a href="{{ URL('dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item">Invite Customer</li>
+                                <a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a></li>
+                            <li class="breadcrumb-item">{{ __("Invite Customer") }}</li>
                         </ul>
                     </div>
                     <div class="col">
@@ -47,9 +47,9 @@
                         <label>{{ __("Status") }}</label>
                         <select class="form-control" name="status" id="status">
                             <option value="">{{ __("All") }}</option>
-                            <option value=0>Pending</option>
-                            <option value=1>Registered</option>
-                            <option value=2>Finish</option>
+                            <option value=0>{{ __("Pending") }}</option>
+                            <option value=1>{{ __("Registered") }}</option>
+                            <option value=2>{{ __("Finish") }}</option>
                         </select>
                         <script>
                             $('#status').val(urlParams.get('status'));
@@ -69,7 +69,7 @@
                     </div>
                     <div class="col-lg-2"></div>
                     <div class="col-lg-4"><button title="search" class="btn btn-primary"
-                            role="button">Search</i></button></div>
+                            role="button">{{ __("Search") }}</i></button></div>
                 </div>
             </div>
             <script>
@@ -87,12 +87,12 @@
                             <table class="table datatable table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Created On</th>
-                                        <th>Updated On</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th>{{ __("Name") }}</th>
+                                        <th>{{ __("Email") }}</th>
+                                        <th>{{ __("Created On") }}</th>
+                                        <th>{{ __("Updated On") }}</th>
+                                        <th>{{ __("Status") }}</th>
+                                        <th>{{ __("Action") }}</th>
                                     </tr>
                                 </thead>
 

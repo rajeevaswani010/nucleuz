@@ -85,7 +85,7 @@
 <!--------------------- Start Dashboard ----------------------------------->
     <li class="dash-item dash-hasmenu dash-trigger">
 
-    <a href="{{ URL('dashboard') }}" class="dash-link "><span class="dash-micon"><i class="ti ti-home"></i></span><span class="dash-mtext">Dashboard</span>
+    <a href="{{ URL('dashboard') }}" class="dash-link "><span class="dash-micon"><i class="ti ti-home"></i></span><span class="dash-mtext">{{ __("Dashboard") }}</span>
         <!-- <span class="dash-arrow"><i data-feather="chevron-right"></i></span> -->
     </a>
 
@@ -101,25 +101,25 @@
     @if(session("AdminRole") == 1)
     <li class="dash-item dash-hasmenu @if($ActiveAction == 'office') active @endif">
         <a href="{{ URL('office') }}" class="dash-link">
-            <span class="dash-micon"><i class="ti ti-users"></i></span><span class="dash-mtext">Company</span>
+            <span class="dash-micon"><i class="ti ti-users"></i></span><span class="dash-mtext">{{ __("Company") }}</span>
         </a>
     </li>
 
     <li class="dash-item dash-hasmenu @if($ActiveAction == 'license') active @endif">
         <a href="{{ URL('license') }}" class="dash-link">
-            <span class="dash-micon"><i class="ti ti-clipboard"></i></span><span class="dash-mtext">Licenses</span>
+            <span class="dash-micon"><i class="ti ti-clipboard"></i></span><span class="dash-mtext">{{ __("Licenses") }}</span>
         </a>
     </li>
 
     <li class="dash-item dash-hasmenu @if($ActiveAction == 'product') active @endif">
         <a href="{{ URL('product') }}" class="dash-link">
-            <span class="dash-micon"><i class="ti ti-shopping-cart"></i></span><span class="dash-mtext">Products</span>
+            <span class="dash-micon"><i class="ti ti-shopping-cart"></i></span><span class="dash-mtext">{{ __("Products") }}</span>
         </a>
     </li>
 
     <li class="dash-item dash-hasmenu @if($ActiveAction == 'brand') active @endif">
         <a href="{{ URL('brand') }}" class="dash-link">
-            <span class="dash-micon"><i class="ti ti-layers-difference"></i></span><span class="dash-mtext">Brands</span>
+            <span class="dash-micon"><i class="ti ti-layers-difference"></i></span><span class="dash-mtext">{{ __("Brands") }}</span>
         </a>
     </li>
     @endif
@@ -129,7 +129,7 @@
         <li class="dash-item dash-hasmenu @if($ActiveAction == 'vehicle') active @endif">
         <a href="{{ URL('vehicle') }}" class="dash-link">
             <span class="dash-micon">
-                <i class="ti ti-headphones"></i></span><span class="dash-mtext">Vehicle Master</span>
+                <i class="ti ti-headphones"></i></span><span class="dash-mtext">{{ __("Vehicle Master") }}</span>
         </a>
       </li>
 
@@ -137,14 +137,14 @@
       <li class="dash-item dash-hasmenu @if($ActiveAction == 'staff') active @endif">
         <a href="{{ URL('staff') }}" class="dash-link">
             <span class="dash-micon">
-                <i class="fa fa-user-circle"></i></span><span class="dash-mtext">Staff</span>
+                <i class="fa fa-user-circle"></i></span><span class="dash-mtext">{{ __("Staff") }}</span>
         </a>
       </li>
 
       <li class="dash-item dash-hasmenu @if($ActiveAction == 'pricing') active @endif">
         <a href="{{ URL('pricing') }}" class="dash-link">
             <span class="dash-micon">
-                <i class="fa fa-compress"></i></span><span class="dash-mtext">Pricing Master</span>
+                <i class="fa fa-compress"></i></span><span class="dash-mtext">{{ __("Pricing Master") }}</span>
         </a>
       </li>
       @endif
@@ -152,13 +152,13 @@
         <li class="dash-item dash-hasmenu @if($ActiveAction == 'booking') active @endif">
         <a href="{{ URL('booking') }}" class="dash-link">
             <span class="dash-micon">
-                <i class="fa fa-car"></i></span><span class="dash-mtext">Car Rental Bookings</span>
+                <i class="fa fa-car"></i></span><span class="dash-mtext">{{ __("Car Rental Bookings") }}</span>
         </a>
        </li>
 
         <li class="dash-item dash-hasmenu @if($ActiveAction == 'booking-invite') active @endif">
         <a href="{{ URL('booking-invite') }}" class="dash-link">
-            <span class="dash-micon"><i class="fa fa-users"></i></span><span class="dash-mtext">Invite Customer</span>
+            <span class="dash-micon"><i class="fa fa-users"></i></span><span class="dash-mtext">{{ __("Invite Customer") }}</span>
         </a>
       </li>
     @endif
@@ -167,34 +167,34 @@
     @if(session("AdminRole") == 2)
     <li class="dash-item dash-hasmenu @if($ActiveAction == 'reports') active @endif">
         <a href="{{ URL('reports') }}" class="dash-link">
-            <span class="dash-micon"><i class="ti ti-share"></i></span><span class="dash-mtext">Reports</span>
+            <span class="dash-micon"><i class="ti ti-share"></i></span><span class="dash-mtext">{{ __("Reports") }}</span>
         </a>
     </li>
     <li class="dash-item dash-hasmenu @if($ActiveAction == 'settings') active @endif">
         <a href="{{ URL('settings') }}" class="dash-link">
-            <span class="dash-micon"><i class="fa fa-cog"></i></span><span class="dash-mtext">Settings</span>
+            <span class="dash-micon"><i class="fa fa-cog"></i></span><span class="dash-mtext">{{ __("Settings") }}</span>
         </a>
     </li>
     <li class="dash-item dash-hasmenu
                 ">
-                <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-box"></i></span><span class="dash-mtext">Accounting System 
+                <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-box"></i></span><span class="dash-mtext">{{ __("Accounting System") }} 
                     </span><span class="dash-arrow"><i data-feather="chevron-right"></i></span>
                 </a>
             <ul class="dash-submenu">
 
               <li class="dash-item ">
-                    <a class="dash-link @if($ActiveAction == 'customer') active @endif" href="{{ URL('customer') }}">Customer</a>
+                    <a class="dash-link @if($ActiveAction == 'customer') active @endif" href="{{ URL('customer') }}">{{ __("Customer") }}</a>
                 </li>
 
                <li class="dash-item ">
                     <a class="dash-link" href="javascript:void(0)">Vendor</a>
                 </li>
                 <li class="dash-item ">
-                    <a class="dash-link @if($ActiveAction == 'bookingreciepts') active @endif" href="{{ URL('bookingreciepts') }}">Booking Receipt</a>
+                    <a class="dash-link @if($ActiveAction == 'bookingreciepts') active @endif" href="{{ URL('bookingreciepts') }}">{{ __("Booking Receipt") }}</a>
                 </li>
 
                 <li class="dash-item ">
-                    <a class="dash-link @if($ActiveAction == 'bookinginvoice') active @endif" href="{{ URL('bookinginvoice') }}">Invoices</a>
+                    <a class="dash-link @if($ActiveAction == 'bookinginvoice') active @endif" href="{{ URL('bookinginvoice') }}">{{ __("Invoices") }}</a>
                 </li>
 
               

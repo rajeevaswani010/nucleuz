@@ -15,12 +15,12 @@
 <div class="row align-items-center">
 <div class="col-auto">
 <div class="page-header-title">
-<h4 class="m-b-10">Reports</h4>
+<h4 class="m-b-10">{{ __("Reports") }}</h4>
 </div>
 <ul class="breadcrumb">
 <li class="breadcrumb-item">
-<a href="{{ URL('dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item">Reports</li>
+<a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a></li>
+<li class="breadcrumb-item">{{ __("Reports") }}</li>
 </ul>
 </div>
 <div class="col">
@@ -97,7 +97,7 @@
                                     $("#to_date").val(urlParams.get('to_date'));
                                 }
                         </script>
-                    <div class="col"><button class="btn btn-success mt-4" type="submit" name="search" value="search" role="button"><i class="fa fa-sech"> Search</i></button></div>
+                    <div class="col"><button class="btn btn-success mt-4" type="submit" name="search" value="search" role="button"><i class="fa fa-sech"> {{ __("Search") }}</i></button></div>
                 </div>
             </div>
         {!! Form::close() !!}
@@ -111,8 +111,8 @@
 <table class="table datatable">
     <thead>
     <tr>
-    <th>Car Type</th>
-    <th>Quantity</th>
+    <th>{{ __("Car Type") }}</th>
+    <th>{{ __("Quantity") }}</th>
     </tr>
     </thead>
 
@@ -138,12 +138,12 @@
 <table class="table datatable">
     <thead>
     <tr>
-    <th>Booking Id</th>
-    <th>Car Type</th>
-    <th>Car Details</th>
-    <th>Customer Details</th>
-    <th>Pick up</th>
-    <th>Drop off</th>
+    <th>{{ __("Booking ID") }}</th>
+    <th>{{ __("Car Type") }}</th>
+    <th>{{ __("Car Details") }}</th>
+    <th>{{ __("Customer Details") }}</th>
+    <th>{{ __("Pick up") }}</th>
+    <th>{{ __("Drop off") }}</th>
     </tr>
     </thead>
     <tbody>
@@ -183,11 +183,11 @@
 <table class="table datatable">
     <thead>
     <tr>
-    <th>Booking Id</th>
-    <th>Car Type</th>
-    <th>Customer Details</th>
-    <th>Pick up</th>
-    <th>Drop off</th>
+    <th>{{ __("Booking ID") }}</th>
+    <th>{{ __("Car Type") }}</th>
+    <th>{{ __("Customer Details") }}</th>
+    <th>{{ __("Pick up") }}</th>
+    <th>{{ __("Drop off") }}</th>
     </tr>
     </thead>
     <tbody>
@@ -220,12 +220,12 @@
 <table class="table datatable">
     <thead>
     <tr>
-    <th>Booking Id</th>
-    <th>Car Type</th>
-    <th>Car Details</th>
-    <th>Customer Details</th>
-    <th>Pick up</th>
-    <th>Drop off</th>
+    <th>{{ __("Booking ID") }}</th>
+    <th>{{ __("Car Type") }}</th>
+    <th>{{ __("Car Details") }}</th>
+    <th>{{ __("Customer Details") }}</th>
+    <th>{{ __("Pick up") }}</th>
+    <th>{{ __("Drop off") }}</th>
     </tr>
     </thead>
     <tbody>
@@ -265,14 +265,14 @@
 <table class="table datatable">
     <thead>
     <tr>
-    <th>Booking Id</th>
-    <th>Car Type</th>
-    <th>Car Details</th>
-    <th>Customer Details</th>
-    <th>Pick up</th>
-    <th>Drop off</th>
-    <th>Discount</th>
-    <th>Grand Total</th>
+    <th>{{ __("Booking ID") }}</th>
+    <th>{{ __("Car Type") }}</th>
+    <th>{{ __("Car Details") }}</th>
+    <th>{{ __("Customer Details") }}</th>
+    <th>{{ __("Pick up") }}</th>
+    <th>{{ __("Drop off") }}</th>
+    <th>{{ __("Discount") }}</th>
+    <th>{{ __("Grand Total") }}</th>
     </tr>
     </thead>
     <tbody>

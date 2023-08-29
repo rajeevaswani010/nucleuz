@@ -10,13 +10,13 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <div class="page-header-title">
-                            <h4 class="m-b-10">Settings</h4>
+                            <h4 class="m-b-10">{{ __("Settings") }}</h4>
                         </div>
                         <ul class="breadcrumb">
                                 <li class="breadcrumb-item">
-                                    <a href="{{ URL('dashboard') }}">Dashboard</a>
+                                    <a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Settings</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ __("Settings") }}</li>
                         </ul>
                     </div>
 
@@ -36,11 +36,11 @@
                     <div class="row">
 
                         <div class="form-group col-6">
-                            <label for="subject" class="col-form-label text-dark">Name</label>
+                            <label for="subject" class="col-form-label text-dark">{{ __("Name") }}</label>
                             <input class="form-control font-style" required name="name" type="text" value="{{ $Data->name }}" readonly />
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="from" class="col-form-label text-dark">Address</label>
+                            <label for="from" class="col-form-label text-dark">{{ __("Address") }}</label>
                             <input class="form-control font-style"  name="address" type="text" value="{{ $Data->address }}" required />
                         </div>
                         <div class="form-group col-lg-4 mb-4">
@@ -73,18 +73,18 @@
                             </script>
                         </div>
                         <div class="form-group col-lg-4 mb-4">
-                            <label class="col-form-label text-dark">Billing Method <span class="text-danger">*</span></label>
+                            <label class="col-form-label text-dark">{{ __("Billing Method") }}<span class="text-danger">*</span></label>
                             <select class="form-control" name="billing_method" id="billing_method" required>
-                                <option @if($Data->billing_method == "Fixed") selected @endif value="Fixed">Fixed</option>
-                                <option @if($Data->billing_method == "Hybrid")  selected @endif value="Hybrid">Hybrid</option>
-                                <option @if($Data->billing_method == "Pro-Rata") selected @endif value="Pro-Rata">Pro-Rata</option>
+                                <option @if($Data->billing_method == "Fixed") selected @endif value="Fixed">{{ __("Fixed") }}</option>
+                                <option @if($Data->billing_method == "Hybrid")  selected @endif value="Hybrid">{{ __("Hybrid") }}</option>
+                                <option @if($Data->billing_method == "Pro-Rata") selected @endif value="Pro-Rata">{{ __("Pro-Rata") }}</option>
                             </select>
                         </div>
                         <div class="form-group col-lg-6 mb-6">
                             <div>
-                                <label class="col-form-label text-dark" for="terms_conditions">Billing Terms<span class="text-danger">*</span></label>
-                                <button type="button" class="btn btn-danger btn-sm align-middle" style="float:right; margin-left:5px;" id="clear">clear</button>
-                                <button type="button" class="btn btn-primary btn-sm align-middle" style="float:right; margin-left:5px;" id="setDefaultTerms">Set default terms</button>
+                                <label class="col-form-label text-dark" for="terms_conditions">{{ __("Billing Terms") }}<span class="text-danger">*</span></label>
+                                <button type="button" class="btn btn-danger btn-sm align-middle" style="float:right; margin-left:5px;" id="clear">{{ __("clear") }}</button>
+                                <button type="button" class="btn btn-primary btn-sm align-middle" style="float:right; margin-left:5px;" id="setDefaultTerms">{{ __("Set default terms") }}</button>
                             </div>
                             <textarea class="form-control" name="terms_conditions" id="terms_conditions" rows="8"  placeholder="Enter Terms & conditions" >{{ $Data->terms_conditions }}</textarea>
                         </div>

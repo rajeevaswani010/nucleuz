@@ -68,7 +68,7 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <div class="page-header-title">
-                            <h4 class="m-b-10">Dashboard</h4>
+                            <h4 class="m-b-10">{{ __("Dashboard") }}</h4>
                         </div>
                         <ul class="breadcrumb">
                         </ul>
@@ -97,7 +97,7 @@
                                                     <i class="fa fa-angle-right"></i>
                                                 </div>
                                                 <div class="ms-3 mb-3 mt-3">
-                                                    <h6 class="ml-4">On Rent</h6>
+                                                    <h6 class="ml-4">{{ __("On Rent") }}</h6>
                                                 </div>
                                             </div>
 
@@ -123,7 +123,7 @@
                                                     <i class="fa fa-angle-right"></i>
                                                 </div>
                                                 <div class="ms-3 mb-3 mt-3">
-                                                    <h6 class="ml-4">Return</h6>
+                                                    <h6 class="ml-4">{{ __("Return") }}</h6>
                                                 </div>
                                             </div>
 
@@ -149,7 +149,7 @@
                                                     <i class="fa fa-angle-right"></i>
                                                 </div>
                                                 <div class="ms-3 mb-3 mt-3">
-                                                    <h6 class="ml-4">Pickup Today</h6>
+                                                    <h6 class="ml-4">{{ __("Pickup Today") }}</h6>
                                                 </div>
                                             </div>
                                             <div class="number-icon ms-3 mb-3 mt-3">
@@ -172,7 +172,7 @@
                                                     <i class="fa fa-angle-right"></i>
                                                 </div>
                                                 <div class="ms-3 mb-3 mt-3">
-                                                    <h6 class="ml-4">Pickup Tomor</h6>
+                                                    <h6 class="ml-4">{{ __("Pickup Tomorrow") }}</h6>
                                                 </div>
                                             </div>
                                             <div class="number-icon ms-3 mb-3 mt-3">
@@ -187,7 +187,7 @@
                         <div class="col-12">
                             <div class="card ">
                                 <div class="card-header">
-                                    <h5>Pick up schedule </h5>
+                                    <h5>{{ __("Pick up schedule") }} </h5>
                                 </div>
                                 <div class="card-body ">
                                     <div id='calendar'>
@@ -199,7 +199,7 @@
                         <div class="col-12">
                             <div class="card h400">
                                 <div class="card-header">
-                                    <h5>Sale Status</h5>
+                                    <h5>{{ __("Sale Status") }}</h5>
                                 </div>
                                 <div class="card-body">
                                     <div id='columnchart'>
@@ -232,7 +232,7 @@
                         <div class="col-12">
                             <div class="card h500">
                                 <div class="card-header">
-                                    <h5>Booking Data</h5>
+                                    <h5>{{ __("Booking Data") }}</h5>
                                 </div>
                                 <div class="card-body ">
                                     <div id='donutchart'>

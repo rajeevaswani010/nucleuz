@@ -10,13 +10,13 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <div class="page-header-title">
-                            <h4 class="m-b-10">Edit Pricing</h4>
+                            <h4 class="m-b-10">{{ __("Edit Pricing") }}</h4>
                         </div>
                         <ul class="breadcrumb">
                                 <li class="breadcrumb-item">
-                                    <a href="{{ URL('dashboard') }}">Dashboard</a>
+                                    <a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Edit Pricing</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ __("Edit Pricing") }}</li>
                         </ul>
                     </div>
 
@@ -35,7 +35,7 @@
                         
 
                     <div class="form-group col-6">
-            <label for="subject" class="col-form-label text-dark">Car Type</label>
+            <label for="subject" class="col-form-label text-dark">{{ __("Car Type") }}</label>
             <select class="form-control font-style" name="car_type" required disabled>
                 <option value="">Select</option>
                 @foreach($AllCarTypes as $CarType)
@@ -57,19 +57,19 @@
                        
 
                         <div class="form-group col-6">
-                            <label for="subject" class="col-form-label text-dark">Daily Pricing</label>
+                            <label for="subject" class="col-form-label text-dark">{{ __("Daily Pricing") }}</label>
                             <input class="form-control font-style" required name="daily_pricing" value="{{ $Data->daily_pricing }}" type="text"  />
                         </div>
 
 
                         <div class="form-group col-6">
-                            <label for="subject" class="col-form-label text-dark">Weekly Pricing</label>
+                            <label for="subject" class="col-form-label text-dark">{{ __("Weekly Pricing") }}</label>
                             <input class="form-control font-style" required name="weekly_pricing" value="{{ $Data->weekly_pricing }}" type="text"  />
                         </div>
 
 
                         <div class="form-group col-6">
-                            <label for="subject" class="col-form-label text-dark">Monthly Pricing</label>
+                            <label for="subject" class="col-form-label text-dark">{{ __("Monthly Pricing") }}</label>
                             <input class="form-control font-style"  name="monthly_pricing" value="{{ $Data->monthly_pricing }}" type="text"  />
                         </div>
 

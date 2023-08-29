@@ -11,12 +11,12 @@
 <div class="row align-items-center">
 <div class="col-auto">
 <div class="page-header-title">
-<h4 class="m-b-10">Pricing Master</h4>
+<h4 class="m-b-10">{{ __("Pricing Master") }}</h4>
 </div>
 <ul class="breadcrumb">
 <li class="breadcrumb-item">
-<a href="{{ URL('dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item">Pricing Master</li>
+<a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a></li>
+<li class="breadcrumb-item">{{ __("Pricing Master") }}</li>
 </ul>
 </div>
 <div class="col">
@@ -39,7 +39,7 @@
             {!! Form::open(['url' => 'UploadPricing', 'enctype' => 'multipart/form-data', 'method' => 'POST']) !!}
             <div class="row">
                 <div class="col-lg-4"><input type="file" name="ExcelFile" required class="form-control"></div>
-                <div class="col-lg-4"><button class="btn btn-primary">Upload</button></div>
+                <div class="col-lg-4"><button class="btn btn-primary">{{ __("Upload") }}</button></div>
                 <div class="col-lg-4"><a href="{{ URL('public/pricing sample.xlsx') }}" class="btn btn-primary" style="float: right;">{{ __("Download Sample") }}</a></div>
             </div>
             {!! Form::close() !!}
@@ -52,11 +52,11 @@
 <table class="table datatable">
 <thead>
 <tr>
-<th>Car Detail</th>
-<th>Daily</th>
-<th>Weekly</th>
-<th>Monthly</th>
-<th>Action</th>
+<th>{{ __("Car Detail") }}</th>
+<th>{{ __("Daily") }}</th>
+<th>{{ __("Weekly") }}</th>
+<th>{{ __("Monthly") }}</th>
+<th>{{ __("Action") }}</th>
 </tr>
 </thead>
 

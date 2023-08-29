@@ -10,13 +10,13 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <div class="page-header-title">
-                            <h4 class="m-b-10">Add Pricing</h4>
+                            <h4 class="m-b-10">{{ __("Add Pricing") }}</h4>
                         </div>
                         <ul class="breadcrumb">
                                 <li class="breadcrumb-item">
-                                    <a href="{{ URL('dashboard') }}">Dashboard</a>
+                                    <a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Add Pricing</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ __("Add Pricing") }}</li>
                         </ul>
                     </div>
 
@@ -33,7 +33,7 @@
                     <div class="row">
 
                         <div class="form-group col-md-6">
-                            <label for="from" class="col-form-label text-dark">Car Type</label>
+                            <label for="from" class="col-form-label text-dark">{{ __("Car Type") }}</label>
                             <select class="form-control font-style" name="car_type" required>
                             <option value="">{{ __("Select") }}</option>
                             @foreach($AllCarTypes as $CarType)
@@ -52,18 +52,18 @@
                        
 
                         <div class="form-group col-6">
-                            <label for="subject" class="col-form-label text-dark">Daily Pricing</label>
+                            <label for="subject" class="col-form-label text-dark">{{ __("Daily Pricing") }}</label>
                             <input class="form-control font-style" required name="daily_pricing" value="{{ old('daily_pricing') }}" type="text"  />
                         </div>
 
 
                         <div class="form-group col-6">
-                            <label for="subject" class="col-form-label text-dark">Weekly Pricing</label>
+                            <label for="subject" class="col-form-label text-dark">{{ __("Weekly Pricing") }}</label>
                             <input class="form-control font-style" required name="weekly_pricing" value="{{ old('weekly_pricing') }}" type="text"  />
                         </div>
 
                         <div class="form-group col-6">
-                            <label for="subject" class="col-form-label text-dark">Monthly Pricing</label>
+                            <label for="subject" class="col-form-label text-dark">{{ __("Monthly Pricing") }}</label>
                             <input class="form-control font-style" required name="monthly_pricing" value="{{ old('monthly_pricing') }}" type="text"  />
                         </div>
 

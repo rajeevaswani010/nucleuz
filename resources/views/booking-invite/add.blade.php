@@ -10,13 +10,13 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <div class="page-header-title">
-                            <h4 class="m-b-10">Invite Customer</h4>
+                            <h4 class="m-b-10">{{ __("Invite Customer") }}</h4>
                         </div>
                         <ul class="breadcrumb">
                                 <li class="breadcrumb-item">
-                                    <a href="{{ URL('dashboard') }}">Dashboard</a>
+                                    <a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Invite Customer</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ __("Invite Customer") }}</li>
                         </ul>
                     </div>
 
@@ -33,11 +33,11 @@
                     <div class="row">
 
                         <div class="form-group col-6">
-                            <label for="subject" class="col-form-label text-dark">Name</label>
+                            <label for="subject" class="col-form-label text-dark">{{ __("Name") }}</label>
                             <input class="form-control font-style" required name="name" id="name" type="text" value="{{ old('name') }}" />
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="from" class="col-form-label text-dark">Email</label>
+                            <label for="from" class="col-form-label text-dark">{{ __("Email") }}</label>
                             <input class="form-control font-style"  name="email" type="text" id="email" value="{{ old('email') }}" required />
                         </div>
 

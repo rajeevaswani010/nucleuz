@@ -35,12 +35,12 @@
 <div class="row align-items-center">
 <div class="col-auto">
 <div class="page-header-title">
-<h4 class="m-b-10">Car Rental Bookings</h4>
+<h4 class="m-b-10">{{ __("Car Rental Bookings") }}</h4>
 </div>
 <ul class="breadcrumb">
 <li class="breadcrumb-item">
-<a href="{{ URL('dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item">Car Rental Bookings</li>
+<a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a></li>
+<li class="breadcrumb-item">{{ __("Car Rental Bookings") }}</li>
 </ul>
 </div>
 <div class="col">
@@ -87,13 +87,13 @@
                         <label>{{ __("Status") }}</label>
                         <select class="form-control" name="status">
                             <option value="">{{ __("All") }}</option>
-                            <option @if(@$_GET['status'] == 1) selected @endif value=1>Reserved</option>
-                            <option @if(@$_GET['status'] == 2) selected @endif value=2>Delivered</option>
-                            <option @if(@$_GET['status'] == 3) selected @endif value=3>Completed</option>
-                            <option @if(@$_GET['status'] == 4) selected @endif value=4>Cancelled</option>
+                            <option @if(@$_GET['status'] == 1) selected @endif value=1>{{ __("Reserved") }}</option>
+                            <option @if(@$_GET['status'] == 2) selected @endif value=2>{{ __("Delivered") }}</option>
+                            <option @if(@$_GET['status'] == 3) selected @endif value=3>{{ __("Complete") }}</option>
+                            <option @if(@$_GET['status'] == 4) selected @endif value=4>{{ __("Cancelled") }}</option>
                         </select>
                     </div>
-                    <div class="col"><button class="btn btn-primary" role="button">Search</button></div>
+                    <div class="col"><button class="btn btn-primary" role="button">{{ __("Search") }}</button></div>
                     <div class="col"><button class="btn btn-primary float-lg-right" style="float:right;" role="button" name="export" value="Export">{{ __("Export") }}</button></div>
                 </div>
             </div>
@@ -113,15 +113,15 @@
 <table class="table datatable  table-hover">
 <thead>
 <tr>
-<th>Booking ID</th>
-<th>Customer</th>
-<th>Vehicle Type</th>
-<th>Vehicle</th>
-<th>Booking</th>
-<th>Amount</th>
-<th>Status</th>
-<th>Last Updated</th>
-<th>Action</th>
+<th>{{ __("Booking ID") }}</th>
+<th>{{ __("Customer") }}</th>
+<th>{{ __("Vehicle Type") }}</th>
+<th>{{ __("Vehicle") }}</th>
+<th>{{ __("Booking") }}</th>
+<th>{{ __("Amount") }}</th>
+<th>{{ __("Status") }}</th>
+<th>{{ __("Updated On") }}</th>
+<th>{{ __("Action") }}</th>
 </tr>
 </thead>
 

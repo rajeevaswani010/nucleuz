@@ -10,13 +10,13 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <div class="page-header-title">
-                            <h4 class="m-b-10">Edit Booking Data</h4>
+                            <h4 class="m-b-10">{{ __("Edit Booking Data") }}</h4>
                         </div>
                         <ul class="breadcrumb">
                                 <li class="breadcrumb-item">
-                                    <a href="{{ URL('dashboard') }}">Dashboard</a>
+                                    <a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Edit Booking Data</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ __("Edit Booking Data") }}</li>
                         </ul>
                     </div>
 
