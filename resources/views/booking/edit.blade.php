@@ -34,7 +34,7 @@
                     <div class="float-left"><h1>{{ __("Booking Details") }} : #{{ $Booking->id }}</h1></div>
         
                     @if($Booking->status != 4)
-                        @if($Booking->pickup_date_time > date("Y-m-d H:i:s") && $Booking->status != 3)
+                        @if($Booking->pickup_date_time > date("Y-m-d H:i:s") && $Booking->status != 3 && $Booking->status != 2)
                         <div class="float-right"><a href="{{ URL('booking') }}/{{ $Booking->id }}"><button class="btn btn-success">{{ __("Assign Vehicle") }}</button></a></div>
                         @endif
                         
@@ -399,7 +399,7 @@
     
     
     @if($Booking->drop_off_confirm == 1 && $Booking->km_drop_time != "")
-    <h2>Complete Booking</h2>
+    <h2>{{ __("Complete Booking") }}</h2>
     {!! Form::open(['url' => 'booking/'.$Booking->id, 'enctype' => 'multipart/form-data', "onSubmit" => "return consub()", 'method' => 'PUT']) !!}
     <div class="row">
         <div class="col-lg-6 mb-4">

@@ -76,7 +76,7 @@
 
 
                         <div class="modal-footer">
-                            <input class="btn btn-xs btn-primary" type="submit" value="Save">
+                            <input class="btn btn-xs btn-primary" type="submit" value='{{ __("Save") }}'>
                         </div>
                         {!! Form::close() !!}
 

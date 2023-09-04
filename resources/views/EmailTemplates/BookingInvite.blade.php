@@ -10,9 +10,9 @@
 
     <h1>Hi {{ $Name }}! Book your rent a car with Nucleuz</h1>
 
-    <p>Click below to register your details</p>
+    <p>{{ __("Click below to register your details") }}</p>
 
-    <a href="{{ $Link }}"><button>Regiter Now</button></a>
+    <a href="{{ $Link }}"><button>{{ __("Regiter Now") }}</button></a>
 
   </body>
 </html>

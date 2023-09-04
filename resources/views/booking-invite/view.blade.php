@@ -187,7 +187,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Invite Customer</h5>
+                <h5 class="modal-title" id="exampleModalLabel">{{ __("Invite Customer") }}</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -201,13 +201,13 @@
                         <div class="row">
 
                             <div class="form-group col-md-6">
-                                <label for="from" class="col-form-label text-dark">Email</label>
+                                <label for="from" class="col-form-label text-dark">{{ __("Email") }}</label>
                                 <input class="form-control font-style" name="email" type="text" id="email"
                                     value="{{ old('email') }}" required />
                             </div>
 
                             <div class="form-group col-6">
-                                <label for="subject" class="col-form-label text-dark">Name</label>
+                                <label for="subject" class="col-form-label text-dark">{{ __("Name") }}</label>
                                 <input class="form-control font-style" required name="name" id="name" type="text"
                                     value="{{ old('name') }}" />
                             </div>
@@ -224,8 +224,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                <input class="btn btn-xs btn-primary" type="submit" value="Send">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">{{ __("Close") }}</button>
+                <input class="btn btn-xs btn-primary" type="submit" value='{{ __("Send") }}'>
             </div>
             {!! Form::close() !!}
         </div>

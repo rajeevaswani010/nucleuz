@@ -263,6 +263,18 @@
     "Pickup Today":"بيك اب اليوم",
     "Pickup Tomorrow":"بيك اب غدا",
     "Pick up schedule":"موعد الالتقاط",
-    "Booking Data":"بيانات الحجز"
+    "Booking Data":"بيانات الحجز",
+    "Close":"يغلق",
+    "Regiter Now":"سجل الان",
+    "Click below to register your details":"انقر أدناه لتسجيل التفاصيل الخاصة بك",
+    "Hi":"أهلاً",
+    "Book your rent a car with ":"المستأجرة مع احجز سيارتك",
+    "Your Nucleuz Booking ID":"الخاص بك معرف حجز Nucleuz",
+    "Tentative Payment Details":"تفاصيل الدفع المبدئية",
+    "New Car Booking":"حجز السيارات الجديدة",
+    "Added Discount for this Booking":"الحجز تمت إضافة خصم لهذا ",
+    "Complete Booking":"الحجز الكامل",
+    "Car Image On Delivery":"التسليم صورة السيارة عند",
+    "Date & Time of Drop Off":"تاريخ ووقت التسليم"
 
 }

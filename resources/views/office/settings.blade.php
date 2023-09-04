@@ -102,7 +102,7 @@
                         </script>
                         <div class="modal-footer">
                             <input name="lang" type="hidden" value="en">
-                            <input class="btn btn-xs btn-primary" type="submit" value="Save" onclick="saveAlert();">
+                            <input class="btn btn-xs btn-primary" type="submit" value='{{ __("Save") }}' onclick="saveAlert();">
                         </div>
 
                         {!! Form::close() !!}
