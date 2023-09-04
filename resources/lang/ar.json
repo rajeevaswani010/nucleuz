@@ -275,6 +275,11 @@
     "Added Discount for this Booking":"الحجز تمت إضافة خصم لهذا ",
     "Complete Booking":"الحجز الكامل",
     "Car Image On Delivery":"التسليم صورة السيارة عند",
-    "Date & Time of Drop Off":"تاريخ ووقت التسليم"
+    "Date & Time of Drop Off":"تاريخ ووقت التسليم",
+    "[ Vehicle option shown in ":"في [ خيار السيارة موضح",
+    "RED":"أحمر",
+    " means is not available ]":"الوسائل غير متوفرة ]",
+    "*The above value may change at the time of vehicle return":"وقت إرجاع السيارة المذكورة أعلاه في *قد تتغير القيمة",
+    "Final Paid Amount":"المبلغ المدفوع النهائي"
 
 }

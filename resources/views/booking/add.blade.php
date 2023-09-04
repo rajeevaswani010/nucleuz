@@ -252,7 +252,7 @@
                 </div>
 
                 <div class="col-lg-12 mb-4">
-                    <label>{{ __("Vehicle") }} <span class="text-danger">*</span></label><span style="float:right; font-style:italic; color:red;">[ Vehicle option shown in <b>RED</b> means is not available ]</span>
+                    <label>{{ __("Vehicle") }} <span class="text-danger">*</span></label><span style="float:right; font-style:italic; color:red;">{{ __("[ Vehicle option shown in ") }} <b>{{ __("RED") }}</b>{{ __(" means is not available ]") }}</span>
                     <select class="form-control" required id="VehicleData" onchange="fetchReviews()" name="vehicle_id">
                         <option value="">{{ __("Select") }}</option>
                         <!-- <option value="Hatchback">{{ __("Hatchback") }}</option>

@@ -77,7 +77,7 @@
                     <div class="mt-2"><b>{{ __("Additional Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->additional_charges, 2) }}</div>
                     <div class="mt-2"><b>{{ __("Grand Total") }} : &nbsp;OMR {{ number_format(($Booking->grand_total - $Booking->advance_amount), 2) }}</b> </div>
                     <div class="mt-2"><b>{{ __("Final Paid Amount") }} : &nbsp;OMR {{ number_format($Booking->final_amount_paid, 2) }}</b> </div>
-                    <div class="mt-2"><b><span style="float:left; font-style:italic; color:red;">*The above value may change at the time of vehicle return</span> </b> </div>
+                    <div class="mt-2"><b><span style="float:left; font-style:italic; color:red;">{{ __("*The above value may change at the time of vehicle return") }}</span> </b> </div>
                 </div>
             </div>
         </div>

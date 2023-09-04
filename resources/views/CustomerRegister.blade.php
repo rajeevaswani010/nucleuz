@@ -260,8 +260,7 @@
             <div class="float-right" id="LoadDue"><b>0.0</b></div>
             <div class="float-right">Estimated Amount: &nbsp;</div>
             <div class="clearfix"></div>
-            <div class="float-right"><span style="float-right font-style:italic; color:red;">*The above value may change
-                    at the time of vehicle return</span> </div>
+            <div class="float-right"><span style="float-right font-style:italic; color:red;">{{ __("*The above value may change at the time of vehicle return") }}</span> </div>
         </div>
     </div>
 
