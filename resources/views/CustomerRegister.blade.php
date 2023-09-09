@@ -1,6 +1,11 @@
 @extends("layout.front")
 
 @section("content")
+
+<script src="{{ URL('public/newasserts/js/jquery.min.js') }}"></script>
+<script src="{{ URL('resources/js/multipleFileUpload.js') }}"></script>
+<script src="{{ URL('resources/js/customer.js') }}"></script>
+
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
 <link rel="stylesheet" href="{{ URL('resources/css/app.css') }}">

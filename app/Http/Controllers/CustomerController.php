@@ -105,7 +105,22 @@ class CustomerController extends Controller
             $CustObj = new Customer();
             $CustObj->company_id = $InviteObj->company_id;
             $CustObj->customer_id = $NewCode;
-            $CustObj = updateCustomerDetails($Input, $CustObj);
+            // $CustObj = updateCustomerDetails($Input, $CustObj);
+            $CustObj->title = $Input["title"];
+            $CustObj->first_name = $Input["first_name"];
+            //$CustObj->middle_name = $Input["middle_name"];
+            $CustObj->last_name = NULL;  // this is hack.. TODO  need to be fixed.
+            $CustObj->permanent_address = $Input["permanent_address"];
+            $CustObj->temp_address = $Input["temp_address"];
+            $CustObj->nationality = $Input["nationality"];
+            $CustObj->gender = $Input["gender"];
+            $CustObj->dob = $Input["dob"];
+            $CustObj->country_code = $Input["country_code"];
+            $CustObj->mobile = $Input["mobile"];
+            $CustObj->email = $Input["email"];
+            $CustObj->insurance = $Input["insurance"];
+            $CustObj->driving_license = NULL;
+            
             $CustObj->save();
 
             $CustomerID = $CustObj->id;            
@@ -415,7 +430,21 @@ class CustomerController extends Controller
             $CustObj = new Customer();
             $CustObj->company_id = session("CompanyLinkID");        
             $CustObj->customer_id = $NewCode;
-            $CustObj = updateCustomerDetails($Input, $CustObj);
+            // $CustObj = updateCustomerDetails($Input, $CustObj);
+            $CustObj->title = $Input["title"];
+            $CustObj->first_name = $Input["first_name"];
+            //$CustObj->middle_name = $Input["middle_name"];
+            $CustObj->last_name = NULL;  // this is hack.. TODO  need to be fixed.
+            $CustObj->permanent_address = $Input["permanent_address"];
+            $CustObj->temp_address = $Input["temp_address"];
+            $CustObj->nationality = $Input["nationality"];
+            $CustObj->gender = $Input["gender"];
+            $CustObj->dob = $Input["dob"];
+            $CustObj->country_code = $Input["country_code"];
+            $CustObj->mobile = $Input["mobile"];
+            $CustObj->email = $Input["email"];
+            $CustObj->insurance = $Input["insurance"];
+    
             $CustObj->save();
 
             $fileTypes = array('residency_card','passport_detail','visa_detail','driving_license');

@@ -101,29 +101,15 @@ class BookingController extends Controller
         }
 
         $Input = $request->all();
-        $CustomerData = array();
+        $CustomerID;
         $Requirements = array();
         $InviteId = 0;//default  0 means no invite
-        $CustImagesArr = [];
         if (array_key_exists("inviteId",$Input)){
             $InviteId = $Input["inviteId"];
             $InviteObj = BookingInvite::where("company_id", session("CompanyLinkID"))->find($InviteId);
             if($InviteObj != null){
                 $CustomerID = $InviteObj->customer_id;
                 Log::debug("customerid - ".$CustomerID);
-                $CustomerData = Customer::where("company_id", session("CompanyLinkID"))->find($CustomerID);
-
-                $CustomerImages = CustomerImages::select("type","link")->where("company_id", session("CompanyLinkID"))->where('customer_id',$CustomerID)->get();
-                foreach ($CustomerImages as $imageRow) {
-                    $type = $imageRow->type;
-                    if(!isset($CustImagesArr[$type])){
-                        $CustImagesArr[$type] = []; 
-                    }
-                    array_push($CustImagesArr[$type], $imageRow->link);
-                }
-                // Log::debug($CustImagesArr);        
-
-                // Log::debug($InviteObj->requirements);
                 $arr= explode("|", $InviteObj->requirements);
                 foreach($arr as $item){
                     $arr2 = explode("=",$item);
@@ -138,7 +124,7 @@ class BookingController extends Controller
         $AllVehicles = Vehicle::where("company_id", session("CompanyLinkID"))->get();
         $AllPricing = Pricing::where("company_id", session("CompanyLinkID"))->get();
         $Conuntry = Country::orderBy("name")->get();
-        return view('booking.add', compact("ActiveAction", "AllVehicles", "AllPricing", "CustomerData", "CustImagesArr", "Conuntry", "Requirements", "InviteId"));
+        return view('booking.add', compact("ActiveAction", "AllVehicles", "AllPricing", "Conuntry", "Requirements", "CustomerID","InviteId"));
     }
 
     /**

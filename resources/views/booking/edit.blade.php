@@ -261,7 +261,7 @@
     </div>
     @endif
     
-    @if($Booking->status == 3 || ($Booking->status == 2 && $Booking->drop_off_confirm == 1))
+    @if($Booking->status == 3 || ($Booking->status == 2 && $Booking->km_reading_pickup != NULL))
     <div class="card">
         <div class="card-body">
             <h3>{{ __("Drop off Detail") }}</h3>

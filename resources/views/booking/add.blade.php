@@ -412,13 +412,14 @@
 
 <script type="text/javascript">
 
-    //prefilling customer fields based on data  recieved
-    @if(!empty($CustomerData)) 
-        $('#title').val('{{ $CustomerData->title }}')
-        $('#gender').val('{{ $CustomerData->gender }}');
-        $('#nationality').val('{{ $CustomerData->nationality }}');
-        $('#country_code').val('{{ $CustomerData->country_code }}');
-    @endif
+    var selectedCustId; // this customer id is used for booking.. 
+
+    $(document).ready(function() {
+        // Your code here
+        selectedCustId = {{ $CustomerID }}
+        if( selectedCustId != undefined )
+            selectCustomer(selectedCustId);
+    });
 
     //set requirements..
     @if(!empty($Requirements["tarrif_detail"])) 
@@ -533,9 +534,6 @@
         $("#LoadDue").html('<b>0.0</b>');
 
     }
-
-
-    var selectedCustId; // this customer id is used for booking.. 
 
     function fetchReviews(){
 
