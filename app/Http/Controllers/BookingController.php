@@ -101,15 +101,15 @@ class BookingController extends Controller
         }
 
         $Input = $request->all();
-        $CustomerID;
+        $CustomerId = null;
         $Requirements = array();
         $InviteId = 0;//default  0 means no invite
         if (array_key_exists("inviteId",$Input)){
             $InviteId = $Input["inviteId"];
             $InviteObj = BookingInvite::where("company_id", session("CompanyLinkID"))->find($InviteId);
             if($InviteObj != null){
-                $CustomerID = $InviteObj->customer_id;
-                Log::debug("customerid - ".$CustomerID);
+                $CustomerId = $InviteObj->customer_id;
+                Log::debug("customerid - ".$CustomerId);
                 $arr= explode("|", $InviteObj->requirements);
                 foreach($arr as $item){
                     $arr2 = explode("=",$item);
@@ -124,7 +124,7 @@ class BookingController extends Controller
         $AllVehicles = Vehicle::where("company_id", session("CompanyLinkID"))->get();
         $AllPricing = Pricing::where("company_id", session("CompanyLinkID"))->get();
         $Conuntry = Country::orderBy("name")->get();
-        return view('booking.add', compact("ActiveAction", "AllVehicles", "AllPricing", "Conuntry", "Requirements", "CustomerID","InviteId"));
+        return view('booking.add', compact("ActiveAction", "AllVehicles", "AllPricing", "Conuntry", "Requirements", "CustomerId","InviteId"));
     }
 
     /**

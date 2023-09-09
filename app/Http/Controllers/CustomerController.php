@@ -63,12 +63,10 @@ class CustomerController extends Controller
         
         foreach($CheckCustomer as $Cms){
             if(
-                ($Cms->first_name == $Input["first_name"] && $Cms->email == $Input["email"])
-                || ($Cms->first_name == $Input["first_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
-                || ($Cms->first_name == $Input["first_name"] && $Cms->dob == $Input["dob"])
-                // || ($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
-                // || ($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"])
-                // || ($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+                ($Cms->first_name == $Input["first_name"] 
+                && $Cms->mobile == $Input["mobile"]) 
+                && $Cms->country_code == $Input["country_code"]
+                // && $Cms->dob == $Input["dob"]
             ){
                 $CustomerFound = 1;
             }

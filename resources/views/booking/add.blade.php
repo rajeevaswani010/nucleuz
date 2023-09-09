@@ -416,9 +416,9 @@
 
     $(document).ready(function() {
         // Your code here
-        selectedCustId = {{ $CustomerID }}
-        if( selectedCustId != undefined )
-            selectCustomer(selectedCustId);
+        @if(isset($CustomerId))
+            selectCustomer({{ $CustomerId }});
+        @endif
     });
 
     //set requirements..
