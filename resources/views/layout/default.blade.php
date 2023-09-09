@@ -376,7 +376,7 @@ aria-expanded="false"
 <li class="dropdown dash-h-item drp-language">
 <a
 class="dash-head-link dropdown-toggle arrow-none me-0"
-data-bs-toggle="dropdown"
+data-toggle="dropdown"
 href="#"
 role="button"
 aria-haspopup="false"
