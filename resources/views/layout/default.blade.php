@@ -13,6 +13,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <link rel="icon" href="https://nucleuz.app/public/favicon.png" type="image" sizes="16x16">
 
+
+    <!-- <link rel="stylesheet" href="{{ URL('public/newasserts/plugins/bootstrap/css/bootstrap.min.css') }}">
+    <script src="{{ URL('public/newasserts/plugins/bootstrap/js/bootstrap.min.js') }}"></script> -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+
     <!-- Favicon icon -->
 
     <!-- Calendar-->
@@ -47,12 +56,12 @@
   "debug": false,
   "newestOnTop": false,
   "progressBar": false,
-  "positionClass": "toast-bottom-center",
+  "positionClass": "toast-bottom-right",
   "preventDuplicates": false,
   "onclick": null,
   "showDuration": "1000",
   "hideDuration": "1000",
-  "timeOut": "5000",
+  "timeOut": "1000",
   "extendedTimeOut": "1000",
   "showEasing": "swing",
   "hideEasing": "linear",
@@ -62,7 +71,7 @@
     </script>
     <!-- app css -->
     <link rel="stylesheet" href="{{ URL('resources/css/app.css') }}">
-    <script src="{{ URL('resources/js/app.js') }}"></script>
+    <!-- <script src="{{ URL('resources/js/app.js') }}"></script> -->
     </head>
 <body class="theme-4">
 
@@ -158,9 +167,15 @@
 
         <li class="dash-item dash-hasmenu @if($ActiveAction == 'booking-invite') active @endif">
         <a href="{{ URL('booking-invite') }}" class="dash-link">
-            <span class="dash-micon"><i class="fa fa-users"></i></span><span class="dash-mtext">{{ __("Invite Customer") }}</span>
+            <span class="dash-micon"><i class="fa fa-share"></i></span><span class="dash-mtext">{{ __("Invite Customer") }}</span>
         </a>
       </li>
+      <li class="dash-item dash-hasmenu @if($ActiveAction == 'customer') active @endif">
+        <a href="{{ URL('customer') }}" class="dash-link">
+            <span class="dash-micon"><i class="fa fa-users"></i></span><span class="dash-mtext">{{ __("Customers") }}</span>
+        </a>
+    </li>
+
     @endif
 
     <!--------------------- Start Account ----------------------------------->
@@ -181,10 +196,6 @@
                     </span><span class="dash-arrow"><i data-feather="chevron-right"></i></span>
                 </a>
             <ul class="dash-submenu">
-
-              <li class="dash-item ">
-                    <a class="dash-link @if($ActiveAction == 'customer') active @endif" href="{{ URL('customer') }}">{{ __("Customer") }}</a>
-                </li>
 
                <li class="dash-item ">
                     <a class="dash-link" href="javascript:void(0)">Vendor</a>
@@ -495,9 +506,8 @@ aria-expanded="false"
 <!-- Warning Section Ends -->
 <!-- Required Js -->
 <script src="{{ URL('public/newasserts/js/jquery.form.js') }}"></script>
-<script src="{{ URL('public/newasserts/assets/js/plugins/popper.min.js') }}"></script>
+<!-- <script src="{{ URL('public/newasserts/assets/js/plugins/popper.min.js') }}"></script> -->
 <script src="{{ URL('public/newasserts/assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
-<script src="{{ URL('public/newasserts/assets/js/plugins/bootstrap.min.js') }}"></script>
 <script src="{{ URL('public/newasserts/assets/js/plugins/feather.min.js') }}"></script>
 <script src="{{ URL('public/newasserts/assets/js/dash.js') }}"></script>
 <script src="{{ URL('public/newasserts/js/moment.min.js') }}"></script>

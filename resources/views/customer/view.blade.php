@@ -22,12 +22,13 @@
 <div class="col">
 <div class="float-end">
 
-{{--<a href="{{ URL('license/create') }}" data-size="lg" data-url="{{ URL('license/create') }}" data-ajax-popup="true" data-bs-toggle="tooltip" title="Create" data-title="Add New" class="btn btn-sm btn-primary">
+<a href="{{ URL('customer/create') }}" data-size="lg" data-url="{{ URL('customer/create') }}" data-ajax-popup="true" data-bs-toggle="tooltip" title="Create" data-title="Add New" class="btn btn-sm btn-primary">
 <i class="ti ti-plus"></i>
-</a>--}}
+</a>
 
 </div>
 </div>
+
 </div>
 </div>
 </div>
@@ -44,7 +45,7 @@
 <th>Nationality</th>
 <th>Email</th>
 <th>Mobile</th>
-<th>Total Amount</th>
+<th></th>
    <!--<th>Action</th> -->
 </tr>
 </thead>
@@ -67,8 +68,6 @@
     <td>{{ $DT->nationality }}</td>
     <td>{{ $DT->email }}</td>
     <td>+{{ $DT->country_code }}{{ $DT->mobile }}</td>
-    <td>{{ $totalAmt }}</td>
-
    <!-- <td class="Action">
                                                 <span>
                                                     <div class="action-btn bg-danger ms-2">
@@ -84,6 +83,15 @@
                                                 </span>
                                             </td> -->
 
+    <td class="Action">
+        <span>
+        <div class="action-btn bg-primary ms-2">
+            <a href="{{ URL('customer') }}/{{ $DT->id }}/edit" class="mx-3 btn btn-sm align-items-center" data-url="{{ URL('customer') }}/{{ $DT->id }}/edit" data-ajax-popup="true" data-title="Edit Coupon" data-bs-toggle="tooltip"  title="Edit" data-original-title="Edit">
+                <i class="fa fa-pencil-alt text-white"></i>
+            </a>
+        </div>
+        </span>
+    </td>
     {{--<td class="Action">
         <span>
     <div class="action-btn bg-primary ms-2">

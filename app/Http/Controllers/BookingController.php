@@ -154,9 +154,16 @@ class BookingController extends Controller
         }
         
         $Input = $request->all();
-        $CustomerID = "";
-        $CheckCustomer = Customer::where("company_id", session("CompanyLinkID"))->get();
-        
+        Log::debug($Input); //just check what is there.. 
+        //$CustomerID = "";
+        $CustomerID = $Input["customer_id"];
+        $CheckCustomer = Customer::where("company_id", session("CompanyLinkID"))->where("id",$CustomerID)->get();
+
+        if($CheckCustomer->isEmpty())
+            return json_encode(array("Status" =>  0, "Message" => "Customer not found"));
+
+        $Customer = Customer::where("company_id", session("CompanyLinkID"))->where("id",$CustomerID)->get();
+
         // $CustomerFound = 0;
         
         
@@ -166,132 +173,132 @@ class BookingController extends Controller
             }
         }
         
-        foreach($CheckCustomer as $Cms){
-            if(
-                ($Cms->first_name == $Input["first_name"] && $Cms->email == $Input["email"])
-                || ($Cms->first_name == $Input["first_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
-                || ($Cms->first_name == $Input["first_name"] && $Cms->dob == $Input["dob"])
-                //|| ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"])
-                //|| ($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
-                //|| ($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"])
-                //|| ($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
-            )
-            {
-                $CustomerID = $Cms->id;
-                break;
-            }           
-        }
+        // foreach($CheckCustomer as $Cms){
+        //     if(
+        //         ($Cms->first_name == $Input["first_name"] && $Cms->email == $Input["email"])
+        //         || ($Cms->first_name == $Input["first_name"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+        //         || ($Cms->first_name == $Input["first_name"] && $Cms->dob == $Input["dob"])
+        //         //|| ($Cms->first_name == $Input["first_name"] && $Cms->last_name == $Input["last_name"] && $Cms->dob == $Input["dob"])
+        //         //|| ($Cms->email == $Input["email"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+        //         //|| ($Cms->email == $Input["email"] && $Cms->dob == $Input["dob"])
+        //         //|| ($Cms->dob == $Input["dob"] && $Cms->mobile == $Input["mobile"] && $Cms->country_code == $Input["country_code"])
+        //     )
+        //     {
+        //         $CustomerID = $Cms->id;
+        //         break;
+        //     }           
+        // }
         
-        if( $CustomerID == "" ){
-            if($request->file('driving_license')[0] == null){
-                return json_encode(array("Status" =>  0, "Message" => "Upload Driving License File"));
-            }
+        // if( $CustomerID == "" ){
+        //     if($request->file('driving_license')[0] == null){
+        //         return json_encode(array("Status" =>  0, "Message" => "Upload Driving License File"));
+        //     }
 
-            if($request->file('passport_detail')[0] == null && $request->file('residency_card')[0] == null){
-                return json_encode(array("Status" =>  0, "Message" => "Upload Passport File or Residency Card"));
-            }
+        //     if($request->file('passport_detail')[0] == null && $request->file('residency_card')[0] == null){
+        //         return json_encode(array("Status" =>  0, "Message" => "Upload Passport File or Residency Card"));
+        //     }
             
-            $GetCompanyDetail = Office::find(session("CompanyLinkID"));
-            $PreviousCode = Customer::where("company_id", session("CompanyLinkID"))->orderBy("id", "DESC")->first();
+        //     $GetCompanyDetail = Office::find(session("CompanyLinkID"));
+        //     $PreviousCode = Customer::where("company_id", session("CompanyLinkID"))->orderBy("id", "DESC")->first();
             
-            if(isset($PreviousCode->customer_id) && $PreviousCode->customer_id != ""){
-                $GetInt = explode("-", $PreviousCode->customer_id);
-                $GetInt = $GetInt[1];
-            }else{
-                $GetInt = 0;
-            }
+        //     if(isset($PreviousCode->customer_id) && $PreviousCode->customer_id != ""){
+        //         $GetInt = explode("-", $PreviousCode->customer_id);
+        //         $GetInt = $GetInt[1];
+        //     }else{
+        //         $GetInt = 0;
+        //     }
             
-            $NewCode = substr($GetCompanyDetail->name, 0, 2)."-".($GetInt+1);
+        //     $NewCode = substr($GetCompanyDetail->name, 0, 2)."-".($GetInt+1);
 
-            $CustObj = new Customer();
-            $CustObj->company_id = session("CompanyLinkID");
-            $CustObj->customer_id = $NewCode;
-            $CustObj->title = $Input["title"];
-            $CustObj->first_name = $Input["first_name"];
-            //$CustObj->middle_name = $Input["middle_name"];
-            $CustObj->last_name = NULL;
-            $CustObj->permanent_address = $Input["permanent_address"];
-            $CustObj->temp_address = $Input["temp_address"];
-            $CustObj->nationality = $Input["nationality"];
-            $CustObj->gender = $Input["gender"];
-            $CustObj->dob = $Input["dob"];
-            $CustObj->country_code = $Input["country_code"];
-            $CustObj->mobile = $Input["mobile"];
-            $CustObj->email = $Input["email"];
-            $CustObj->insurance = $Input["insurance"];
+        //     $CustObj = new Customer();
+        //     $CustObj->company_id = session("CompanyLinkID");
+        //     $CustObj->customer_id = $NewCode;
+        //     $CustObj->title = $Input["title"];
+        //     $CustObj->first_name = $Input["first_name"];
+        //     //$CustObj->middle_name = $Input["middle_name"];
+        //     $CustObj->last_name = NULL;
+        //     $CustObj->permanent_address = $Input["permanent_address"];
+        //     $CustObj->temp_address = $Input["temp_address"];
+        //     $CustObj->nationality = $Input["nationality"];
+        //     $CustObj->gender = $Input["gender"];
+        //     $CustObj->dob = $Input["dob"];
+        //     $CustObj->country_code = $Input["country_code"];
+        //     $CustObj->mobile = $Input["mobile"];
+        //     $CustObj->email = $Input["email"];
+        //     $CustObj->insurance = $Input["insurance"];
 
-           $CustObj->save();
-           $CustomerID = $CustObj->id;
+        //    $CustObj->save();
+        //    $CustomerID = $CustObj->id;
 
-        }else{
-            $UpdatedInput = $this->unset_variables($Input);
-            Log::debug($UpdatedInput); //just check what is there.. 
-            Customer::where('id', $CustomerID)->update($UpdatedInput);
-            $Customer = Customer::find($CustomerID);
-        }
+        // }else{
+        //     $UpdatedInput = $this->unset_variables($Input);
+        //     Log::debug($UpdatedInput); //just check what is there.. 
+        //     Customer::where("company_id",session("CompanyLinkID"))->where('id', $CustomerID)->update($UpdatedInput);
+        //     $Customer = Customer::find($CustomerID);
+        // }
 
 
-        if( $Input["invite_id"] == 0 ) {  // TODO this hack has to be removed
-            Log::debug("invite id is null");
+        // if( $Input["invite_id"] == 0 ) {  // TODO this hack has to be removed
+        //     Log::debug("invite id is null");
 
-            //this section has to be in separte api... upload files.. 
-            //CustomerImages::where('customer_id',$CustomerID)->delete();    //right now disabled file deleteion.  TODO fix this behavior
+        //     //this section has to be in separte api... upload files.. 
+        //     CustomerImages::where("company_id",session("CompanyLinkID"))->where('customer_id',$CustomerID)->delete();    //right now disabled file deleteion.  TODO fix this behavior
 
-            //upload files..
-            if($request->file('residency_card') && sizeof($request->file('residency_card')) > 0){
-                for($i = 0; $i < sizeof($request->file('residency_card')); $i++ ){
-                    $CustImages = new CustomerImages();
-                    $CustImages->customer_id = $CustomerID;
-                    $CustImages->company_id = session("CompanyLinkID");
-                    $CustImages->type = "residency_card";
+        //     //upload files..
+        //     if($request->file('residency_card') && sizeof($request->file('residency_card')) > 0){
+        //         for($i = 0; $i < sizeof($request->file('residency_card')); $i++ ){
+        //             $CustImages = new CustomerImages();
+        //             $CustImages->customer_id = $CustomerID;
+        //             $CustImages->company_id = session("CompanyLinkID");
+        //             $CustImages->type = "residency_card";
 
-                    $path = $request->file('residency_card')[$i]->store('CustomersImages');
-                    $CustImages->link = $path;
-                    $CustImages->save();
-                }
-            }
+        //             $path = $request->file('residency_card')[$i]->store('CustomersImages');
+        //             $CustImages->link = $path;
+        //             $CustImages->save();
+        //         }
+        //     }
 
-            if($request->file('passport_detail') && sizeof($request->file('passport_detail')) > 0){
-                for($i = 0; $i < sizeof($request->file('passport_detail')); $i++ ){
-                    $CustImages = new CustomerImages();
-                    $CustImages->customer_id = $CustomerID;
-                    $CustImages->company_id = session("CompanyLinkID");
-                    $CustImages->type = "passport_detail";
+        //     if($request->file('passport_detail') && sizeof($request->file('passport_detail')) > 0){
+        //         for($i = 0; $i < sizeof($request->file('passport_detail')); $i++ ){
+        //             $CustImages = new CustomerImages();
+        //             $CustImages->customer_id = $CustomerID;
+        //             $CustImages->company_id = session("CompanyLinkID");
+        //             $CustImages->type = "passport_detail";
 
-                    $path = $request->file('passport_detail')[$i]->store('CustomersImages');
-                    $CustImages->link = $path;
-                    $CustImages->save();
-                }
-            }
+        //             $path = $request->file('passport_detail')[$i]->store('CustomersImages');
+        //             $CustImages->link = $path;
+        //             $CustImages->save();
+        //         }
+        //     }
 
-            if($request->file('driving_license') && sizeof($request->file('driving_license')) > 0){
-                for($i = 0; $i < sizeof($request->file('driving_license')); $i++ ){
-                    $CustImages = new CustomerImages();
-                    $CustImages->customer_id = $CustomerID;
-                    $CustImages->company_id = session("CompanyLinkID");
-                    $CustImages->type = "driving_license";
+        //     if($request->file('driving_license') && sizeof($request->file('driving_license')) > 0){
+        //         for($i = 0; $i < sizeof($request->file('driving_license')); $i++ ){
+        //             $CustImages = new CustomerImages();
+        //             $CustImages->customer_id = $CustomerID;
+        //             $CustImages->company_id = session("CompanyLinkID");
+        //             $CustImages->type = "driving_license";
 
-                    $path = $request->file('driving_license')[$i]->store('CustomersImages');
-                    $CustImages->link = $path;
-                    $CustImages->save();
-                }
-            }
+        //             $path = $request->file('driving_license')[$i]->store('CustomersImages');
+        //             $CustImages->link = $path;
+        //             $CustImages->save();
+        //         }
+        //     }
 
-            if($request->file('visa_detail') && sizeof($request->file('visa_detail')) > 0){
-                for($i = 0; $i < sizeof($request->file('visa_detail')); $i++ ){
-                    $CustImages = new CustomerImages();
-                    $CustImages->customer_id = $CustomerID;
-                    $CustImages->company_id = session("CompanyLinkID");
-                    $CustImages->type = "visa_detail";
+        //     if($request->file('visa_detail') && sizeof($request->file('visa_detail')) > 0){
+        //         for($i = 0; $i < sizeof($request->file('visa_detail')); $i++ ){
+        //             $CustImages = new CustomerImages();
+        //             $CustImages->customer_id = $CustomerID;
+        //             $CustImages->company_id = session("CompanyLinkID");
+        //             $CustImages->type = "visa_detail";
 
-                    $path = $request->file('visa_detail')[$i]->store('CustomersImages');
-                    $CustImages->link = $path;
-                    $CustImages->save();
-                }
-            }
-        }  else {
-            Log::debug("booking for invite id - ".$Input["invite_id"]);
-        }
+        //             $path = $request->file('visa_detail')[$i]->store('CustomersImages');
+        //             $CustImages->link = $path;
+        //             $CustImages->save();
+        //         }
+        //     }
+        // }  else {
+        //     Log::debug("booking for invite id - ".$Input["invite_id"]);
+        // }
 
         if($Input["additional_kilometers_amount"] <= 0){
             return json_encode(array("Status" =>  0, "Message" => "Additional KM Amount Must Be > 0"));
@@ -302,9 +309,9 @@ class BookingController extends Controller
             return json_encode(array("Status" =>  0, "Message" => "Pickup Date Can't Be in Past"));
         }
 
-        if($Input["dob"]." ".$Input["dob"] > date('Y-m-d', strtotime('-18 year'))){
-            return json_encode(array("Status" =>  0, "Message" => "Date Of Birth Can't Be Less Than 18 Years"));
-        }
+        // if($Input["dob"]." ".$Input["dob"] > date('Y-m-d', strtotime('-18 year'))){
+        //     return json_encode(array("Status" =>  0, "Message" => "Date Of Birth Can't Be Less Than 18 Years"));
+        // }  //TODO fixme
 
         $BookingObj = new Booking();
         $BookingObj->staff_id = session("AdminID");
@@ -446,9 +453,20 @@ class BookingController extends Controller
         }
         Log::debug($CustImagesArr);
 
+        $BookingImages = BookingImages::select("type","link")->where('booking_id',$Booking->id)->get();
+        $BookingImagesArr = [];
+        foreach ($BookingImages as $imageRow) {
+            $type = $imageRow->type;
+            if(!isset($BookingImagesArr[$type])){
+                $BookingImagesArr[$type] = []; 
+            }
+            array_push($BookingImagesArr[$type], $imageRow->link);
+        }
+        Log::debug($BookingImagesArr);
+
         Log::debug("bookingcontroller show - exit");
 
-        return view('booking.show', compact("Booking", "ActiveAction", "AllVehicles", "CustImagesArr"));
+        return view('booking.show', compact("Booking", "ActiveAction", "AllVehicles", "CustImagesArr", "BookingImagesArr"));
     }
 
     /**
@@ -466,6 +484,7 @@ class BookingController extends Controller
         }
         
         $Booking = Booking::find($id);
+        Log::debug($Booking);
         $CustomerImages = CustomerImages::select("type","link")->where('customer_id',$Booking->customer_id)->get();
         $CustImagesArr = [];
         foreach ($CustomerImages as $imageRow) {
@@ -475,7 +494,7 @@ class BookingController extends Controller
             }
             array_push($CustImagesArr[$type], $imageRow->link);
         }
-        Log::debug($CustImagesArr);
+        // Log::debug($CustImagesArr);
 
         $BookingImages = BookingImages::select("type","link")->where('booking_id',$Booking->id)->get();
         $BookingImagesArr = [];
@@ -486,7 +505,7 @@ class BookingController extends Controller
             }
             array_push($BookingImagesArr[$type], $imageRow->link);
         }
-        Log::debug($BookingImagesArr);
+        // Log::debug($BookingImagesArr);
 
         $ActiveAction = "booking";
         Log::debug("bookingcontroller edit - exit");
@@ -510,7 +529,6 @@ class BookingController extends Controller
         $Booking = Booking::find($id);
 
         $Input = $request->all();
-        Log::debug($Input);
         
         if(isset($Input["km_drop_time"])){
             Log::debug("if discount_amount :".$Input["discount_amount"]);
@@ -557,17 +575,17 @@ class BookingController extends Controller
             $Input["dropoff_date"] = date("Y-m-d H:i:s");
         } else{
             if(isset($Input["discount_amount"])){
-            // $Total = $Booking->total ;
-             $SubTotal = $Booking->total - $Input["discount_amount"];
-             $TaxAmount = ($SubTotal * 5) / 100;
-             $Amount = $SubTotal + $TaxAmount;
+                // $Total = $Booking->total ;
+                $SubTotal = $Booking->total - $Input["discount_amount"];
+                $TaxAmount = ($SubTotal * 5) / 100;
+                $Amount = $SubTotal + $TaxAmount;
 
-            Log::debug("SubTotal1 :".$SubTotal);
-            Log::debug("grand_total1 :".$Amount);
-            Log::debug("discount_amount1 :".$Input["discount_amount"]);
+                Log::debug("SubTotal1 :".$SubTotal);
+                Log::debug("grand_total1 :".$Amount);
+                Log::debug("discount_amount1 :".$Input["discount_amount"]);
 
-            $Input["sub_total"] = $SubTotal;
-            $Input["grand_total"] = $Amount;
+                $Input["sub_total"] = $SubTotal;
+                $Input["grand_total"] = $Amount;
             }
         }
 
@@ -577,26 +595,11 @@ class BookingController extends Controller
         // if($request->file('damge_image') != null){
         //     $path = $request->file('damge_image')->store('BookimngImages');
         //     $Input['damge_image'] = $path;
-        // }
-        //upload car damge  files..
-        if($request->file('damge_image') && sizeof($request->file('damge_image')) > 0){
-            for($i = 0; $i < sizeof($request->file('damge_image')); $i++ ){
-                $BookingImages = new BookingImages();
-                $BookingImages->booking_id = $Booking->id;
-                $BookingImages->company_id = session("CompanyLinkID");
-                $BookingImages->vehicle_id = $Booking->vehicle_id;
-                $BookingImages->type = "damge_image";
-
-                $path = $request->file('damge_image')[$i]->store('BookimngImages');
-                Log::debug($path);
-                $BookingImages->link = $path;
-                $BookingImages->save();
-            }
-        }
-        
+        // }        
         
         if(isset($Input["final_amount_paid"])){
             $Input["status"] = 3;
+            $Input["final_amount_paid"] = doubleval(str_replace(',','',$Input["final_amount_paid"]));
         }
         
         
@@ -608,8 +611,7 @@ class BookingController extends Controller
         if(isset($Input["km_reading_pickup"])){
             $Input["status"] = 2;
         }
-
-        // $Input["final_amount_paid"] = doubleval(str_replace(',','',$Input["final_amount_paid"]));
+        
         Booking::where('id', $id)->update($Input);
         $Booking = Booking::find($id);
         
@@ -628,7 +630,23 @@ class BookingController extends Controller
                 $BookingImages->save();
             }
         }
-                
+
+        //upload car damge  files..
+        if($request->file('damge_image') && sizeof($request->file('damge_image')) > 0){
+            for($i = 0; $i < sizeof($request->file('damge_image')); $i++ ){
+                $BookingImages = new BookingImages();
+                $BookingImages->booking_id = $Booking->id;
+                $BookingImages->company_id = session("CompanyLinkID");
+                $BookingImages->vehicle_id = $Booking->vehicle_id;
+                $BookingImages->type = "damge_image";
+
+                $path = $request->file('damge_image')[$i]->store('BookimngImages');
+                Log::debug($path);
+                $BookingImages->link = $path;
+                $BookingImages->save();
+            }
+        }
+                        
         if(isset($Input["final_amount_paid"])){
             $data = array("Booking" => $Booking);
             Mail::send("EmailTemplates.BookingComplete", $data, function ($m) use($Booking){

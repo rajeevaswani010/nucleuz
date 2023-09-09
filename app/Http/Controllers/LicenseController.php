@@ -131,8 +131,8 @@ class LicenseController extends Controller
 
             // $Office = License::create($Input);
             $SubObj = new Subscription();
-            // $SubObj->company_id = $Office->id;
-            $SubObj->company_id=$Licenseid;
+            $SubObj->company_id = $Office->id;
+            // $SubObj->company_id=$Licenseid;
             $SubObj->validity = $Input["validay"];
             $SubObj->start_date = date("Y-m-d");
             $SubObj->end_date = $expiry_date;

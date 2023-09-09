@@ -105,25 +105,10 @@ class CustomerController extends Controller
             $CustObj = new Customer();
             $CustObj->company_id = $InviteObj->company_id;
             $CustObj->customer_id = $NewCode;
-            $CustObj->title = $Input["title"];
-            $CustObj->first_name = $Input["first_name"];
-            //$CustObj->middle_name = $Input["middle_name"];
-            //$CustObj->last_name = $Input["last_name"];   //TODO need to check even after removing from UI and setting default NULL in database
-            $CustObj->last_name = NULL;                                //why it is required to set NULL here for last_name
-            $CustObj->permanent_address = $Input["permanent_address"];
-            $CustObj->temp_address = $Input["temp_address"];
-            $CustObj->nationality = $Input["nationality"];
-            $CustObj->gender = $Input["gender"];
-            $CustObj->dob = $Input["dob"];
-            $CustObj->country_code = $Input["country_code"]; 
-            //$CustObj->mobile = "+".$Input["country_code"].$Input["mobile"];
-            $CustObj->mobile = $Input["mobile"];
-            $CustObj->email = $Input["email"];
-            $CustObj->insurance = $Input["insurance"];
-
+            $CustObj = updateCustomerDetails($Input, $CustObj);
             $CustObj->save();
-            $CustomerID = $CustObj->id;
-                        
+
+            $CustomerID = $CustObj->id;            
             Log::info('customer id: '.$CustomerID);
         }else{
             Log::debug("customercontroller old CustomerID - ".$CustomerID);
@@ -131,63 +116,26 @@ class CustomerController extends Controller
             Customer::where('id', $CustomerID)->update($UpdatedInput);
             $Customer = Customer::find($CustomerID);
             Log::debug("customercontroller updated dob  - ".$Customer->dob);
-            Log::debug($Customer);
         }
 
-        CustomerImages::where('customer_id',$CustomerID)->delete();
 
-        //upload files..
-        if( $request->file('residency_card') && sizeof($request->file('residency_card')) > 0){
-            for($i = 0; $i < sizeof($request->file('residency_card')); $i++ ){
-                $CustImages = new CustomerImages();
-                $CustImages->customer_id = $CustomerID;
-                $CustImages->company_id = session("CompanyLinkID");
-                $CustImages->type = "residency_card";
+       $fileTypes = array('residency_card','passport_detail','visa_detail','driving_license');
+       foreach($fileTypes as $filetype) {
+            if($request->file($filetype) && sizeof($request->file($filetype)) > 0){
+                CustomerImages::where('customer_id',$CustomerID)->delete();   //delete only when there are new documents from client
+                for($i = 0; $i < sizeof($request->file($filetype)); $i++ ){
+                    Log::debug("type - " . $filetype . " , i - ". $i);
+                    $CustImages = new CustomerImages();
+                    $CustImages->customer_id = $CustomerID;
+                    $CustImages->company_id = session("CompanyLinkID");
+                    $CustImages->type = $filetype;
 
-                $path = $request->file('residency_card')[$i]->store('CustomersImages');
-                $CustImages->link = $path;
-                $CustImages->save();
-            }
-        }
-
-        if($request->file('passport_detail') && sizeof($request->file('passport_detail')) > 0){
-            for($i = 0; $i < sizeof($request->file('passport_detail')); $i++ ){
-                $CustImages = new CustomerImages();
-                $CustImages->customer_id = $CustomerID;
-                $CustImages->company_id = session("CompanyLinkID");
-                $CustImages->type = "passport_detail";
-
-                $path = $request->file('passport_detail')[$i]->store('CustomersImages');
-                $CustImages->link = $path;
-                $CustImages->save();
-            }
-        }
-
-        if($request->file('driving_license') && sizeof($request->file('driving_license')) > 0){
-            for($i = 0; $i < sizeof($request->file('driving_license')); $i++ ){
-                $CustImages = new CustomerImages();
-                $CustImages->customer_id = $CustomerID;
-                $CustImages->company_id = session("CompanyLinkID");
-                $CustImages->type = "driving_license";
-
-                $path = $request->file('driving_license')[$i]->store('CustomersImages');
-                $CustImages->link = $path;
-                $CustImages->save();
-            }
-        }
-
-        if($request->file('visa_detail') && sizeof($request->file('visa_detail')) > 0){
-            for($i = 0; $i < sizeof($request->file('visa_detail')); $i++ ){
-                $CustImages = new CustomerImages();
-                $CustImages->customer_id = $CustomerID;
-                $CustImages->company_id = session("CompanyLinkID");
-                $CustImages->type = "visa_detail";
-
-                $path = $request->file('visa_detail')[$i]->store('CustomersImages');
-                $CustImages->link = $path;
-                $CustImages->save();
-            }
-        }
+                    $path = $request->file($filetype)[$i]->store('CustomersImages');
+                    $CustImages->link = $path;
+                    $CustImages->save();
+                }
+            }    
+       }
 
         date_default_timezone_set("Asia/Muscat");# setting current time zone  ///  TODO this is hack fix it putting this property in settings
         
@@ -292,35 +240,338 @@ class CustomerController extends Controller
         return view('customer.view', compact("Data", "ActiveAction"));
     }
 
+    function updateCustomerDetails($Input, $CustObj){
+        $CustObj->title = $Input["title"];
+        $CustObj->first_name = $Input["first_name"];
+        //$CustObj->middle_name = $Input["middle_name"];
+        $CustObj->last_name = NULL;  // this is hack.. TODO  need to be fixed.
+        $CustObj->permanent_address = $Input["permanent_address"];
+        $CustObj->temp_address = $Input["temp_address"];
+        $CustObj->nationality = $Input["nationality"];
+        $CustObj->gender = $Input["gender"];
+        $CustObj->dob = $Input["dob"];
+        $CustObj->country_code = $Input["country_code"];
+        $CustObj->mobile = $Input["mobile"];
+        $CustObj->email = $Input["email"];
+        $CustObj->insurance = $Input["insurance"];
+
+        return $CustObj;
+    }
+
+    public function saveCustomerImages(Request $request){
+            //this section has to be in separte api... upload files.. 
+               CustomerImages::where("company_id",session("CompanyLinkID"))->where('customer_id',$CustomerID)->delete();    //right now disabled file deleteion.  TODO fix this behavior
+
+               $fileTypes = array('residency_card','passport_detail','visa_detail','driving_license');
+               foreach($fileTypes as $filetype) {
+                    if($request->file($filetype) && sizeof($request->file($filetype)) > 0){
+                        for($i = 0; $i < sizeof($request->file($filetype)); $i++ ){
+                            Log::debug("type - " . $filetype . " , i - ". $i);
+                            $CustImages = new CustomerImages();
+                            $CustImages->customer_id = $CustomerID;
+                            $CustImages->company_id = session("CompanyLinkID");
+                            $CustImages->type = $filetype;
+        
+                            $path = $request->file($filetype)[$i]->store('CustomersImages');
+                            $CustImages->link = $path;
+                            $CustImages->save();
+                        }
+                    }    
+               }
+    }
+
+    public function create(Request $request){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+
+        $Customer = new Customer();
+        $CustImagesArr = [];
+        $Conuntry = Country::orderBy("name")->get();
+
+        $ActiveAction = "customer";
+        return view('customer.add', compact("Customer", "CustImagesArr","Conuntry", "ActiveAction"));
+    }
+    
+    public function store(Request $request) {
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        
+        $Input = $request->all();
+        Log::debug($Input); //just check what is there.. 
+        $CustomerID = "";
+        $CheckCustomer = Customer::where("company_id", session("CompanyLinkID"))->where("email",$Input["email"])->get();
+        foreach($CheckCustomer as $Cms){
+            if(
+                ($Cms->first_name == $Input["first_name"] 
+                && $Cms->mobile == $Input["mobile"]) 
+                && $Cms->country_code == $Input["country_code"]
+                // && $Cms->dob == $Input["dob"]
+            ){
+                return json_encode(array("Status" =>  0, "Message" => "Customer already exists"));
+            }
+        }
+
+        $GetCompanyDetail = Office::find(session("CompanyLinkID"));
+        $PreviousCode = Customer::where("company_id", session("CompanyLinkID"))->orderBy("id", "DESC")->first();
+        
+        if(isset($PreviousCode->customer_id) && $PreviousCode->customer_id != ""){
+            $GetInt = explode("-", $PreviousCode->customer_id);
+            $GetInt = $GetInt[1];
+        }else{
+            $GetInt = 0;
+        }
+        
+        $NewCode = substr($GetCompanyDetail->name, 0, 2)."-".($GetInt+1);
+
+        $CustObj = new Customer();
+        $CustObj->company_id = session("CompanyLinkID");
+        $CustObj->customer_id = $NewCode;
+        // updateCustomerDetails($Input,$CustObj);
+        $CustObj->title = $Input["title"];
+        $CustObj->first_name = $Input["first_name"];
+        //$CustObj->middle_name = $Input["middle_name"];
+        $CustObj->last_name = NULL;  // this is hack.. TODO  need to be fixed.
+        $CustObj->permanent_address = $Input["permanent_address"];
+        $CustObj->driving_license = NULL;  // this is hack.. TODO  need to be fix
+        $CustObj->temp_address = $Input["temp_address"];
+        $CustObj->nationality = $Input["nationality"];
+        $CustObj->gender = $Input["gender"];
+        $CustObj->dob = $Input["dob"];
+        $CustObj->country_code = $Input["country_code"];
+        $CustObj->mobile = $Input["mobile"];
+        $CustObj->email = $Input["email"];
+        $CustObj->insurance = $Input["insurance"];
+
+        
+        $CustObj->save();
+        
+        $fileTypes = array('residency_card','passport_detail','visa_detail','driving_license');
+        foreach($fileTypes as $filetype) {
+             if($request->file($filetype) != NULL && sizeof($request->file($filetype)) > 0){
+                 for($i = 0; $i < sizeof($request->file($filetype)); $i++ ){
+                     Log::debug("type - " . $filetype . " , i - ". $i);
+                     $CustImages = new CustomerImages();
+                     $CustImages->customer_id = $CustObj->id;
+                     $CustImages->company_id = session("CompanyLinkID");
+                     $CustImages->type = $filetype;
+ 
+                     $path = $request->file($filetype)[$i]->store('CustomersImages');
+                     $CustImages->link = $path;
+                     $CustImages->save();
+                 }
+             }    
+        }
+
+
+        Log::debug("Customer created. Id - ".$CustObj->id); 
+        $ActiveAction = "customer";
+
+        $data = array("customer_id" => $CustObj->id);
+        return json_encode(array("Status" =>  1, "Message" => "Customer created successfully", "Data" => $data));
+        // return redirect("customer/".$CustObj->id."/edit");
+    }
+
+    public function edit($id){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+
+        $Customer = null;
+        $CustImagesArr = [];
+
+        if ($id != null) {
+            $Customer = Customer::find($id);
+            $Conuntry = Country::orderBy("name")->get();
+
+            $ActiveAction = "customer";
+            return view('customer.edit', compact("Customer", "CustImagesArr","Conuntry", "ActiveAction"));
+        } else {
+            return json_encode(array("Status" =>  0, "Message" => "Customer not found"));
+        }
+    }
+
+    public function update(Request $request, $id) {
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+
+        $Input = $request->all();
+
+        if($id == null || $id == "") {
+            $GetCompanyDetail = Office::find(session("CompanyLinkID"));
+            $PreviousCode = Customer::where("company_id", session("CompanyLinkID"))->orderBy("id", "DESC")->first();
+            
+            if(isset($PreviousCode->customer_id) && $PreviousCode->customer_id != ""){
+                $GetInt = explode("-", $PreviousCode->customer_id);
+                $GetInt = $GetInt[1];
+            }else{
+                $GetInt = 0;
+            }
+            
+            $NewCode = substr($GetCompanyDetail->name, 0, 2)."-".($GetInt+1);
+
+            $CustObj = new Customer();
+            $CustObj->company_id = session("CompanyLinkID");        
+            $CustObj->customer_id = $NewCode;
+            $CustObj = updateCustomerDetails($Input, $CustObj);
+            $CustObj->save();
+
+            $fileTypes = array('residency_card','passport_detail','visa_detail','driving_license');
+            foreach($fileTypes as $filetype) {
+                 if($request->file($filetype) && sizeof($request->file($filetype)) > 0){
+                     for($i = 0; $i < sizeof($request->file($filetype)); $i++ ){
+                         Log::debug("type - " . $filetype . " , i - ". $i);
+                         $CustImages = new CustomerImages();
+                         $CustImages->customer_id = $CustomerID;
+                         $CustImages->company_id = session("CompanyLinkID");
+                         $CustImages->type = $filetype;
+     
+                         $path = $request->file($filetype)[$i]->store('CustomersImages');
+                         $CustImages->link = $path;
+                         $CustImages->save();
+                     }
+                 }    
+            }
+    
+            $CustomerID = $CustObj->id;
+            return json_encode(array("Status" =>  1, "Message" => "Customer added successfully"));
+        } else {
+            $Customer = Customer::find($id);
+            
+            if($Customer == null )            
+                return json_encode(array("Status" =>  404, "Message" => "Customer not found"));
+            
+            $UpdatedInput = $this->unset_variables($Input);
+            Log::debug($UpdatedInput); //just check what is there.. 
+            Customer::where("company_id",session("CompanyLinkID"))->where('id', $Customer->id)->update($UpdatedInput);
+            $fileTypes = array('residency_card','passport_detail','visa_detail','driving_license');
+            foreach($fileTypes as $filetype) {
+                 if($request->file($filetype) && sizeof($request->file($filetype)) > 0){
+                     for($i = 0; $i < sizeof($request->file($filetype)); $i++ ){
+                         Log::debug("type - " . $filetype . " , i - ". $i);
+                         $CustImages = new CustomerImages();
+                         $CustImages->customer_id = $Customer->id;
+                         $CustImages->company_id = session("CompanyLinkID");
+                         $CustImages->type = $filetype;
+     
+                         $path = $request->file($filetype)[$i]->store('CustomersImages');
+                         $CustImages->link = $path;
+                         $CustImages->save();
+                     }
+                 }    
+            }
+            return json_encode(array("Status" =>  1, "Message" => "Customer updated successfully"));
+        }
+    }
+    
     public function Exports(){
         $Data = Customer::where("company_id", session("CompanyLinkID"))->latest()->get();
         return Excel::download(new CustomerExport($Data), 'Customer.xlsx');
     }
 
     public function Search(Request $request){
-        $Cust = Customer::where("company_id", session("CompanyLinkID"))->where(function($q)use ($request) {
+        $CustList = Customer::where("company_id", session("CompanyLinkID"))->where(function($q)use ($request) {
                     $q->where("mobile", "like", "%".$request->term."%")->orWhere("email", "like", "%".$request->term."%");
-                })->first();
-
-        if(isset($Cust->id)){
-            return json_encode($Cust);
-        }else{
-            return json_encode(array());
+                })->get();
+        $CustArray = [];
+        foreach($CustList as $Cust){
+            $Cust_details = array("id" => $Cust->id, "name" => $Cust->first_name, "email" => $Cust->email, "mobile" => "(+".$Cust->country_code.") ".$Cust->mobile);
+            array_push($CustArray, $Cust_details);
         }
+
+        return json_encode(array(
+                "Status" =>  1
+                , "Message" => ""
+                , "Data" => $CustArray
+            ));
+    }
+
+    public function Get(Request $request){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+
+        $Cust = Customer::where("company_id", session("CompanyLinkID"))->where("id",$request->id)->get();
+        return response()->json($Cust);
     }
 
     public function getImages(Request $request){
-        $CustImages = CustomerImages::where("company_id", session("CompanyLinkID"))->where('customer_id',$request->customerId)->get();
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+
+        $Input = $request->all();
+        Log::debug($Input); //just check what is there.. 
+
+        $CustImages = CustomerImages::where("company_id", session("CompanyLinkID"))->where('customer_id',$request->customer_id)->get();
         $response = [];
 		foreach($CustImages as $Img){
             if (!isset($response[$Img->type])){
                 $response[$Img->type] = [];
             }
-            array_push($response[$Img->type],$Img->link);
+            $img_details = array("id" => $Img->id, "link" => $Img->link);
+            array_push($response[$Img->type],$img_details);
         }
 
         Log::debug($response);
-        return json_encode($response);
+        return json_encode(array(
+            "Status" =>  1
+            , "Message" => ""
+            , "Data" => $response
+        ));
+    }
+
+    public function uploadFiles(Request $request){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        $Input = $request->all();
+        // Log::debug(sizeof($request->file('files'))); //just check what is there.. 
+        // Log::debug($Input); //just check what is there.. 
+
+        $responseData = array();
+        $filetype = $Input['type'];
+        $customerId = $Input['customer_id'];
+
+        if($request->file('files') && sizeof($request->file('files')) > 0){
+            for($i = 0; $i < sizeof($request->file('files')); $i++ ){
+                $CustImages = new CustomerImages();
+                $CustImages->customer_id = $customerId;
+                $CustImages->company_id = session("CompanyLinkID");
+                $CustImages->type = $filetype;
+
+                $path = $request->file('files')[$i]->store('CustomersImages');
+                $CustImages->link = $path;
+                $CustImages->save();
+                
+                //add to response
+                if (!isset($responseData[$filetype])){
+                    $responseData[$filetype] = [];
+                }
+                $img_details = array("id" => $CustImages->id, "link" => $CustImages->link);
+                array_push($responseData[$filetype],$img_details);
+            }
+        }    
+
+        return json_encode(array("Status" =>  1, "Message" => "files updated successfully", "Data" => $responseData));
+    }
+
+    public function deleteFile(Request $request){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        
+        $Input = $request->all();
+        Log::debug($Input); //just check what is there.. 
+    
+        $CustImages = CustomerImages::where("company_id", session("CompanyLinkID"))
+                        ->where('customer_id',$Input['customer_id'])
+                        ->where('id',$Input['image_id'])
+                        ->delete();
+
+        return json_encode(array("Status" =>  1, "Message" => "file deleted successfully"));
     }
 
     /**

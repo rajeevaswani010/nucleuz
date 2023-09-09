@@ -47,6 +47,8 @@ ALTER TABLE customers ALTER COLUMN last_name DROP DEFAULT;
 
 ALTER TABLE customers ALTER COLUMN driving_license DROP DEFAULT;
 
+ALTER TABLE customers MODIFY COLUMN driving_license VARCHAR(255) NULL;
+
 DELIMITER $$
 CREATE PROCEDURE `customerImageMigration`()
 BEGIN

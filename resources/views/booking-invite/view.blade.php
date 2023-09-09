@@ -31,7 +31,7 @@
                                 class="btn btn-sm btn-primary">
                                 <i class="ti ti-plus"></i>
                             </a> -->
-                            <button type="button" title="Send a Invite" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#inviteCustomerModal">
+                            <button type="button" title="Send a Invite" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#inviteCustomerModal">
                             <i class="fa fa-plus"></i>
                             </button>
                         </div>
@@ -183,12 +183,12 @@
 </script>
 
 <!-- Modal send invite -->
-<div class="modal fade" id="inviteCustomerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal" id="inviteCustomerModal" tabindex="-1" role="dialog" aria-labelledby="inviteCustomerModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">{{ __("Invite Customer") }}</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -224,7 +224,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">{{ __("Close") }}</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">{{ __("Close") }}</button>
                 <input class="btn btn-xs btn-primary" type="submit" value='{{ __("Send") }}'>
             </div>
             {!! Form::close() !!}
@@ -234,33 +234,31 @@
 <script>
 $("#inviteform").submit(function (event) {
 
-var formData = {
-  name: $("#name").val(),
-  email: $("#email").val(),
-};
-showloading();
-$.ajax({
-    url: "{{ URL('booking-invite/add') }}",
-    method: "POST",
-    headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-    data: formData,
-    dataType: "json",
-    encode: true,
-    success: function( data, textStatus, jqXHR ) {
-        hideloading();
-        //alert("success");
-        // redirect("{{ URL('booking-invite') }}");
-        $('#inviteCustomerModal').modal('hide');
-        window.location.reload();
-    },
-    error: function( jqXHR, textStatus, errorThrown ) {
-        hideloading();
-        alert("error");
-    }
-})
-event.preventDefault();
+    var formData = {
+    name: $("#name").val(),
+    email: $("#email").val(),
+    };
+    showloading();
+    $.ajax({
+        url: "{{ URL('booking-invite/add') }}",
+        method: "POST",
+        headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+        data: formData,
+        dataType: "json",
+        encode: true,
+        success: function( data, textStatus, jqXHR ) {
+            hideloading();
+            $('#inviteCustomerModal').modal("hide");
+            window.location.reload();
+        },
+        error: function( jqXHR, textStatus, errorThrown ) {
+            hideloading();
+            alert("error");
+        }
+    })
+    event.preventDefault();
 });
 
 function deleteInvite(id){
@@ -288,7 +286,7 @@ function deleteInvite(id){
           error: function( jqXHR, textStatus, errorThrown ) {
             toastr["error"]("Failed to delete Invite")
           }
-        });
+    });
     
 }
 </script>

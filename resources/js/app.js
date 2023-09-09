@@ -4,7 +4,7 @@
 // multiple file upload support javascript functions.. 
 
    //utility function which formats byte size in required unit.
-   function formatBytes(size, decimals = 2) {
+function formatBytes(size, decimals = 2) {
     if (size === 0) return '0 bytes';
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;
@@ -33,7 +33,25 @@
         // 
         // 
 
+function toDataUrl(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            callback(reader.result);
+        }
+        reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+}
 
+        // toDataUrl("http://myImageUrl",function(x){
+        //     base64Image = x;
+        //     console.log("x :- " + x);
+        // })
+        
 function updateFileList(fileinput,gallery_id) {
     var gallery = $('#'+gallery_id);
     gallery.empty();
@@ -120,6 +138,20 @@ function addImageHrefToGallery(imgLink,parentDivId,delEventHandler){
     `;
     div.appendChild(divImg);
     parentDiv.append(div);
+
+    var i=0;
+    let base64Image = "/public/"+imgLink;
+    console.log("img url:"+base64Image)
+    toDataUrl(base64Image,function(x){
+        base64Image = x;
+        console.log(x);
+        var dt = new DataTransfer(); // specs compliant (as of March 2018 only Chrome)
+        // dt.items.add(base64Image,new File(['myNewFile']));
+        var filename = "file"+i; i=i+1;
+        dt.items.add(new File([base64Image],filename));
+        console.log(document.querySelector('#file_residency_card').files);
+        document.querySelector('#file_residency_card').files+=dt.files;
+    })
 }
 
 // ---------------------------------------------------

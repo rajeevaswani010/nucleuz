@@ -95,9 +95,13 @@ Route::get('bookinginvoice', [BookingController::class, 'BookingInvoice']);
 
 Route::get('customer/Exports', [CustomerController::class, 'Exports']);
 Route::post('CustomerSearch', [CustomerController::class, 'Search']);
+Route::post('CustomerGet', [CustomerController::class, 'Get']);
 Route::post('getCustomerImages', [CustomerController::class, 'getImages']);
 Route::resource('customer', CustomerController::class);
+Route::post('customer/update/{id}', [CustomerController::class,'update']);
 Route::post('customer/delete', [CustomerController::class,'delete']);
+Route::post('Customer/uploadFiles', [CustomerController::class,'uploadFiles']);
+Route::post('Customer/deleteFile', [CustomerController::class,'deleteFile']);
 Route::resource('brand', BrandController::class);
 Route::post('UplaodBrand', [BrandController::class, 'Import']);
 Route::get('reports', [ReportController::class, 'View']);

@@ -1,6 +1,7 @@
 @extends("layout.default")
 
 @section("content")
+<script src="{{ URL('resources/js/multipleFileUpload.js') }}"></script>
 
 <!-- [ Main Content ] start -->
 <div class="dash-container">
@@ -217,7 +218,7 @@
            </div>
         </div>
         </div>
-        @if($Booking->car_image != "")
+        <!-- @if($Booking->car_image != "") -->
         <!-- <div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
             <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;">
                 <div style="flex: 1 1 auto; padding: 1rem 1rem;">
@@ -246,7 +247,7 @@
             </div>
            </div>
         </div>
-        @endif
+        <!-- @endif -->
 
 
 
@@ -260,8 +261,7 @@
     </div>
     @endif
     
-    @if($Booking->status == 3)
-     <!-- || ($Booking->status == 2 && $Booking->drop_off_confirm == 1)) -->
+    @if($Booking->status == 3 || ($Booking->status == 2 && $Booking->drop_off_confirm == 1))
     <div class="card">
         <div class="card-body">
             <h3>{{ __("Drop off Detail") }}</h3>
@@ -309,15 +309,15 @@
     <div class="row">
         <div class="col-lg-6">
             <label>{{ __("Drop off Date") }} <span class="text-danger">*</span></label>
-        <!--  <input type="date" class="form-control" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" required> -->
-        <!--  <input type="date" class="form-control" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" required>  -->
-         <input type="date" class="form-control" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime('+1 day', strtotime($Booking->pickup_date_time ))) }}" required> 
+        <!--  <input type="date" class="form-control h-auto" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" required> -->
+        <!--  <input type="date" class="form-control h-auto" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" required>  -->
+         <input type="date" class="form-control h-auto" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime('+1 day', strtotime($Booking->pickup_date_time ))) }}" required> 
         </div>
         
         <div class="col-lg-6">
             <label>{{ __("Drop off Time") }} <span class="text-danger">*</span></label>
-            <input type="time" class="form-control" name="dropoff_time"  value="{{ date('H:i:s', strtotime('+4 hours')) }}" required>
-            <!-- <input type="time" class="form-control" name="dropoff_time" min="{{ date('H:i:s') }}" value="{{ date('H:i:s') }}" required> -->
+            <input type="time" class="form-control h-auto" name="dropoff_time"  value="{{ date('H:i:s', strtotime('+4 hours')) }}" required>
+            <!-- <input type="time" class="form-control h-auto" name="dropoff_time" min="{{ date('H:i:s') }}" value="{{ date('H:i:s') }}" required> -->
         </div>
         
         <div class="col-lg-6 mt-3">
@@ -340,23 +340,23 @@
     <div class="row">
         <div class="col-lg-6 mb-4">
             <label>{{ __("KM at time of Drop") }} <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="km_drop_time" required value="{{ $Booking->km_drop_time }}">
+            <input type="text" class="form-control h-auto" name="km_drop_time" required value="{{ $Booking->km_drop_time }}">
         </div>
     
     
     <div class="col-lg-6 mb-4">
             <label>{{ __("Discount") }} <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="discount_amount" id="discount_amount" onBlur="CalDis()" required value="{{ $Booking->discount_amount }}">
+            <input type="text" class="form-control h-auto" name="discount_amount" id="discount_amount" onBlur="CalDis()" required value="{{ $Booking->discount_amount }}">
         </div>
         
         <div class="col-lg-12 mb-4" id="disNotBox" style="display: none">
             <label>{{ __("Discount Note") }}</label>
-            <input type="text" class="form-control" name="discount_note" value="{{ $Booking->discount_note }}">
+            <input type="text" class="form-control h-auto" name="discount_note" value="{{ $Booking->discount_note }}">
         </div>
         
         <div class="col-lg-6 mb-4">
             <label>{{ __("Additional Charges") }}</label>
-            <input type="text" class="form-control" name="additional_charges" id="additioanl_amount" value="{{ $Booking->additional_charges }}">
+            <input type="text" class="form-control h-auto" name="additional_charges" id="additioanl_amount" value="{{ $Booking->additional_charges }}">
         </div>
         
         <div class="col-lg-6 mb-4">
@@ -365,33 +365,19 @@
             <input type="radio" name="dmage" value="1"> {{ __("Damage") }}
         </div>
 
-        <!-- <div class="col-lg-6 mb-4">
-            <label>{{ __("Image of Car While Drop") }} <span class="text-danger">*</span></label>
-            <input type="file" class="form-control" name="damge_image" required>
-        </div> -->
-        <div class="col-lg-3 mb-4">
-            <label for="subject" class="col-form-label text-dark">{{ __("Image of Car While Drop") }} <span class="text-danger">*</span></label>
-            <input type="file" multiple class="form-control font-style" name="damge_image[]" 
-                    id="file_damge_image" capture onchange="updateFileList(this,'file_damge_image-gallery')"
-                    accept=".jpg,.jpeg,.png" >
-        </div>
-        <div id="file_damge_image-gallery" class="gallery">
-            @if( array_key_exists('damge_image',$BookingImagesArr))
-            @foreach($BookingImagesArr['damge_image'] as $BookingImg)
-                <!-- <script>console.log({{ $CustImg }});</script> -->
-                <div class="gallery-item">
-                    <div class="image">
-                        <a href="{{ URL('public') }}/{{ $BookingImg }}" target="_blank">
-                            <img src="{{ URL('public') }}/{{ $BookingImg }}" style="max-width: 100%">
-                        </a>                        
+        <div class="col-lg-12 mb-4">
+                <div id="file_damge_image">
+                    <label for="subject" class="col-form-label text-dark">{{ __("Image of Car While Drop") }} <span class="text-danger">*</span></label>
+                    <input type="file" multiple class="col-lg-4 form-control font-style file_input" name="damge_image[]" 
+                            id="file_damge_image_input" capture onchange="showFileSelection(this,'file_damge_image')"
+                            accept=".jpg,.jpeg,.png" >
+                    <div id="file_gallery" class="gallery">
                     </div>
                 </div>
-            @endforeach
-            @endif
         </div>
         
     </div>
-    <button class="btn btn-success mt-4">{{ __("Save") }}</button>
+    <button class="btn btn-primary mt-4">{{ __("Save") }}</button>
     {!! Form::close() !!}
     </div>
     </div>
@@ -404,7 +390,7 @@
     <div class="row">
         <div class="col-lg-6 mb-4">
             <label>{{ __("Final Amount Paid") }} <span class="text-danger">*</span></label>
-            <input type="number" class="form-control" name="final_amount_paid" readonly required value="{{ number_format(($Booking->grand_total - $Booking->advance_amount), 2) }}" id="final_amount_paid">
+            <input type="text" class="form-control h-auto" name="final_amount_paid" readonly required value="{{ number_format(($Booking->grand_total - $Booking->advance_amount), 2) }}" id="final_amount_paid">
         </div>
     </div>
 

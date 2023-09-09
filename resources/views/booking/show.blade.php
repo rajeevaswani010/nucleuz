@@ -1,6 +1,7 @@
 @extends("layout.default")
 
 @section("content")
+<script src="{{ URL('resources/js/multipleFileUpload.js') }}"></script>
 
 <!-- [ Main Content ] start -->
 <div class="dash-container">
@@ -190,7 +191,7 @@
     </div>
 </div>
 
-@if($Booking->car_image != "")
+<!-- @if($Booking->car_image != "")
 <div style="float: left; width: 19%; margin-right: 1%; margin-bottom: 10px;">
     <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;">
         <div style="flex: 1 1 auto; padding: 1rem 1rem;">
@@ -199,7 +200,31 @@
         </div>
     </div>
 </div>
-@endif
+@endif -->
+
+    @if($Booking->status == 2)
+    <div class="panel card-body col-lg-12 mb-4 mt-4">
+            <div class="panel-heading">
+                <b>{{ __("Car Image (Assign)") }}</b>
+            </div>
+            <div class="panel-body">
+                <div id="file_car_image-gallery" class="gallery">
+                @if( array_key_exists('car_image',$BookingImagesArr))
+                    @foreach($BookingImagesArr['car_image'] as $BookingImg)
+                        <div class="gallery-item">
+                            <div class="image">
+                                <a href="{{ URL('public') }}/{{ $BookingImg }}" target="_blank">
+                                    <img src="{{ URL('public') }}/{{ $BookingImg }}" style="max-width: 100%">
+                                </a>                        
+                            </div>
+                        </div>
+                    @endforeach
+                @endif 
+                </div>
+           </div>
+    </div>
+    @endif 
+
 
 <div class="clearfix"></div>
 
@@ -257,7 +282,7 @@
         
     <div class="col-lg-9 mb-12">
         <label>Vehicle <span class="text-danger">*</span></label>
-        <select class="form-control" required id="VehicleData" onchange="fetchReviews()" name="vehicle_id">
+        <select class="form-control h-auto" required id="VehicleData" name="vehicle_id">
             <option value="">{{ __("Select") }}</option>
             @foreach($AllVehicles as $ALV)
                 <option value="{{ $ALV->id }}">{{ $ALV->car_type }} - {{ $ALV->make }}/{{ $ALV->model }}/{{ $ALV->variant }}/{{ $ALV->reg_no }}</option>
@@ -267,74 +292,63 @@
     
                 <div class="col-lg-3 mb-3">
                     <label>{{ __("KM Reading at time of pickup") }} <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" required name="km_reading_pickup">
+                    <input type="text" class="form-control h-auto" required name="km_reading_pickup">
                 </div>
 
                 <div class="col-lg-3 mb-3">
                     <label>{{ __("Per day KM Allocation") }} <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" required name="km_allocation" value="{{ $Booking->km_allocation }}">
+                    <input type="text" class="form-control h-auto" required name="km_allocation" value="{{ $Booking->km_allocation }}">
                 </div>
                 
     
                 <div class="col-lg-3 mb-3">
                     <label>{{ __("Additional KM Amount") }}<span class="text-danger">*</span></label>
-                    <input type="text" name="additional_kilometers_amount" class="form-control number" required value="{{ $Booking->additional_kilometers_amount }}">
+                    <input type="text" name="additional_kilometers_amount" class="form-control h-auto number" required value="{{ $Booking->additional_kilometers_amount }}">
                 </div>
                 
 
                 <div class="col-lg-3 mb-3">
                     <label>{{ __("Advance Amount") }}</label>
-                    <input type="text" name="advance_amount" class="form-control number" value="0" id="AdvaneAmount" required onblur="fetchReviews()">
+                    <input type="text" name="advance_amount" class="form-control h-auto number" value="0" id="AdvaneAmount" required onblur="fetchReviews()">
                 </div>
 
                 <div class="col-lg-3 mb-3">
                     <label>{{ __("Discount") }}<span class="text-danger">*</span></label>
-                    <input type="text" name="discount_amount" class="form-control number" id="DiscountAmount" required value="{{ $Booking->discount_amount }}" onblur="fetchReviews()">
+                    <input type="text" name="discount_amount" class="form-control h-auto number" id="DiscountAmount" required value="{{ $Booking->discount_amount }}" onblur="fetchReviews()">
                 </div>
                 
 
                                 
                 <div class="col-lg-4 mb-4">
                     <label>{{ __("Licenses Expiry Date") }}<span class="text-danger">*</span></label>
-                    <input type="date" class="form-control number" name="license_expiry_date" value="{{ $Booking->license_expiry_date }}" required min="{{ date('Y-m-d', strtotime('+3 months')) }}">
-                   <!--<input type="date" class="form-control number" name="license_expiry_date" value="{{ $Booking->license_expiry_date }}" required min="{{ date('Y-m-d', strtotime('+'.@$Booking->office->license_expiry_in_month.'3 months')) }}"> -->
-                </div>
+                    <input type="date" class="form-control h-auto number" name="license_expiry_date" value="{{ $Booking->license_expiry_date }}" required min="{{ date('Y-m-d', strtotime('+3 months')) }}">
                 </div>
                 
                 <div class="col-lg-4 mb-4">
                     <label>{{ __("Residency Card ID") }}<span class="text-danger">*</span></label>
-                    <input type="text" name="residency_card_id" class="form-control number" required>
+                    <input type="text" name="residency_card_id" class="form-control h-auto number" required>
                 </div>
 
                 <div class="col-lg-4 mb-4">
                     <label>{{ __("Residence Expiry Date") }}<span class="text-danger">*</span></label>
-                    <input type="date" class="form-control number" name="residence_expiry_date" value="{{ $Booking->residence_expiry_date }}" required min="{{ date('Y-m-d') }}">
+                    <input type="date" class="form-control h-auto number" name="residence_expiry_date" value="{{ $Booking->residence_expiry_date }}" required min="{{ date('Y-m-d') }}">
                 </div>
 
                 <!-- <div class="col-lg-4 mb-4">
                     <label>{{ __("Car Image") }} <span class="text-danger">*</span></label>
-                    <input type="file" class="form-control" required name="car_image">
+                    <input type="file" class="form-control h-auto" required name="car_image">
                 </div> -->
-                <div class="col-lg-4 mb-4">
-                    <label for="subject" class="col-form-label text-dark">{{ __("Car Image") }}</label>
-                        <input type="file" multiple class="form-control font-style" name="car_image[]" 
-                                id="file_car_image" capture onchange="updateFileList(this,'file_car_image-gallery')"
+                <div >
+                    <div id="file_car_image">
+                        <label for="subject" class="col-form-label text-dark">{{ __("Car Image") }}</label>
+                        <input type="file" multiple class="form-control font-style file_input col-lg-4 mb-4" name="car_image[]" 
+                                    id="file_car_image_input" capture onchange="showFileSelection(this,'file_car_image')"
                                 accept=".jpg,.jpeg,.png" >
-                </div>    
-                <div id="file_car_image-gallery" class="gallery">
-                        @if( array_key_exists('car_image',$CustImagesArr))
-                        @foreach($CustImagesArr['car_image'] as $CustImg)
-                            <!-- <script>console.log({{ $CustImg }});</script> -->
-                            <div class="gallery-item">
-                                <div class="image">
-                                    <a href="{{ URL('public') }}/{{ $CustImg }}" target="_blank">
-                                        <img src="{{ URL('public') }}/{{ $CustImg }}" style="max-width: 100%">
-                                    </a>                        
-                                </div>
-                            </div>
-                        @endforeach
-                        @endif
+                        <div id="file_gallery" class="gallery">
+                        </div>
+                    </div>
                 </div>
+
     </div>
     <button class="btn btn-success mt-4">{{ __("Save") }}</button>
     {!! Form::close() !!}
@@ -346,37 +360,6 @@
     <div class="clearfix">&nbsp;</div>
     @endif
 
-
-
-
-
-
-
-
-
-
-                       
-
-                        
-                        
-
-                       
-
-
-                        
-
-
-
-
-                       
-
-                       
-
-
-                        
-
-                   
-                        
                     </div>
                 </div>
             </div>
