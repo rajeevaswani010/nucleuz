@@ -128,6 +128,10 @@ class OfficeController extends Controller
             $path = $request->file('logo')->store('officeImages');
             $Input['logo'] = $path;
         }
+        if($request->file('page') != null){
+            $path = $request->file('page')->store('pageImages');
+            $Input['page'] = $path;
+        }
         //Log::debug($Input);
         $office = Office::where('id',session("CompanyLinkID"))->update($Input);
         return redirect("settings");
@@ -154,6 +158,10 @@ class OfficeController extends Controller
         if($request->file('logo') != null){
             $path = $request->file('logo')->store('officeImages');
             $Input['logo'] = $path;
+        }
+        if($request->file('page') != null){
+            $path = $request->file('page')->store('pageImages');
+            $Input['page'] = $path;
         }
         //Log::debug($Input);
         $office = Office::where('id', $id)->update($Input);

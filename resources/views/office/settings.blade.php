@@ -73,11 +73,64 @@
                             </script>
                         </div>
                         <div class="form-group col-lg-4 mb-4">
+                            <label for="subject" class="col-form-label text-dark">{{ __("Company Page") }}</label>
+                            <input type="file" class="form-control font-style" name="page" id="pageInput"  onchange="previewFile(this);">
+                                @if(@$Data->page != "")
+                                    <img id="page" src="{{ URL('public') }}/{{ @$Data->page }}" style="width: 100px">
+                                @else
+                                    <img id="page" style="width: 100px">
+                                @endif
+                            <script>
+                                function previewFile(input){
+                                    //do something here.... below is not working.
+
+                                    // if (input.files & input.files[0]) {
+                                    //     console.log("flag 1");
+                                    //     const reader = new FileReader();
+                                        
+                                    //     reader.onload = function(e) {
+                                    //         console.log("flag 2");
+                                    //         $("#logo").attr('src',e.target.result);
+                                    //     };
+                                    //     console.log("flag 3");
+
+                                    //     reader.readAsDataURL(input.files[0]);
+                                    // } else {
+                                    //     console.log("flag 0");
+                                    // }
+                                }
+                            </script>
+                        </div>
+                        <div class="form-group col-lg-2 mb-4">
+                            <label class="col-form-label text-dark">{{ __("License Expiry In Month") }}<span class="text-danger">*</span></label>
+                            <select class="form-control" name="license_expiry_in_month" id="license_expiry_in_month" required>
+                                <option @if($Data->license_expiry_in_month == "1") selected @endif value="1">1</option>
+                                <option @if($Data->license_expiry_in_month == "2")  selected @endif value="2">2</option>
+                                <option @if($Data->license_expiry_in_month == "3") selected @endif value="3">3</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-2 mb-4">
+                            <label class="col-form-label text-dark">{{ __("Residence Expiry In Month") }}<span class="text-danger">*</span></label>
+                            <select class="form-control" name="residence_expiry_in_month" id="residence_expiry_in_month" required>
+                                <option @if($Data->residence_expiry_in_month == "1") selected @endif value="1">1</option>
+                                <option @if($Data->residence_expiry_in_month == "2")  selected @endif value="2">2</option>
+                                <option @if($Data->residence_expiry_in_month == "3") selected @endif value="3">3</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-2 mb-4">
                             <label class="col-form-label text-dark">{{ __("Billing Method") }}<span class="text-danger">*</span></label>
                             <select class="form-control" name="billing_method" id="billing_method" required>
                                 <option @if($Data->billing_method == "Fixed") selected @endif value="Fixed">{{ __("Fixed") }}</option>
                                 <option @if($Data->billing_method == "Hybrid")  selected @endif value="Hybrid">{{ __("Hybrid") }}</option>
                                 <option @if($Data->billing_method == "Pro-Rata") selected @endif value="Pro-Rata">{{ __("Pro-Rata") }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-4 mb-4">
+                            <label class="col-form-label text-dark">{{ __("Reason For Vehicle Replacement") }}<span class="text-danger">*</span></label>
+                            <select class="form-control" name="reason_for_vehicle_replacement" id="reason_for_vehicle_replacement" required>
+                                <option @if($Data->reason_for_vehicle_replacement == "Others") selected @endif value="Others">{{ __("Others") }}</option>
+                                <option @if($Data->reason_for_vehicle_replacement == "Issue-In-Vehicle")  selected @endif value="Issue-In-Vehicle">{{ __("Issue-In-Vehicle") }}</option>
+                                <option @if($Data->reason_for_vehicle_replacement == "Upgrade-The-Vehicle") selected @endif value="Upgrade-The-Vehicle">{{ __("Upgrade-The-Vehicle") }}</option>
                             </select>
                         </div>
                         <div class="form-group col-lg-6 mb-6">

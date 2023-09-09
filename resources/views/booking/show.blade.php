@@ -10,13 +10,13 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <div class="page-header-title">
-                            <h4 class="m-b-10">Edit Booking Data</h4>
+                            <h4 class="m-b-10">{{ __("Show Booking Data") }}</h4>
                         </div>
                         <ul class="breadcrumb">
                                 <li class="breadcrumb-item">
-                                    <a href="{{ URL('dashboard') }}">Dashboard</a>
+                                    <a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Edit Booking Data</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ __("Show Booking Data") }}</li>
                         </ul>
                     </div>
 
@@ -292,10 +292,13 @@
                     <input type="text" name="discount_amount" class="form-control number" id="DiscountAmount" required value="{{ $Booking->discount_amount }}" onblur="fetchReviews()">
                 </div>
                 
+
                                 
                 <div class="col-lg-4 mb-4">
                     <label>{{ __("Licenses Expiry Date") }}<span class="text-danger">*</span></label>
                     <input type="date" class="form-control number" name="license_expiry_date" value="{{ $Booking->license_expiry_date }}" required min="{{ date('Y-m-d', strtotime('+3 months')) }}">
+                   <!--<input type="date" class="form-control number" name="license_expiry_date" value="{{ $Booking->license_expiry_date }}" required min="{{ date('Y-m-d', strtotime('+'.@$Booking->office->license_expiry_in_month.'3 months')) }}"> -->
+                </div>
                 </div>
                 
                 <div class="col-lg-4 mb-4">

@@ -280,6 +280,13 @@
     "RED":"أحمر",
     " means is not available ]":"الوسائل غير متوفرة ]",
     "*The above value may change at the time of vehicle return":"وقت إرجاع السيارة المذكورة أعلاه في *قد تتغير القيمة",
-    "Final Paid Amount":"المبلغ المدفوع النهائي"
+    "Final Paid Amount":"المبلغ المدفوع النهائي",
+    "Company Page":"صفحة الشركة",
+    "License Expiry In Month":"شهر انتهاء الترخيص في ",
+    "Residence Expiry In Month":"انتهاء الإقامة في شهر",
+    "Reason For Vehicle Replacement":"سبب استبدال المركبة",
+    "Others":"آحرون",
+    "Issue-In-Vehicle":"مشكلة في السيارة",
+    "Upgrade-The-Vehicle":"ترقية السيارة"
 
 }
