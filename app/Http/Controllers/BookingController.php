@@ -681,8 +681,16 @@ class BookingController extends Controller
 
     public function BookingExceed(Request $request, $id){
         Log::debug("bookingcontroller exceed - enter");
-
         $Input = $request->all();
+
+        if(isset($Input["drop_off_confirm"])){
+            date_default_timezone_set("Asia/Muscat"); # setting current time zone
+            $DayDiff = $this->time_difference (date("Y-m-d"), $Input["dropoff_date"],"day");
+            if($DayDiff != 0){
+               Session::flash('Danger', "To Droff Off Vehicle, Droff Off Date Should Be Current Date.");
+               return redirect()->back()->withInput();
+           }
+        }
 
         $vehicle = Booking::select("vehicle_id","car_type")->where("company_id", session("CompanyLinkID"))->where("id",$id)->first();
         $GetPricing = Pricing::where("car_type", $vehicle["car_type"])->where("company_id", session("CompanyLinkID"))->first();
