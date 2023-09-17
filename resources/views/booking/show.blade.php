@@ -340,7 +340,8 @@
                 </div> -->
                 <div >
                     <div id="file_car_image">
-                        <label for="subject" class="col-form-label text-dark">{{ __("Car Image") }}</label>
+                    <label>{{ __("Car Image") }} <span class="text-danger">*</span></label>
+                       <!-- <label for="subject" class="col-form-label text-dark">{{ __("Car Image") }}</label> -->
                         <input type="file" multiple class="form-control font-style file_input col-lg-4 mb-4" name="car_image[]" 
                                     id="file_car_image_input" capture onchange="showFileSelection(this,'file_car_image')"
                                 accept=".jpg,.jpeg,.png" >
