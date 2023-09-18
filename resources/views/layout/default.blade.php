@@ -89,7 +89,7 @@
     <div class="navbar-wrapper">
         <div class="m-header main-logo">
             <a href="{{ URL('dashboard') }}" class="b-brand">
-            <img src="{{ URL('public/logo.png') }}" alt="projecterp" class="logo logo-lg">
+            <img src="{{ URL('public') }}/{{ @$logoUrl }}" alt="projecterp" class="logo logo-lg">
             </a>
         </div>
         <div class="navbar-content">
@@ -165,6 +165,12 @@
         <a href="{{ URL('booking') }}" class="dash-link">
             <span class="dash-micon">
                 <i class="fa fa-car"></i></span><span class="dash-mtext">{{ __("Car Rental Bookings") }}</span>
+        </a>
+       </li>
+       <li class="dash-item dash-hasmenu @if($ActiveAction == 'bookingVehicles') active @endif">
+        <a href="{{ URL('bookingVehicles') }}" class="dash-link">
+            <span class="dash-micon">
+                <i class="fa fa-car"></i></span><span class="dash-mtext">{{ __("Booking Vehicles") }}</span>
         </a>
        </li>
 

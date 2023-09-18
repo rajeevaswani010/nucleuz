@@ -25,6 +25,8 @@ use App\Models\CarType;
 use Log;
 use DB;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+
 class BookingController extends Controller
 {
     /**
@@ -840,7 +842,7 @@ class BookingController extends Controller
             echo $e.getMessage();
         }
     }
-    
+
     public function CancelBooking($id){
         $Booking = Booking::find($id);
         $Booking->status = 4;
@@ -848,7 +850,21 @@ class BookingController extends Controller
         $Booking->save();
         return redirect("booking");
     }
-    
+
+    public function AssignVehicle(Request $request){ //TODO add implementation
+        $Booking = Booking::find($request->id);
+
+        $data = array();
+        return json_encode(array("status" => 1, "Message" => "", "Data" => $data));
+    }
+
+    public function exportPdf($id){ //TODO add implementation
+        $booking = Booking::find($id);
+        
+        $pdf = Pdf::loadView('booking.view_pdf', compact('booking'));
+        return $pdf->download('booking_'.$id.'.pdf');
+    }
+
     public function ReviewCustomer(Request $request){
         try{
             Log::debug("bookingcontroller ReviewCustomer - enter");
