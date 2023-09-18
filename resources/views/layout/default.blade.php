@@ -14,14 +14,11 @@
     <link rel="icon" href="https://nucleuz.app/public/favicon.png" type="image" sizes="16x16">
 
 
-    <!-- <link rel="stylesheet" href="{{ URL('public/newasserts/plugins/bootstrap/css/bootstrap.min.css') }}"> -->
+    <link rel="stylesheet" href="{{ URL('public/newasserts/plugins/bootstrap/css/bootstrap.min.css') }}">
 
     <script src="{{ URL('public/newasserts/plugins/jquery/jquery-3.5.1.slim.min.js') }}"></script>
-    <!-- <script src="{{ URL('public/newasserts/plugins/popper/popper.min.js') }}"></script> -->
-    <!-- <script src="{{ URL('public/newasserts/plugins/bootstrap/js/bootstrap.min.js') }}"></script> -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <script src="{{ URL('public/newasserts/plugins/popper/popper.min.js') }}"></script>
+    <script src="{{ URL('public/newasserts/plugins/bootstrap/js/bootstrap.min.js') }}"></script>
 
     <!-- Favicon icon -->
 
@@ -53,22 +50,54 @@
     
     <script>
         toastr.options = {
-  "closeButton": false,
-  "debug": false,
-  "newestOnTop": false,
-  "progressBar": false,
-  "positionClass": "toast-bottom-right",
-  "preventDuplicates": false,
-  "onclick": null,
-  "showDuration": "1000",
-  "hideDuration": "1000",
-  "timeOut": "1000",
-  "extendedTimeOut": "1000",
-  "showEasing": "swing",
-  "hideEasing": "linear",
-  "showMethod": "fadeIn",
-  "hideMethod": "fadeOut"
-}
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "1000",
+            "timeOut": "1000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+        //current user settings are fetched and loaded here.. 
+    let settings = {};
+    $.ajax({
+        url: "{{ URL('office/getCurrentSettings') }}",
+        method: "POST",
+        headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+        contentType: false,
+        cache: false,
+        processData:false,
+        encode: true,
+        data:{},
+        success: function( data, textStatus, jqXHR ) {
+            JsData = JSON.parse(data);
+            if(JsData.Status == 0){
+                console.log("unable to fetch settings for the user.. ");
+            }else{
+                console.log(JsData);
+                settings.logo = JsData.Data.logo;
+                //populate other data also.. 
+                $('img#logo').attr("src","{{ URL('public') }}/"+JsData.Data.logo);
+                console.log(settings);
+            }
+        },
+        error: function( jqXHR, textStatus, errorThrown ) {
+            console.log("unable to fetch settings for the user.. ");
+        }
+    })
+        
+
     </script>
     <!-- app css -->
     <link rel="stylesheet" href="{{ URL('resources/css/app.css') }}">
@@ -87,7 +116,7 @@
     <div class="navbar-wrapper">
         <div class="m-header main-logo">
             <a href="{{ URL('dashboard') }}" class="b-brand">
-            <img src="{{ URL('public') }}/{{ @$logoUrl }}" alt="projecterp" class="logo logo-lg">
+            <img src="{{ URL('public') }}/{{ @$logoUrl }}" alt="projecterp" class="logo logo-lg" id="logo">
             </a>
         </div>
         <div class="navbar-content">
