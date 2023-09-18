@@ -31,7 +31,7 @@
                                 class="btn btn-sm btn-primary">
                                 <i class="ti ti-plus"></i>
                             </a> -->
-                            <button type="button" title="Send a Invite" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#inviteCustomerModal">
+                            <button type="button" title="Send a Invite" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#inviteCustomerModal">
                             <i class="fa fa-plus"></i>
                             </button>
                         </div>
@@ -188,7 +188,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">{{ __("Invite Customer") }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -224,7 +224,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">{{ __("Close") }}</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">{{ __("Close") }}</button>
                 <input class="btn btn-xs btn-primary" type="submit" value='{{ __("Send") }}'>
             </div>
             {!! Form::close() !!}
