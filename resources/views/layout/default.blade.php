@@ -68,35 +68,35 @@
         }
 
         //current user settings are fetched and loaded here.. 
-    let settings = {};
-    $.ajax({
-        url: "{{ URL('office/getCurrentSettings') }}",
-        method: "POST",
-        headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-        contentType: false,
-        cache: false,
-        processData:false,
-        encode: true,
-        data:{},
-        success: function( data, textStatus, jqXHR ) {
-            JsData = JSON.parse(data);
-            if(JsData.Status == 0){
-                console.log("unable to fetch settings for the user.. ");
-            }else{
-                console.log(JsData);
-                settings.logo = JsData.Data.logo;
-                //populate other data also.. 
-                if(JsData.Data.logo != null)
-                    $('img#logo').attr("src","{{ URL('public') }}/"+JsData.Data.logo);
-                console.log(settings);
-            }
-        },
-        error: function( jqXHR, textStatus, errorThrown ) {
-            console.log("unable to fetch settings for the user.. ");
-        }
-    })
+    // let settings = {};
+    // $.ajax({
+    //     url: "{{ URL('office/getCurrentSettings') }}",
+    //     method: "POST",
+    //     headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //             },
+    //     contentType: false,
+    //     cache: false,
+    //     processData:false,
+    //     encode: true,
+    //     data:{},
+    //     success: function( data, textStatus, jqXHR ) {
+    //         JsData = JSON.parse(data);
+    //         if(JsData.Status == 0){
+    //             console.log("unable to fetch settings for the user.. ");
+    //         }else{
+    //             console.log(JsData);
+    //             settings.logo = JsData.Data.logo;
+    //             //populate other data also.. 
+    //             if(JsData.Data.logo != null)
+    //                 $('img#logo').attr("src","{{ URL('public') }}/"+JsData.Data.logo);
+    //             console.log(settings);
+    //         }
+    //     },
+    //     error: function( jqXHR, textStatus, errorThrown ) {
+    //         console.log("unable to fetch settings for the user.. ");
+    //     }
+    // })
         
 
     </script>
