@@ -26,13 +26,16 @@ class CustomerController extends Controller
     protected $logger ;
 
     public function register($id){
-        $Email = base64_decode($id);
-        $CheckInvite = BookingInvite::where("email", $Email)->where("status", 0)->count();
+        $newStr = explode('#',base64_decode($id));
+        Log::debug($newStr);
+        $Email = $newStr[1];
+        $inviteId = $newStr[0];
+        $CheckInvite = BookingInvite::where("email", $Email)->where("status", 0)->where("id",$inviteId)->count();
         if($CheckInvite == 0){
             return redirect("404");
         }else{
-            $InviteObj = BookingInvite::where("email", $Email)->where("status", 0)->first();
-            // $CustomerIfExits = Customer::where("email", $Email )->where("company_id",session("CompanyLinkID"))->count();
+            $InviteObj = BookingInvite::where("email", $Email)->where("status", 0)->where("id",$inviteId)->first();
+            // $CustomerIfExits = Customer::where("email", $Email )->where("company_id",session("CompanyLinkID"))->where("first_name",$InviteObj->name)->count();
             // if( $CustomerIfExits > 0 )
             //     $Customer = Customer::where("email", $Email)->where("company_id",session("CompanyLinkID"))->first();
             // else {
@@ -49,7 +52,7 @@ class CustomerController extends Controller
                         ->groupBy('car_type')
                         ->orderBy('car_type')
                         ->get();
-
+            
             return view("CustomerRegister", compact("InviteObj", "Customer" , "Conuntry", "VehicleTypes"));
         }
     }
@@ -57,8 +60,14 @@ class CustomerController extends Controller
     public function registerPost(Request $request){
         $Input = $request->all();
         $CustomerID = "";
-        $InviteObj = BookingInvite::where("email", $Input["email"])->where("status", 0)->first();
-        $CheckCustomer = Customer::where("company_id", $InviteObj->company_id)->get();
+        $InviteId = $request->invite_id;
+        Log::debug("invite id - ".$InviteId);
+        $InviteObj = BookingInvite::where("email", $Input["email"])->where("status", 0)->where("id",$InviteId)->first();
+        if($InviteObj == NULL){
+            return json_encode(array("Status" =>  0, "Message" => "ERROR: Invite Expired"));
+        }
+
+        $CheckCustomer = Customer::where("company_id", $InviteObj->company_id)->where("email",$Input["email"])->get();
         $CustomerFound = 0;
         
         foreach($CheckCustomer as $Cms){
@@ -79,13 +88,18 @@ class CustomerController extends Controller
 
         //create new customer if id is null.. else update data.
         if($CustomerID == ""){
+            Log::debug("Creating new customer");
             
-            if($request->file('driving_license') == null){
+            // if($request->file('driving_license') == null){
+            if($request->file('driving_license')==null || sizeof($request->file('driving_license')) <= 0){
                 return json_encode(array("Status" =>  0, "Message" => "Upload Driving License File"));
             }
 
-            if($request->file('passport_detail') == null && $request->file('residency_card') == null){
-                return json_encode(array("Status" =>  0, "Message" => "Upload Passport File or Residency Card"));
+            if(
+                ($request->file('passport_detail')==null || sizeof($request->file('passport_detail')) <= 0)
+                && ($request->file('residency_card')==null || sizeof($request->file('residency_card')) <= 0)
+            ){
+                return json_encode(array("Status" =>  0, "Message" => "Upload Passport Details or Residency Card"));
             }
             
             $GetCompanyDetail = Office::find($InviteObj->company_id);
@@ -135,7 +149,7 @@ class CustomerController extends Controller
        $fileTypes = array('residency_card','passport_detail','visa_detail','driving_license');
        foreach($fileTypes as $filetype) {
             if($request->file($filetype) && sizeof($request->file($filetype)) > 0){
-                CustomerImages::where('customer_id',$CustomerID)->delete();   //delete only when there are new documents from client
+                CustomerImages::where('customer_id',$CustomerID)->where("type",$filetype)->delete();   //delete only when there are new documents from client
                 for($i = 0; $i < sizeof($request->file($filetype)); $i++ ){
                     Log::debug("type - " . $filetype . " , i - ". $i);
                     $CustImages = new CustomerImages();
@@ -240,7 +254,7 @@ class CustomerController extends Controller
             return json_encode(array("Status" =>  0, "Message" => "Registeration Fail. Contact company"));
         }
 
-        return json_encode(array("Status" =>  1, "Message" => "Register Successfully"));
+        return json_encode(array("Status" =>  1, "Message" => "Registered Successfully"));
     }
     
     public function index(){

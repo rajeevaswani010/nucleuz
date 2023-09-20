@@ -88,7 +88,8 @@
                 console.log(JsData);
                 settings.logo = JsData.Data.logo;
                 //populate other data also.. 
-                $('img#logo').attr("src","{{ URL('public') }}/"+JsData.Data.logo);
+                if(JsData.Data.logo != null)
+                    $('img#logo').attr("src","{{ URL('public') }}/"+JsData.Data.logo);
                 console.log(settings);
             }
         },
@@ -116,7 +117,7 @@
     <div class="navbar-wrapper">
         <div class="m-header main-logo">
             <a href="{{ URL('dashboard') }}" class="b-brand">
-            <img src="{{ URL('public') }}/{{ @$logoUrl }}" alt="projecterp" class="logo logo-lg" id="logo">
+            <img src="{{ URL('public') }}/logo.png" alt="projecterp" class="logo logo-lg" id="logo">
             </a>
         </div>
         <div class="navbar-content">
@@ -194,12 +195,12 @@
                 <i class="fa fa-car"></i></span><span class="dash-mtext">{{ __("Car Rental Bookings") }}</span>
         </a>
        </li>
-       <li class="dash-item dash-hasmenu @if($ActiveAction == 'bookingVehicles') active @endif">
+       <!-- <li class="dash-item dash-hasmenu @if($ActiveAction == 'bookingVehicles') active @endif">
         <a href="{{ URL('bookingVehicles') }}" class="dash-link">
             <span class="dash-micon">
                 <i class="fa fa-car"></i></span><span class="dash-mtext">{{ __("Booking Vehicles") }}</span>
         </a>
-       </li>
+       </li> -->
 
         <li class="dash-item dash-hasmenu @if($ActiveAction == 'booking-invite') active @endif">
         <a href="{{ URL('booking-invite') }}" class="dash-link">
@@ -360,7 +361,7 @@
 <li class="dropdown dash-h-item drp-company">
 <a
 class="dash-head-link dropdown-toggle arrow-none me-0"
-data-toggle="dropdown"
+data-bs-toggle="dropdown"
 href="#"
 role="button"
 aria-haspopup="false"
@@ -368,7 +369,7 @@ aria-expanded="false"
 >
 <span class="theme-avtar">
 @if(session("AdminImage") == "")
-        <img src="{{ URL('public/images/people/50/guy-3.jpg') }}" class="img-fluid rounded-circle">
+        <img src="{{ URL('public/user.png') }}" class="img-fluid rounded-circle">
         @else
         <img src="{{ URL('public') }}/{{ session('AdminImage') }}" class="img-fluid rounded-circle">
         @endif
@@ -406,10 +407,34 @@ aria-expanded="false"
 </a>
 </li>--}}
 
+<!-- Notifications dropdown -->
+<!-- <li class="dropdown dash-h-item ">
+    <div class="dropdown dropdown-notifications">
+        <button type="button" class="btn btn-light" style="color: blue;font-size: 18px;">
+            <i class="fa fa-bell" aria-hidden="true"> </i>
+            <span class="badge" 
+                style=" font-size: 11px;    
+                        background: blue;
+                        margin-left: 2px;
+                        border-radius: 12px;
+                        font-weight: bold;">
+            4 </span>
+        </button>    
+        <div data-perfect-scrollbar
+                class="position-relative">
+            <div class="dropdown-header"><strong>{{ __('Booking Notifications') }}</strong></div>
+            <div class="list-group list-group-flush mb-0">            </div>
+        </div>
+    </div>
+</div> -->
+<!-- // END Notifications dropdown -->
+<!-- </li> -->
+
+
 <li class="dropdown dash-h-item drp-language">
 <a
 class="dash-head-link dropdown-toggle arrow-none me-0"
-data-toggle="dropdown"
+data-bs-toggle="dropdown"
 href="#"
 role="button"
 aria-haspopup="false"

@@ -33,13 +33,15 @@
 
     {!! Form::open(['url' => 'CustomerRegister', 'id' => 'BookingForm', 'enctype' => 'multipart/form-data', 'method' =>
     'POST']) !!}
+    <input type="text" class="form-control" name="invite_id" value="{{ $InviteObj->id }}" hidden>
+
     <div class="card">
         <div class="card-header">
             <h4>Customer Details</h4>
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-2 mb-4">
                     <label>Salutation <span class="text-danger">*</span></label>
                     <select class="form-control" name="title" id="title" required>
                         <option value="">Select</option>
@@ -54,7 +56,7 @@
                     </select>
                 </div>
 
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-6 mb-4">
                     <label>Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="first_name" value="{{ $Customer->first_name }}" required>
                 </div>
@@ -69,7 +71,7 @@
                     <input type="text" class="form-control" name="last_name" value="{{ $Customer->last_name }}" required>
                 </div> -->
 
-                <div class="col-lg-4 mb-4">
+                <div class="col-lg-2 mb-4">
                     <label>Gender <span class="text-danger">*</span></label>
                     <select class="form-control" name="gender" id="gender" required>
                         <option value="">Select</option>
@@ -78,12 +80,7 @@
                     </select>
                 </div>
 
-                <div class="col-lg-4 mb-4">
-                    <label>Date of Birth <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" name="dob" value="{{ $Customer->dob }}" required>
-                </div>
-
-                <div class="col-lg-4 mb-4">
+                <div class="col-lg-2 mb-4">
                     <label>Nationality <span class="text-danger">*</span></label>
                     <select class="form-control" name="nationality" id="nationality" required>
                         <option value="">Select</option>
@@ -93,13 +90,19 @@
                     </select>
                 </div>
 
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-2 mb-4">
+                    <label>Date of Birth <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" name="dob" value="{{ $Customer->dob }}" required>
+                </div>
+
+
+                <div class="col-lg-4 mb-4">
                     <label>Email <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="email" value="{{ $Customer->email }}" required
                         readonly>
                 </div>
 
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-2 mb-4">
                     <label>Country Code <span class="text-danger">*</span></label>
                     <select class="form-control" name="country_code" id="country_code" required>
                         <option value="">Select</option>
@@ -110,28 +113,30 @@
                     </select>
                 </div>
 
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-4 mb-4">
                     <label>Mobile <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="mobile" value="{{ $Customer->mobile }}" required>
                 </div>
 
-                <div class="col-lg-3 mb-4">
+                <div class="col-lg-4 mb-4">
                     <label>Insurance Details</label>
-                    <input type="text" class="form-control" name="insurance" value="{{ $Customer->insurance }}">
+                    <!-- <input type="text" class="form-control" name="insurance" value="{{ $Customer->insurance }}"> -->
+                    <textarea type="text" class="form-control" name="insurance"  rows="3"
+                    required>{{ $Customer->insurance }}</textarea>
                 </div>
 
-                <div class="col-lg-6 mb-4">
-                    <label>Permanent Address <span class="text-danger">*</span></label>
-                    <textarea type="text" class="form-control" name="permanent_address"
-                        required>{{ $Customer->permanent_address }}</textarea>
-                </div>
-
-                <div class="col-lg-6 mb-4">
-                    <label>Temp Address</label>
-                    <textarea type="text" class="form-control"
+                <div class="col-lg-4 mb-4">
+                    <label>Communication Address</label>
+                    <textarea type="text" class="form-control"   rows="3"
                         name="temp_address">{{ $Customer->temp_address }}</textarea>
                 </div>
 
+                <div class="col-lg-4 mb-4">
+                    <label>Permanent Address <span class="text-danger">*</span></label>
+                    <textarea type="text" class="form-control" name="permanent_address"   rows="3"
+                        required>{{ $Customer->permanent_address }}</textarea>
+                </div>
+                <div class="row mr-1 ml-1">
                 <div class="col-lg-2 mb-2">
                     <label for="subject"
                         class="col-form-label text-dark">{{ __("Resident Card") }}</label>
@@ -171,7 +176,7 @@
                     <div id="file_visa_detail-gallery" class="gallery">
                     </div>
                 </div>
-
+                </div>
             </div>
         </div>
     </div>
@@ -208,18 +213,18 @@
                         onblur="fetchReviews()">
                 </div>
 
-                <div class="col-lg-5 mb-5">
+                <div class="col-lg-4 mb-5">
                     <label>Date of Pickup <span class="text-danger">*</span></label>
                     <input type="date" class="form-control" required name="PickupDate" id="pickupDate"
                         min="{{ date('Y-m-d') }}">
                 </div>
 
-                <div class="col-lg-4 mb-4">
+                <div class="col-lg-3 mb-4">
                     <label>Time of Pickup <span class="text-danger">*</span></label>
                     <input type="time" class="form-control" required name="PickupTime" id="pickupTime">
                 </div>
 
-                <div class="col-lg-3 mb-3">
+                <div class="col-lg-5 mb-3">
                     <label>Location of Pickup <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" required name="pickup_location">
                 </div>

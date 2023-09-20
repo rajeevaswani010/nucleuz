@@ -71,14 +71,14 @@
                 <div class="col-lg-3">
                     <h4>{{ __('Select Customer') }}</h4>
                 </div>
-                <div class="col-lg-9 ">
-                    <div class="float-right">
-                    <div class="col-lg-2 float-right">
-                        <button type="button" onclick="SearchCustomer()" class="btn btn-primary">{{ __('Search') }}</button>
-                        <!-- <button type="button" onclick="ClearCustomerForm()" class="btn btn-danger">{{ __('Clear Form') }}</button> -->
-                    </div>
-                    <div class="col-lg-7 float-right"><input type="text" id="SearchTerm" class="form-control h-auto font-style"></div>
-                    <div class="col-lg-3 float-right">{{ __('Search by Mobile Number or Email') }}</div>
+                <div class="col-lg-9">
+                    <div style="float: right; width: 75%">
+                        <div style="display:inline-block;">{{ __('Search by Mobile Number or Email') }}</div>
+                        <div class="col-lg-6"  style="display:inline-block;"><input type="text" id="SearchTerm" class="form-control font-style"></div>
+                        <!-- <div class="col-lg-" style="display:inline-block;"> -->
+                            <button type="button" onclick="SearchCustomer()" style="display:inline-block;" class="btn btn-primary">{{ __('Search') }}</button>
+                            <!-- <button type="button" onclick="ClearCustomerForm()" class="btn btn-danger">{{ __('Clear Form') }}</button> -->
+                        <!-- </div> -->
                     </div>
                 </div>
             </div>
@@ -91,10 +91,10 @@
                 <label class="col-form-label text-dark"><h3 id="name_heading"></h3></label> 
                 <ul class="nav  nav-tabs" id="nav-tab" role="tablist">
                     <li class="nav-item">
-                    <a class="nav-link active" id="nav_details" data-toggle="tab" href="#customer_details">Details</a>
+                    <a class="nav-link active" id="nav_details" data-bs-toggle="tab" href="#customer_details">Details</a>
                     </li>
                     <li class="nav-item">
-                    <a class="nav-link" id="nav_documents"  data-toggle="tab" href="#customer_documents">Documents</a>
+                    <a class="nav-link" id="nav_documents"  data-bs-toggle="tab" href="#customer_documents">Documents</a>
                     </li>
                 </ul>
                 <div class="tab-content"  id="nav-tabcontent" >
