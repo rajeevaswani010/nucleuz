@@ -10,12 +10,13 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\PricingController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingVehiclesController;
 use App\Http\Controllers\BookingInviteController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\ReportController;
-
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ProductController;
 
 /*
@@ -78,12 +79,15 @@ Route::get('pricing/Export', [PricingController::class, 'Export']);
 Route::post('UploadPricing', [PricingController::class, 'Import']);
 Route::resource('pricing', PricingController::class);
 Route::resource('booking', BookingController::class);
+Route::resource('bookingVehicles', BookingVehiclesController::class);
 Route::resource('booking-invite', BookingInviteController::class);
 Route::post('booking-invite/add', [BookingInviteController::class,'add']);
 Route::post('booking-invite/delete', [BookingInviteController::class,'delete']);
 Route::post('Booking/Review', [BookingController::class, 'review']);
 Route::post('Booking/GetAvailableCarTypes', [BookingController::class, 'GetAvailableCarTypes']);
 Route::get('Vehicle/GetAllCarTypes', [VehicleController::class, 'GetAllCarTypes']);
+Route::post("booking/assignVehicle", [BookingController::class, 'AssignVehicle']);
+Route::get('/booking/pdf/{ID}', [BookingController::class, 'exportPdf']);
 Route::get("BookingCancel/{ID}", [BookingController::class, 'CancelBooking']);
 Route::post('Customer/Review', [BookingController::class, 'ReviewCustomer']);
 Route::post('BookingExceed/{id}', [BookingController::class, 'BookingExceed']);

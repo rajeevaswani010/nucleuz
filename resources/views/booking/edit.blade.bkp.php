@@ -2,13 +2,7 @@
 
 @section("content")
 <script src="{{ URL('resources/js/multipleFileUpload.js') }}"></script>
-<style>
-.inline-block-div {
-    display: inline-block;
-    width: fit-content; /* Adjust as needed */
-}
 
-</style>
 <!-- [ Main Content ] start -->
 <div class="dash-container">
     <div class="dash-content">
@@ -38,106 +32,109 @@
                 <div class="card-body ">
                     <div class="row">
 
-                    <div class="float-left"><h1>{{ __("Booking Details") }} : #{{ $Booking->id }}</h1></div>
-        
-                    @if($Booking->status != 4)
+                        <div class="float-left"><h1>{{ __("Booking Details") }} : #{{ $Booking->id }}</h1></div>
+                        <div class="btn-group mt-3 mb-3 float-right" role="group">
+                        @if($Booking->status != 4)
                             @if($Booking->pickup_date_time > date("Y-m-d H:i:s") && $Booking->status != 3 && $Booking->status != 2)
-                            <div class="inline-block-div mt-3 mb-3 mr-3"><a href="{{ URL('booking') }}/{{ $Booking->id }}"><button class="btn btn-primary">{{ __("Assign Vehicle") }}</button></a></div>
+                            <a href="{{ URL('booking') }}/{{ $Booking->id }}"><button class="btn btn-primary mr-4">{{ __("Assign Vehicle") }}</button></a>
                             @endif
+                            
+                            <a href="{{ URL('booking') }}/{{ $Booking->id }}"><button class="btn btn-primary mr-4">{{ __("Change Assign Date") }}</button></a>
+
+                            <a href="{{ URL('booking') }}/{{ $Booking->id }}"><button class="btn btn-primary mr-4">{{ __("Change DropOFF Date") }}</button></a>
+
                             @if($Booking->status == 1)
-                            <div class="inline-block-div mt-3 mb-3 mr-3"><a href="{{ URL('BookingCancel') }}/{{ $Booking->id }}" onClick="return cancelBooking()"><button class="btn btn-danger">{{ __("Cancel Booking") }}</button></a></div>
+                            <a href="{{ URL('BookingCancel') }}/{{ $Booking->id }}" onClick="return cancelBooking()"><button class="btn btn-danger mr-4">{{ __("Cancel Booking") }}</button></a>
                             @endif
-                    @endif                    
-                    <div class="clearfix"></div>
+                        @endif
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
 
-        <div style="float: left; width: 45%;">
-            <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 400px;">
-                <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-                    <!--<h2>{{ $Booking->customer->title }} {{ $Booking->customer->first_name }} {{ $Booking->customer->last_name }}</h2> -->
-                    <h2>{{ $Booking->customer->title }} {{ $Booking->customer->first_name }}</h2>
-                    <div class="mt-4"><b>{{ __("Gender") }}</b> {{ $Booking->customer->gender }}</div>
-                    <div class="mt-2"><b>{{ __("DOB") }}</b> {{ date("d/m/Y", strtotime($Booking->customer->dob)) }}</div>
-                    <div class="mt-2"><b>{{ __("Nationality") }}</b> {{ $Booking->customer->nationality }}</div>
-                    <div class="mt-2"><b>{{ __("Email") }}</b> {{ $Booking->customer->email }}</div>
-                    <div class="mt-2"><b>{{ __("Mobile") }}</b> {{ $Booking->customer->mobile }}</div>
-                    <div class="mt-2"><b>{{ __("Insurance Details") }}</b> {{ $Booking->customer->insurance }}</div>
-                    <div class="mt-2"><b>{{ __("Permanent Address") }}</b> {{ $Booking->customer->permanent_address }}</div>
-                    <div class="mt-2"><b>{{ __("Temp Address") }}</b> {{ $Booking->customer->temp_address }}</div>
+                <div class="row">
+                    <div class="col-6 mb-2" >
+                        <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height:400px; max-height: 400px;overflow: auto;">
+                            <div style="flex: 1 1 auto; padding: 1rem 1rem;">
+                                <!--<h2>{{ $Booking->customer->title }} {{ $Booking->customer->first_name }} {{ $Booking->customer->last_name }}</h2> -->
+                                <h2>{{ $Booking->customer->title }} {{ $Booking->customer->first_name }}</h2>
+                                <div class="mt-4"><b>{{ __("Gender") }}</b> {{ $Booking->customer->gender }}</div>
+                                <div class="mt-2"><b>{{ __("DOB") }}</b> {{ date("d/m/Y", strtotime($Booking->customer->dob)) }}</div>
+                                <div class="mt-2"><b>{{ __("Nationality") }}</b> {{ $Booking->customer->nationality }}</div>
+                                <div class="mt-2"><b>{{ __("Email") }}</b> {{ $Booking->customer->email }}</div>
+                                <div class="mt-2"><b>{{ __("Mobile") }}</b> {{ $Booking->customer->mobile }}</div>
+                                <div class="mt-2"><b>{{ __("Insurance Details") }}</b> {{ $Booking->customer->insurance }}</div>
+                                <div class="mt-2"><b>{{ __("Permanent Address") }}</b> {{ $Booking->customer->permanent_address }}</div>
+                                <div class="mt-2"><b>{{ __("Temp Address") }}</b> {{ $Booking->customer->temp_address }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 mb-2" >
+                        <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height:400px;max-height: 400px;overflow: auto;">
+                            <div style="flex: 1 1 auto; padding: 1rem 1rem;">
+                                <h2>{{ __("Vehicle Details") }}</h2>
+                                @if($Booking->status == 1)
+                                <div class="mt-4"><b>{{ __("Car Type") }}</b> {{ $Booking->car_type }}</div>
+                                @else
+                                <div class="mt-4"><b>{{ __("Car Type") }}</b> {{ $Booking->car_type }}</div>
+                                <div class="mt-2"><b>{{ __("Make") }}</b> {{ @$Booking->vehicle->make }}</div> 
+                                <div class="mt-2"><b>{{ __("Model") }}</b> {{ @$Booking->vehicle->model }}</div>
+                                <div class="mt-2"><b>{{ __("Variant") }}</b> {{ @$Booking->vehicle->variant }}</div>
+                                <div class="mt-2"><b>{{ __("Chasis Number") }}</b> {{ @$Booking->vehicle->chasis_no }}</div>
+                                <div class="mt-2"><b>{{ __("Registration Number") }}</b> {{ @$Booking->vehicle->reg_no }}</div>
+                                <div class="mt-2"><b>{{ __("AC") }}</b> {{ @$Booking->vehicle->ac }}</div>
+                                <div class="mt-2"><b>{{ __("Audio") }}</b> {{ @$Booking->vehicle->audio }}</div>
+                                <div class="mt-2"><b>{{ __("GPS") }}</b> {{ @$Booking->vehicle->gps }}</div>
+                                <div class="mt-2"><b>{{ __("Insurance Details") }}</b> {{ @$Booking->vehicle->insurance_detail }}</div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-6 mb-2" >
+                        <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;  height:400px;max-height: 400px;overflow: auto;">
+                            <div style="flex: 1 1 auto; padding: 1rem 1rem;">
+                                <h2>{{ __("Booking Details") }}</h2>
+                            <!--  <div class="mt-4"><b>{{ __("Tarrif") }}</b> {{ $Booking->tarrif_type }}</div> 
+                                @if($Booking->tarrif_type == "Weekly")
+                                <div class="mt-2"><b>{{ __("No. of Weeks") }}</b> {{ $Booking->tarrif_detail }}</div>
+                                @elseif ($Booking->tarrif_type == "Monthly")
+                                <div class="mt-2"><b>{{ __("No. of Months") }}</b> {{ $Booking->tarrif_detail }}</div>
+                                @else
+                                <div class="mt-2"><b>{{ __("No. of Days") }}</b> {{ $Booking->tarrif_detail }}</div>
+                                @endif  -->
+                                <div class="mt-2"><b>{{ __("No. of Days") }}</b> {{ $Booking->tarrif_detail }}</div>
+                                <div class="mt-2"><b>{{ __("Per Day KM Allocations") }}</b> {{ $Booking->km_allocation }}</div>
+                                <div class="mt-2"><b>{{ __("Date & Time of Pickup") }}</b> {{ date("d F, Y H:i A", strtotime($Booking->pickup_date_time)) }}</div>
+                                <div class="mt-2"><b>{{ __("Drop Off Date") }}</b> {{ date("d F, Y ", strtotime($Booking->dropoff_date)) }}</div>
+                                <div class="mt-2"><b>{{ __("Location of Pickup") }}</b> {{ $Booking->pickup_location }}</div>
+                                <div class="mt-2"><b>{{ __("KM Reading at time of pickup") }}</b> {{ $Booking->km_reading_pickup }}</div>
+                                <div class="mt-2"><b>{{ __("KM Reading at Drop Off") }}</b> {{ $Booking->km_drop_time }}</div>
+                                <div class="mt-2"><b>{{ __("Payment Mode") }}</b> {{ $Booking->payment_mode }}</div>
+                                <div class="mt-2"><b>{{ __("Additional Detail") }}</b> {{ $Booking->additional_info }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 mb-2">
+                        <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem;  height:400px;max-height: 400px;overflow: auto;">
+                            <div style="flex: 1 1 auto; padding: 1rem 1rem;">
+                                <h2>{{ __("Tentative Billable Amount") }}</h2>
+                                <div class="mt-4"><b>{{ __("Sub Total") }} : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->sub_total, 2) }}</div>
+                                <div class="mt-2"><b>{{ __("VAT") }} ({{ $Booking->tax_percentage }}%) : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(((($Booking->sub_total) * $Booking->tax_percentage) / 100), 2) }}</div>
+                                <div class="mt-2"><b>{{ __("Discount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->discount_amount, 2) }}</div>
+                                <div class="mt-2"><b>{{ __("Advance Amount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->advance_amount, 2) }}</div>
+                                <div class="mt-2"><b>{{ __("Additional KM Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(($Booking->additional_km_reunning * $Booking->additional_kilometers_amount), 2) }}</div>
+                                <div class="mt-2"><b>{{ __("Additional Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->additional_charges, 2) }}</div>
+                                <div class="mt-2"><b>{{ __("Grand Total") }} : &nbsp;OMR {{ number_format(($Booking->grand_total - $Booking->advance_amount), 2) }}</b> </div>
+                                <div class="mt-2"><b><span style="float:left; font-style:italic; color:red;">{{ __("*The above value may change at the time of vehicle return") }}</span> </b> </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="clear: both; margin-top: 40px;">&nbsp;</div>
                 </div>
-            </div>
-        </div>
-
-        <div style="float: left; margin-left: 5%; width: 45%;">
-            <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 400px;">
-                <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-                    <h2>{{ __("Vehicle Details") }}</h2>
-                    @if($Booking->status == 1)
-                    <div class="mt-4"><b>{{ __("Car Type") }}</b> {{ $Booking->car_type }}</div>
-                    @else
-                    <div class="mt-4"><b>{{ __("Car Type") }}</b> {{ $Booking->car_type }}</div>
-                    <div class="mt-2"><b>{{ __("Make") }}</b> {{ @$Booking->vehicle->make }}</div> 
-                    <div class="mt-2"><b>{{ __("Model") }}</b> {{ @$Booking->vehicle->model }}</div>
-                    <div class="mt-2"><b>{{ __("Variant") }}</b> {{ @$Booking->vehicle->variant }}</div>
-                    <div class="mt-2"><b>{{ __("Chasis Number") }}</b> {{ @$Booking->vehicle->chasis_no }}</div>
-                    <div class="mt-2"><b>{{ __("Registration Number") }}</b> {{ @$Booking->vehicle->reg_no }}</div>
-                    <div class="mt-2"><b>{{ __("AC") }}</b> {{ @$Booking->vehicle->ac }}</div>
-                    <div class="mt-2"><b>{{ __("Audio") }}</b> {{ @$Booking->vehicle->audio }}</div>
-                    <div class="mt-2"><b>{{ __("GPS") }}</b> {{ @$Booking->vehicle->gps }}</div>
-                    <div class="mt-2"><b>{{ __("Insurance Details") }}</b> {{ @$Booking->vehicle->insurance_detail }}</div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        <div style="clear: both; margin-top: 40px;">&nbsp;</div>
-
-        <div style="float: left; width: 45%;">
-            <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 400px;">
-                <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-                    <h2>{{ __("Booking Details") }}</h2>
-                  <!--  <div class="mt-4"><b>{{ __("Tarrif") }}</b> {{ $Booking->tarrif_type }}</div> 
-                    @if($Booking->tarrif_type == "Weekly")
-                    <div class="mt-2"><b>{{ __("No. of Weeks") }}</b> {{ $Booking->tarrif_detail }}</div>
-                    @elseif ($Booking->tarrif_type == "Monthly")
-                    <div class="mt-2"><b>{{ __("No. of Months") }}</b> {{ $Booking->tarrif_detail }}</div>
-                    @else
-                    <div class="mt-2"><b>{{ __("No. of Days") }}</b> {{ $Booking->tarrif_detail }}</div>
-                    @endif  -->
-                    <div class="mt-2"><b>{{ __("No. of Days") }}</b> {{ $Booking->tarrif_detail }}</div>
-                    <div class="mt-2"><b>{{ __("Per Day KM Allocations") }}</b> {{ $Booking->km_allocation }}</div>
-                    <div class="mt-2"><b>{{ __("Date & Time of Pickup") }}</b> {{ date("d F, Y H:i A", strtotime($Booking->pickup_date_time)) }}</div>
-                    <div class="mt-2"><b>{{ __("Drop Off Date") }}</b> {{ date("d F, Y ", strtotime($Booking->dropoff_date)) }}</div>
-                    <div class="mt-2"><b>{{ __("Location of Pickup") }}</b> {{ $Booking->pickup_location }}</div>
-                    <div class="mt-2"><b>{{ __("KM Reading at time of pickup") }}</b> {{ $Booking->km_reading_pickup }}</div>
-                    <div class="mt-2"><b>{{ __("KM Reading at Drop Off") }}</b> {{ $Booking->km_drop_time }}</div>
-                    <div class="mt-2"><b>{{ __("Payment Mode") }}</b> {{ $Booking->payment_mode }}</div>
-                    <div class="mt-2"><b>{{ __("Additional Detail") }}</b> {{ $Booking->additional_info }}</div>
-                </div>
-            </div>
-        </div>
-
-        <div style="float: left; margin-left: 5%; width: 45%;">
-            <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 400px;">
-                <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-                    <h2>{{ __("Tentative Billable Amount") }}</h2>
-                    <div class="mt-4"><b>{{ __("Sub Total") }} : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->sub_total, 2) }}</div>
-                    @if($Booking->sub_total < 0)
-                    <div class="mt-2"><b>{{ __("VAT") }} ({{ $Booking->tax_percentage }}%) : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(0, 2) }}</div>
-                    @else
-                    <div class="mt-2"><b>{{ __("VAT") }} ({{ $Booking->tax_percentage }}%) : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(((($Booking->sub_total) * $Booking->tax_percentage) / 100), 2) }}</div>
-                    @endif
-                    <div class="mt-2"><b>{{ __("Discount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->discount_amount, 2) }}</div>
-                    <div class="mt-2"><b>{{ __("Advance Amount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->advance_amount, 2) }}</div>
-                    <div class="mt-2"><b>{{ __("Additional KM Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(($Booking->additional_km_reunning * $Booking->additional_kilometers_amount), 2) }}</div>
-                    <div class="mt-2"><b>{{ __("Additional Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->additional_charges, 2) }}</div>
-                    <div class="mt-2"><b>{{ __("Grand Total") }} : &nbsp;OMR {{ number_format(($Booking->grand_total - $Booking->advance_amount), 2) }}</b> </div>
-                    <div class="mt-2"><b><span style="float:left; font-style:italic; color:red;">{{ __("*The above value may change at the time of vehicle return") }}</span> </b> </div>
-                </div>
-            </div>
-        </div>
-
-        <div style="clear: both; margin-top: 40px;">&nbsp;</div>
-        
         <div class="row card-body">
         <div class="panel col-lg-3 mb-4">
             <div class="panel-heading">
@@ -268,11 +265,8 @@
         <div class="alert-text">{!!Session::get('Danger')!!}</div>
     </div>
     @endif
-    <script>
-    console.log("some logs");
-    console.log({{ $Booking->km_reading_pickup }});
-    </script>
-    @if($Booking->status == 3 || ($Booking->status == 2 && $Booking->km_drop_time != ""))
+    
+    @if($Booking->status == 3 || ($Booking->status == 2 && $Booking->km_reading_pickup != NULL))
     <div class="card">
         <div class="card-body">
             <h3>{{ __("Drop off Detail") }}</h3>
@@ -322,8 +316,7 @@
             <label>{{ __("Drop off Date") }} <span class="text-danger">*</span></label>
         <!--  <input type="date" class="form-control h-auto" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" required> -->
         <!--  <input type="date" class="form-control h-auto" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" required>  -->
-        <!-- <input type="date" class="form-control h-auto" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime('+1 day', strtotime($Booking->pickup_date_time ))) }}" required> -->
-         <input type="date" class="form-control h-auto" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime($Booking->pickup_date_time )) }}" required> 
+         <input type="date" class="form-control h-auto" name="dropoff_date" value="{{ date('Y-m-d', strtotime($Booking->dropoff_date)) }}" min="{{ date('Y-m-d', strtotime('+1 day', strtotime($Booking->pickup_date_time ))) }}" required> 
         </div>
         
         <div class="col-lg-6">
@@ -411,17 +404,13 @@
     
     @endif
     
-    @if($Booking->status == 3)
+    @if($Booking->status == 4)
     <div class="card mt-5">
         <div class="card-body">
             <div style="flex: 1 1 auto; padding: 1rem 1rem;">
                 <h2>{{ __("Payment Details") }}</h2>
                 <div class="mt-4"><b>{{ __("Sub Total") }} : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->sub_total, 2) }}</div>
-                @if($Booking->sub_total < 0)
-                <div class="mt-2"><b>{{ __("VAT") }} ({{ $Booking->tax_percentage }}%) : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(0, 2) }}</div>
-                @else
                 <div class="mt-2"><b>{{ __("VAT") }} ({{ $Booking->tax_percentage }}%) : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(((($Booking->sub_total) * $Booking->tax_percentage) / 100), 2) }}</div>
-                @endif
                 <div class="mt-2"><b>{{ __("Discount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->discount_amount, 2) }}</div>
                 <div class="mt-2"><b>{{ __("Advance Amount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->advance_amount, 2) }}</div>
                 <div class="mt-2"><b>{{ __("Additional KM Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(($Booking->additional_km_reunning * $Booking->additional_kilometers_amount), 2) }}</div>
@@ -437,7 +426,31 @@
     <div class="clearfix">&nbsp;</div>
     @endif
 
-    <div class="inline-block-div mt-3 mb-3 mr-3" style="float:right;"><a href="{{ URL('/booking/pdf/') }}/{{ $Booking->id }}"><button class="btn btn-primary">{{ __("Print Booking") }}</button></a></div>
+
+
+
+
+                       
+
+                        
+                        
+
+                       
+
+
+                        
+
+
+
+
+                       
+
+                       
+
+
+                        
+
+                   
                         
                     </div>
                 </div>

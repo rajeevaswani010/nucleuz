@@ -245,8 +245,11 @@
 
 
 
-
-@if($Booking->status == 0)
+<script>
+    console.log("printing status ");
+    console.log({{ $Booking->status }});
+</script>
+@if($Booking->status == 3)
 <div class="card">
 <div class="card-body">
     <h3>{{ __("Drop off Detail") }}</h3>
@@ -262,14 +265,6 @@
 </div>
 @endif
 
-
-
-
-
-
-
-    
-    
 
 @if($Booking->status != 0)
     
