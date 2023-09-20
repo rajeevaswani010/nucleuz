@@ -717,7 +717,10 @@ class BookingController extends Controller
         #$ExtraAmount = (float)$ExtraDay * $GetBooking->tarrif_amount;
         Log::debug("ExtraAmount :".$ExtraAmount);
         $SubTotal = $GetBooking->sub_total + $ExtraAmount;
-        $TaxAmount = ($SubTotal * 5) / 100;
+        $TaxAmount = 0;
+        if($SubTotal > 0 ){
+            $TaxAmount = ($SubTotal * 5) / 100;
+        }
         #$GrandTotal = $GetBooking->grand_total + $ExtraAmount;
         $GrandTotal = $SubTotal + $TaxAmount;
         
@@ -777,8 +780,11 @@ class BookingController extends Controller
             $DiscountAmount = number_format($Input["discount"], 2);
             $Amount -= $Input["discount"];
             
-            
-            $TaxAmount = ($Amount * $Input["tax"]) / 100;
+            $TaxAmount = 0;
+            if($Amount > 0){
+                $TaxAmount = ($Amount * $Input["tax"]) / 100;
+            }
+
             $SubTotal = number_format($Amount, 2);
             $Amount += $TaxAmount;
             

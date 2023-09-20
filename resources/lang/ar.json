@@ -287,6 +287,10 @@
     "Reason For Vehicle Replacement":"سبب استبدال المركبة",
     "Others":"آحرون",
     "Issue-In-Vehicle":"مشكلة في السيارة",
-    "Upgrade-The-Vehicle":"ترقية السيارة"
+    "Upgrade-The-Vehicle":"ترقية السيارة",
+    "Customers":"عملاء",
+    "Add Customer":"إضافة العميل",
+    "Edit Customer":"تحرير العميل",
+    "Upload documents":"تحميل المستندات"
 
 }

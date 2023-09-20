@@ -11,12 +11,12 @@
 <div class="row align-items-center">
 <div class="col-auto">
 <div class="page-header-title">
-<h4 class="m-b-10">View Customers</h4>
+<h4 class="m-b-10">{{ __("View Customers") }}</h4>
 </div>
 <ul class="breadcrumb">
 <li class="breadcrumb-item">
-<a href="{{ URL('dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item">View Customers</li>
+<a href="{{ URL('dashboard') }}">{{ __("Dashboard") }}</a></li>
+<li class="breadcrumb-item">{{ __("View Customers") }}</li>
 </ul>
 </div>
 <div class="col">
@@ -40,11 +40,11 @@
 <table class="table datatable">
 <thead>
 <tr>
-<th>Code</th>
-<th>Name</th>
-<th>Nationality</th>
-<th>Email</th>
-<th>Mobile</th>
+<th>{{ __("Code") }}</th>
+<th>{{ __("Name") }}</th>
+<th>{{ __("Nationality") }}</th>
+<th>{{ __("Email") }}</th>
+<th>{{ __("Mobile") }}</th>
 <th></th>
    <!--<th>Action</th> -->
 </tr>
