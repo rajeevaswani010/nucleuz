@@ -208,13 +208,11 @@
                       JsData = JSON.parse(data);
                       console.log(JsData);
                       if(JsData.Status == 0){
-                        toastr["error"](JsData.Message);
+                            toastr["error"](JsData.Message);
                       }else{
-                        // var custId = JsData.Data.customer_id;
-                        // var url = custId+"/edit";
-                        // console.log(url)
-                       //  window.location.href = url;
-                       window.location = "{{ URL('customer') }}";
+                            var cust_id = JsData.Data.customer_id;
+                            console.log(cust_id);
+                            window.location.href = "{{ URL('customer') }}/"+cust_id+"/edit";
                       }
                   },
                   error: function( jqXHR, textStatus, errorThrown ) {

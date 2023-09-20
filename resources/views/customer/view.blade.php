@@ -83,11 +83,21 @@
                                                 </span>
                                             </td> -->
 
-    <td class="Action">
+    <td class="Action" style="width:100px;">
         <span>
         <div class="action-btn bg-primary ms-2">
             <a href="{{ URL('customer') }}/{{ $DT->id }}/edit" class="mx-3 btn btn-sm align-items-center" data-url="{{ URL('customer') }}/{{ $DT->id }}/edit" data-ajax-popup="true" data-title="Edit Coupon" data-bs-toggle="tooltip"  title="Edit" data-original-title="Edit">
                 <i class="fa fa-pencil-alt text-white"></i>
+            </a>
+        </div>
+        <div class="action-btn bg-primary ms-2">
+            <a href="{{ URL('booking') }}/create?customerId={{ @$DT->id }}"
+                class="mx-3 btn btn-sm align-items-center"
+                data-url="{{ URL('booking') }}/create"
+                data-ajax-popup="true" data-title="Edit Coupon"
+                data-bs-toggle="tooltip" title="Create Booking"
+                data-original-title="Edit">
+                <i class="fa fa-car-alt text-white"></i> 
             </a>
         </div>
         </span>
