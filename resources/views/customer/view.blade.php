@@ -40,11 +40,11 @@
 <table class="table datatable">
 <thead>
 <tr>
-<th>{{ __("Code") }}</th>
-<th>{{ __("Name") }}</th>
-<th>{{ __("Nationality") }}</th>
-<th>{{ __("Email") }}</th>
-<th>{{ __("Mobile") }}</th>
+<!-- <th>Code</th> -->
+<th>Name</th>
+<th>Nationality</th>
+<th>Email</th>
+<th>Mobile</th>
 <th></th>
    <!--<th>Action</th> -->
 </tr>
@@ -62,12 +62,12 @@
     }
     ?>
     <tr class="font-style" id="customerId-{{$DT->id}}">
-    <td>{{ $DT->customer_id }}</td>
+    <!-- <td>{{ $DT->customer_id }}</td> -->
     <!--<td>{{ $DT->title }} {{ $DT->first_name }} {{ $DT->last_name }}</td> -->
     <td>{{ $DT->title }} {{ $DT->first_name }}</td>
     <td>{{ $DT->nationality }}</td>
     <td>{{ $DT->email }}</td>
-    <td>+{{ $DT->country_code }}{{ $DT->mobile }}</td>
+    <td>+{{ $DT->country_code }} {{ $DT->mobile }}</td>
    <!-- <td class="Action">
                                                 <span>
                                                     <div class="action-btn bg-danger ms-2">

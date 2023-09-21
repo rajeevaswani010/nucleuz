@@ -82,6 +82,9 @@ class BookingInviteController extends Controller
         $Input["company_id"] = session("CompanyLinkID");
         $Office = BookingInvite::create($Input);
 
+        $Office->link = URL("CustomerRegister")."/".base64_encode($Office->id."#".$Input["email"]);
+        $Office->save();
+
         $data = array("Name" => $Input["name"], "Link" => $Input["link"]);
         Mail::send("EmailTemplates.BookingInvite", $data, function ($m) use($Input){
             $m->from("no-reply@nucleuz.app", "Nucleuz");
@@ -102,6 +105,9 @@ class BookingInviteController extends Controller
             $Input["user_id"] = session("AdminID");
             $Input["company_id"] = session("CompanyLinkID");
             $Office = BookingInvite::create($Input);
+        
+            $Office->link = URL("CustomerRegister")."/".base64_encode($Office->id."#".$Input["email"]);
+            $Office->save();
 
             $data = array("Name" => $Input["name"], "Link" => $Input["link"]);
             Mail::send("EmailTemplates.BookingInvite", $data, function ($m) use($Input){

@@ -123,7 +123,7 @@
                                                     <i class="fa fa-angle-right"></i>
                                                 </div>
                                                 <div class="ms-3 mb-3 mt-3">
-                                                    <h6 class="ml-4">{{ __("Return") }}</h6>
+                                                    <h6 class="ml-4">{{ __("Drop-Off Today") }}</h6>
                                                 </div>
                                             </div>
 
@@ -172,7 +172,7 @@
                                                     <i class="fa fa-angle-right"></i>
                                                 </div>
                                                 <div class="ms-3 mb-3 mt-3">
-                                                    <h6 class="ml-4">{{ __("Pickup Tomorrow") }}</h6>
+                                                    <h6 class="ml-4">{{ __("Pickup Tomorr.") }}</h6>
                                                 </div>
                                             </div>
                                             <div class="number-icon ms-3 mb-3 mt-3">
@@ -562,7 +562,7 @@
                             center: 'title',
                             start: '' //'dayGridMonth',//,timeGridWeek,timeGridDay'
                         },
-                        aspectRatio: 3,
+                        aspectRatio: 2,
                         eventClick: function(info){
                             if (info.event.url) {
                                 window.open(info.event.url,"_SELF");

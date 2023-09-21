@@ -198,4 +198,15 @@ class OfficeController extends Controller
         Office::find($id)->delete();
         return redirect("office");
     }
+
+    public function getCurrentSettingsAsJson(){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        
+        $data = Office::find(session("CompanyLinkID"));
+        $ActiveAction = "office";        
+        Log::debug($data);
+        return json_encode(array("status" => 1, "Message" => "", "Data" => $data));
+    }
 }

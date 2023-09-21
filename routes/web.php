@@ -63,6 +63,7 @@ Route::get('thank-you', function(){
 
 Route::get('dashboard', [DashboardController::class, 'index']);
 Route::resource('office', OfficeController::class);
+Route::post('office/getCurrentSettings', [OfficeController::class, 'getCurrentSettingsAsJson']);
 Route::get('settings', [OfficeController::class, 'getSettings']);
 Route::post('settings', [OfficeController::class, 'updateSettings']);
 Route::resource('license', LicenseController::class);
