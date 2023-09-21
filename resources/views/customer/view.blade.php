@@ -41,10 +41,10 @@
 <thead>
 <tr>
 <!-- <th>Code</th> -->
-<th>Name</th>
-<th>Nationality</th>
-<th>Email</th>
-<th>Mobile</th>
+<th>{{ __("Name") }}</th>
+<th>{{ __("Nationality") }}</th>
+<th>{{ __("Email") }}</th>
+<th>{{ __("Mobile") }}</th>
 <th></th>
    <!--<th>Action</th> -->
 </tr>

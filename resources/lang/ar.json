@@ -261,7 +261,7 @@
     "Tentative Billable Amount":"للفوترة المبلغ المبدئي القابل",
     "Clear Form":"شكل واضح",
     "Pickup Today":"بيك اب اليوم",
-    "Pickup Tomorrow":"بيك اب غدا",
+    "Pickup Tomorr.":"بيك اب غدا",
     "Pick up schedule":"موعد الالتقاط",
     "Booking Data":"بيانات الحجز",
     "Close":"يغلق",
@@ -292,5 +292,6 @@
     "Add Customer":"إضافة العميل",
     "Edit Customer":"تحرير العميل",
     "Upload documents":"تحميل المستندات",
-    "Select Customer":"حدد العميل"
+    "Select Customer":"حدد العميل",
+    "Drop-Off Today":"التسرب اليوم"
 }

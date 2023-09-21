@@ -259,7 +259,7 @@
     "Tentative Billable Amount":"",
     "Clear Form":"",
     "Pickup Today":"",
-    "Pickup Tomorrow":"",
+    "Pickup Tomorr.":"",
     "Pick up schedule":"",
     "Booking Data":"",
     "Close":"",
@@ -289,7 +289,8 @@
     "Customers":"",
     "Add Customer":"",
     "Edit Customer":"",
-    "Upload documents":""
+    "Upload documents":"",
+    "Drop-Off Today":""
 
 
 
