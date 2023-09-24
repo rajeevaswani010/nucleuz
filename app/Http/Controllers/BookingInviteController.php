@@ -84,6 +84,8 @@ class BookingInviteController extends Controller
 
         $Office->link = URL("CustomerRegister")."/".base64_encode($Office->id."#".$Input["email"]);
         $Office->save();
+        
+        $Input["link"] = $Office->link;
 
         $data = array("Name" => $Input["name"], "Link" => $Input["link"]);
         Mail::send("EmailTemplates.BookingInvite", $data, function ($m) use($Input){
@@ -108,6 +110,8 @@ class BookingInviteController extends Controller
         
             $Office->link = URL("CustomerRegister")."/".base64_encode($Office->id."#".$Input["email"]);
             $Office->save();
+
+            $Input["link"] = $Office->link;
 
             $data = array("Name" => $Input["name"], "Link" => $Input["link"]);
             Mail::send("EmailTemplates.BookingInvite", $data, function ($m) use($Input){

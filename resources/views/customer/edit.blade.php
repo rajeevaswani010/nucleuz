@@ -132,8 +132,17 @@
                         </div>
                             
                         <div class="col mt-4">
-                            <input class="btn btn-xs btn-primary" style="float: right;" type="submit" value='{{ __("Save") }}'>
-                            {!! Form::close() !!}
+                            
+                            <input class="btn btn-xs btn-primary"  type="submit" value='{{ __("Save") }}'>
+
+                            <a href="{{ URL('booking') }}/create?customerId={{ $Customer->id }}"
+                                class="mx-3 btn  btn-primary align-items-center" style="float:right;" 
+                                data-url="{{ URL('booking') }}/create"
+                                title="Create Booking"
+                                data-original-title="Edit">
+                                Book A Car 
+                            </a>
+                        {!! Form::close() !!}
                         </div>
                     </div>
                     </div>

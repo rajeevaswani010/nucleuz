@@ -97,8 +97,24 @@
     //         console.log("unable to fetch settings for the user.. ");
     //     }
     // })
-        
 
+    </script>
+
+    <!-- pusher event listener script..  -->
+    <script src="{{ URL('public/newasserts/plugins//pusher/pusher.min.js') }}"></script>
+    <script>
+
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('c110e27ab4f0b7b2a002', {
+        cluster: 'ap2'
+        });
+
+        var channel = pusher.subscribe('popup-channel');
+        channel.bind('user-register', function(data) {
+            alert(JSON.stringify(data));
+        });
     </script>
     <!-- app css -->
     <link rel="stylesheet" href="{{ URL('resources/css/app.css') }}">

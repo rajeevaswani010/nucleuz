@@ -85,7 +85,7 @@
 
         </div>
         <div class="card-body">
-            <div id="search_results" class="scrollable-table-container">
+            <div id="search_results">
             </div>
             <div id="selected_customer">
                 <label class="col-form-label text-dark"><h3 id="name_heading"></h3></label> 
@@ -692,7 +692,8 @@
         div.empty();
         $("#errormsg").html("");
 
-        div.html('<table  class="table datatable fixed-header-table"> \
+        div.html('<div  class="scrollable-table-container"> \
+                    <table  class="table table-hover datatable fixed-header-table" style="background: aliceblue;"> \
                     <thead> \
                         <tr> \
                             <th>Name</th> \
@@ -704,6 +705,9 @@
                     <tbody> \
                     </tbody> \
                 </table> \
+                </div> \
+                <a href="{{ URL('customer/create') }}" data-size="lg" data-url="{{ URL('customer/create') }}" data-ajax-popup="true" data-bs-toggle="tooltip" title="Create" data-title="Add New" class="btn btn-sm btn-primary mt-4" style="float:right;"> \
+                    Add New Customer </a> \
             ');
 
         var tbody = $("#search_results table tbody");
