@@ -407,6 +407,7 @@ class BookingController extends Controller
         $Booking_dropoffdate = substr($Booking->dropoff_date,0,10)." 23:59:59";
         Log::info($Booking_pickupdate);
         Log::info($Booking_dropoffdate);
+
         //$BookedVehicle = Booking::select("vehicle_id")->where("company_id", $Booking->company_id)->where("status","==",2)->where("pickup_date_time", "<=", $Booking_pickupdate)->get()->toArray();
         // $query = 'select vehicle_id from bookings where company_id = '.$Booking->company_id
         // .' and status = 2 and pickup_date_time <= \''.$Booking_pickupdate.'\'';
@@ -515,8 +516,10 @@ class BookingController extends Controller
             return redirect("/");
         }
         $Booking = Booking::find($id);
-
         $Input = $request->all();
+
+        $vehicle = Booking::select("vehicle_id","car_type")->where("company_id", session("CompanyLinkID"))->where("id",$id)->first();
+        $GetPricing = Pricing::where("car_type", $vehicle["car_type"])->where("company_id", session("CompanyLinkID"))->first();
         
         if(isset($Input["km_drop_time"])){
             Log::debug("if discount_amount :".$Input["discount_amount"]);
@@ -563,6 +566,16 @@ class BookingController extends Controller
             $Input["dropoff_date"] = date("Y-m-d H:i:s");
         } else{
             if(isset($Input["discount_amount"])){
+                date_default_timezone_set("Asia/Muscat"); # setting current time zone
+                $DayDiff = $this->time_difference (date("Y-m-d"), $Booking->pickup_date_time,"day");
+                if($DayDiff != 0){
+                   $ExtraAmount = $this->extraDays_calculation($DayDiff, $GetPricing);
+                   $Booking->pickup_date_time = date("Y-m-d H:i:s");
+                   $Booking->tarrif_detail += (int)$DayDiff;
+                   $Booking->total +=  $ExtraAmount;
+                   $Booking->save();
+                   $Booking = Booking::find($id);
+               }
                 // $Total = $Booking->total ;
                 $SubTotal = $Booking->total - $Input["discount_amount"];
                 $TaxAmount = ($SubTotal * 5) / 100;
@@ -689,7 +702,7 @@ class BookingController extends Controller
             date_default_timezone_set("Asia/Muscat"); # setting current time zone
             $DayDiff = $this->time_difference (date("Y-m-d"), $Input["dropoff_date"],"day");
             if($DayDiff != 0){
-               Session::flash('Danger', "To Droff Off Vehicle, Droff Off Date Should Be Current Date.");
+               Session::flash('Danger', "To Droff Off Vehicle, Droff Off Date Should Be Todays Date.");
                return redirect()->back()->withInput();
            }
         }
@@ -742,7 +755,7 @@ class BookingController extends Controller
     function time_difference($time_1, $time_2, $limit = null){
         $val_1 = new \DateTime($time_1);
         $val_2 = new \DateTime($time_2);
-        Log::debug("val_1  ".$time_1);
+        Log::debug("val_1 ".$time_1);
         Log::debug("val_2 ".$time_2);
 
         $days = $val_1->diff($val_2)->format('%r%a');

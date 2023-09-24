@@ -270,11 +270,14 @@
     
     <div class="card">
         <div class="card-body">
+        @if($Booking->pickup_date_time > date('Y-m-d H:i:s', strtotime('+4 hour')))
+        <div class="mt-2"><b><span style="float:right; font-style:italic; color:red;">{{ __("*To Assign Vehicle, Pickup Date Should Be Today's Date, Still You Can Proceed, It Will Update Pickup As Today's Date") }}</span> </b> </div>
+        @endif
             <h1>{{ __("Assign Vehicle") }}</h1>
     {!! Form::open(['url' => 'booking/'.$Booking->id, 'enctype' => 'multipart/form-data', 'method' => 'PUT']) !!}
     
     <div class="row">
-        
+
     <div class="col-lg-9 mb-12">
         <label>Vehicle <span class="text-danger">*</span></label>
         <select class="form-control h-auto" required id="VehicleData" name="vehicle_id">
