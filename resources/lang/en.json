@@ -290,7 +290,11 @@
     "Add Customer":"",
     "Edit Customer":"",
     "Upload documents":"",
-    "Drop-Off Today":""
+    "Drop-Off Today":"",
+    "DroppedOff":"",
+    "*To Assign Vehicle, Pickup Date Should Be Today's Date, Still You Can Proceed, It Will Update Pickup As Today's Date":"",
+    "Residence Expiry Date":"",
+    "Show Booking Data":""
 
 
 

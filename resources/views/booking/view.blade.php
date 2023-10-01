@@ -89,6 +89,7 @@
                             <option value="">{{ __("All") }}</option>
                             <option @if(@$_GET['status'] == 1) selected @endif value=1>{{ __("Reserved") }}</option>
                             <option @if(@$_GET['status'] == 2) selected @endif value=2>{{ __("Delivered") }}</option>
+                            <option @if(@$_GET['status'] == 5) selected @endif value=4>{{ __("DroppedOff") }}</option>
                             <option @if(@$_GET['status'] == 3) selected @endif value=3>{{ __("Complete") }}</option>
                             <option @if(@$_GET['status'] == 4) selected @endif value=4>{{ __("Cancelled") }}</option>
                         </select>
@@ -183,6 +184,9 @@
 
     @if($DT->status == 4)
     <span class="indicator-line rounded bg-danger booking-status cancelled">{{ __("Cancelled") }}</span>
+    @endif
+    @if($DT->status == 5)
+    <span class="indicator-line rounded bg-info booking-status droppedOff">{{ __("DroppedOff") }}</span>
     @endif
 </td>
 <td>{{ $DT->updated_at }}</td>

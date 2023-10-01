@@ -279,7 +279,7 @@
     <div class="row">
 
     <div class="col-lg-9 mb-12">
-        <label>Vehicle <span class="text-danger">*</span></label>
+        <label>{{ __("Vehicle") }} <span class="text-danger">*</span></label>
         <select class="form-control h-auto" required id="VehicleData" name="vehicle_id">
             <option value="">{{ __("Select") }}</option>
             @foreach($AllVehicles as $ALV)

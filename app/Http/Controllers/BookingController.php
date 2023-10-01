@@ -616,6 +616,10 @@ class BookingController extends Controller
             $Input["status"] = 2;
         }
         
+        if(isset($Input["km_drop_time"])){
+            $Input["status"] = 5;
+        }
+
         Booking::where('id', $id)->update($Input);
         $Booking = Booking::find($id);
         

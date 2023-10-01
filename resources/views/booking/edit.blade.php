@@ -41,7 +41,7 @@
                     <div class="float-left"><h1>{{ __("Booking Details") }} : #{{ $Booking->id }}</h1></div>
         
                     @if($Booking->status != 4)
-                            @if($Booking->pickup_date_time > date("Y-m-d H:i:s") && $Booking->status != 3 && $Booking->status != 2)
+                            @if($Booking->pickup_date_time > date("Y-m-d H:i:s") && $Booking->status != 3 && $Booking->status != 2 && $Booking->status != 5)
                             <div class="inline-block-div mt-3 mb-3 mr-3"><a href="{{ URL('booking') }}/{{ $Booking->id }}"><button class="btn btn-primary">{{ __("Assign Vehicle") }}</button></a></div>
                             @endif
                             @if($Booking->status == 1)

@@ -293,5 +293,9 @@
     "Edit Customer":"تحرير العميل",
     "Upload documents":"تحميل المستندات",
     "Select Customer":"حدد العميل",
-    "Drop-Off Today":"التسرب اليوم"
+    "Drop-Off Today":"التسرب اليوم",
+    "DroppedOff":"انخفض",
+    "*To Assign Vehicle, Pickup Date Should Be Today's Date, Still You Can Proceed, It Will Update Pickup As Today's Date":"*لتعيين مركبة، يجب أن  يكون تاريخ الاستلام هو تاريخ اليوم، ومع ذلكيمكنك المتابعة، وسيتم  تحديث الاستلام كتاريخ اليوم",
+    "Residence Expiry Date":"تاريخ انتهاء الإقامة",
+    "Show Booking Data":"إظهار بيانات الحجز"
 }

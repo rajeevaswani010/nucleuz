@@ -25,10 +25,6 @@ class DashboardController extends Controller
             return redirect("/");
         }
 
-		$logo = Office::select("logo")->where("id", session("CompanyLinkID"))->first();
-		$logoUrl = $logo['logo'];
-		Log::debug($logoUrl);
-
 		$TodayPickup = Booking::where("company_id", session("CompanyLinkID"))->where("pickup_date_time", ">=", date("Y-m-d")." 00:00:00")->where("pickup_date_time", "<=", date("Y-m-d")." 23:59:59")->where("status", "!=", 4)->count();
 		
 		$TomorrowPickup = Booking::where("company_id", session("CompanyLinkID"))->where("pickup_date_time", ">=", date("Y-m-d", strtotime("+1 day"))." 00:00:00")->where("pickup_date_time", "<=", date("Y-m-d", strtotime("+1 day"))." 23:59:59")->where("status", "!=", 4)->count();
@@ -145,8 +141,7 @@ class DashboardController extends Controller
 					"SedanBooking", "SUVBooking", "MUVBooking", "CoupeBooking", "VehicleDataByCarTypeArr",
 					"ConvertiblesBooking", "PickupBooking", 
 					"MonthArray","BookingDataArr","totalActiveLicense",
-					"totalLicenseProduct","suspendedlicensecount",
-					"logoUrl"
+					"totalLicenseProduct","suspendedlicensecount"
 				));
     }
 
