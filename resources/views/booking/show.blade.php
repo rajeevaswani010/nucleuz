@@ -267,8 +267,9 @@
 
 
 @if($Booking->status != 0)
-    
-    <div class="card">
+
+    <div class="" id="assignVehicle">
+        <div class="card">
         <div class="card-body">
         @if($Booking->pickup_date_time > date('Y-m-d H:i:s', strtotime('+4 hour')))
         <div class="mt-2"><b><span style="float:right; font-style:italic; color:red;">{{ __("*To Assign Vehicle, Pickup Date Should Be Today's Date, Still You Can Proceed, It Will Update Pickup As Today's Date") }}</span> </b> </div>
@@ -276,18 +277,18 @@
             <h1>{{ __("Assign Vehicle") }}</h1>
     {!! Form::open(['url' => 'booking/'.$Booking->id, 'enctype' => 'multipart/form-data', 'method' => 'PUT']) !!}
     
-    <div class="row">
-
-    <div class="col-lg-9 mb-12">
-        <label>{{ __("Vehicle") }} <span class="text-danger">*</span></label>
-        <select class="form-control h-auto" required id="VehicleData" name="vehicle_id">
-            <option value="">{{ __("Select") }}</option>
-            @foreach($AllVehicles as $ALV)
-                <option value="{{ $ALV->id }}">{{ $ALV->car_type }} - {{ $ALV->make }}/{{ $ALV->model }}/{{ $ALV->variant }}/{{ $ALV->reg_no }}</option>
-            @endforeach
-        </select>
-    </div>
-    
+            <div class="row">
+                
+                <div class="col-lg-9 mb-12">
+                    <label>Vehicle <span class="text-danger">*</span></label>
+                    <select class="form-control h-auto" required id="VehicleData" name="vehicle_id">
+                        <option value="">{{ __("Select") }}</option>
+                        @foreach($AllVehicles as $ALV)
+                            <option value="{{ $ALV->id }}">{{ $ALV->car_type }} - {{ $ALV->make }}/{{ $ALV->model }}/{{ $ALV->variant }}/{{ $ALV->reg_no }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                
                 <div class="col-lg-3 mb-3">
                     <label>{{ __("KM Reading at time of pickup") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control h-auto" required name="km_reading_pickup">
@@ -298,7 +299,7 @@
                     <input type="text" class="form-control h-auto" required name="km_allocation" value="{{ $Booking->km_allocation }}">
                 </div>
                 
-    
+
                 <div class="col-lg-3 mb-3">
                     <label>{{ __("Additional KM Amount") }}<span class="text-danger">*</span></label>
                     <input type="text" name="additional_kilometers_amount" class="form-control h-auto number" required value="{{ $Booking->additional_kilometers_amount }}">
@@ -339,7 +340,7 @@
                 <div >
                     <div id="file_car_image">
                     <label>{{ __("Car Image") }} <span class="text-danger">*</span></label>
-                       <!-- <label for="subject" class="col-form-label text-dark">{{ __("Car Image") }}</label> -->
+                        <!-- <label for="subject" class="col-form-label text-dark">{{ __("Car Image") }}</label> -->
                         <input type="file" multiple class="form-control font-style file_input col-lg-4 mb-4" name="car_image[]" 
                                     id="file_car_image_input" capture onchange="showFileSelection(this,'file_car_image')"
                                 accept=".jpg,.jpeg,.png" >
@@ -348,16 +349,17 @@
                     </div>
                 </div>
 
-    </div>
-    <button class="btn btn-success mt-4">{{ __("Save") }}</button>
+            </div>
+        <button class="btn btn-success mt-4">{{ __("Save") }}</button>
     {!! Form::close() !!}
-    </div>
+        </div>
+        </div>
     </div>
 
     <div class="clearfix">&nbsp;</div>
     <div class="clearfix">&nbsp;</div>
     <div class="clearfix">&nbsp;</div>
-    @endif
+@endif
 
                     </div>
                 </div>

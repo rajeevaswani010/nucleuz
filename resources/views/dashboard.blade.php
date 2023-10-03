@@ -9,6 +9,22 @@
 <script src="{{ URL('public/newasserts/plugins/fullcalendar/index.global.min.js') }}">
 </script>
 
+<script>
+
+    // Event bus test. 
+        // console.log("myevent bus test..  custom event data can be pushed into detail property")
+        // myEventBus.subscribe('event-hello', (e) => {
+        //     console.log(`The name is: ${e.detail.name}`);
+        // });
+
+        // var event = new CustomEvent("event-hello",{
+        //         detail:{
+        //             name: "Rajeev"
+        //         }
+        // });
+
+        // myEventBus.publish(event);
+</script>
 <style>
     .h100 {
         height: 100px;

@@ -16,6 +16,8 @@ function doAjax(url, reqData, onSuccess, onFailure) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         data: reqData,
+         // processData: false, // Prevent jQuery from processing the data
+         //contentType: false, // Set the content type to false to let the server handle it
         success: function( data, textStatus, jqXHR ) {
             JsData = JSON.parse(data);
             console.log(JsData);
@@ -72,47 +74,6 @@ function __uploadFiles(url,fileInput, appendIdAndType,onSuccess,onFailure ){
             });
         }              
     });
-}
-
-//get customer images.. args:{"customer_id":CustomerId}
-function getImages(CustomerId){
-    var args = {"customer_id": CustomerId};
-    
-    doAjax (
-        "{{ URL('getCustomerImages') }}"
-        ,args
-        ,(JsData) => {
-            var data = JsData.Data;
-            for (var key in data) {
-                for (var i = 0; i < data[key].length; i++) {
-                    var delHandlerArgs = {"id":data[key][i].id, "customer_id":CustomerId};
-                    addImageUrlToGallery(data[key][i], "file_"+key, deleteFile, delHandlerArgs);
-                }
-            }
-        }
-        ,(JsData) => {
-            alert("Fail to get images.Error:"+JsData.Status+" - "+JsData.Message);
-        }
-    );
-}
-
-//delete customer file.. 
-function deleteFile(args){
-    var formdata = new FormData();
-    formdata.append('customer_id', args.customer_id);
-    formdata.append('image_id',args.id);
-
-    //
-    doAjax (
-        "{{ URL('Customer/deleteFile') }}"
-        ,formDataToJson(formdata)
-        ,(JsData) => {
-            toastr["success"]("file deleted successfully")
-        }
-        ,(JsData) => {
-            toastr["error"](JsData.Message);
-        }
-    );
 }
 
 

@@ -145,6 +145,14 @@ class DashboardController extends Controller
 				));
     }
 
+	public function dashboardAdmin(){
+		//for admin users.. show this
+	}
+
+	public function dashboardSuperAdmin(){
+		//for super admin.. show this
+	}
+
 	public function GetBookings( Request $request){
         $from = $request->start;
         $to = $request->end;
