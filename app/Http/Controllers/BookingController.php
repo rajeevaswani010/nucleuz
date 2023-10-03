@@ -576,10 +576,11 @@ class BookingController extends Controller
                    $Booking->pickup_date_time = date("Y-m-d H:i:s");
                    $Booking->tarrif_detail += (int)$DayDiff;
                    $Booking->total +=  $ExtraAmount;
-                   $Booking->save();
-                   $Booking = Booking::find($id);
-               }
-                // $Total = $Booking->total ;
+                }else{
+                   $Booking->pickup_date_time = date("Y-m-d H:i:s");
+                }
+                $Booking->save();
+                $Booking = Booking::find($id);
                 $SubTotal = $Booking->total - $Input["discount_amount"];
                 $TaxAmount = ($SubTotal * 5) / 100;
                 $Amount = $SubTotal + $TaxAmount;
