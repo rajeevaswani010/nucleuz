@@ -2,11 +2,6 @@
 
 @section("content")
 
-<script>
-    //get parameters
-        const urlParams = new URLSearchParams(window.location.search);
-</script>   
-
 <style>
 .booking-status {
     padding: 6px;
@@ -63,13 +58,15 @@
                 <div class="row row align-items-end m-1">
                     <div class="col">
                         <label>{{ __("Vehicle Type") }}</label>
-                        <select class="form-control" name="vehicle_type">
+                        <select class="form-control" name="vehicle_type" id="vehicle_type">
                             <option value="">{{ __("All") }}</option>
                             @foreach ($GetAllVehicleTypes as $vehicle)
                              <option value={{ $vehicle['name'] }}>{{ $vehicle['name'] }}</option>
                             @endforeach
                             <script>
-                                $('#vehicle_type').val(urlParams.get('vehicle_type'));
+                                @if( isset($_GET['vehicle_type']) )
+                                    $('#vehicle_type').val("{{ $_GET['vehicle_type'] }}");
+                                @endif
                             </script>
                         </select>
                     </div>
@@ -77,6 +74,7 @@
                     <div class="col">
                         <label>{{ __("Pickup From Date") }}</label>
                         <input type="date" class="form-control" id="from_date" name="from_date" value="{{ @$_GET['from_date'] }}" onchange="validateDateRange()">
+                        
                     </div>
 
                     <div class="col">
@@ -85,7 +83,7 @@
                     </div>
                     <div class="col">
                         <label>{{ __("Status") }}</label>
-                        <select class="form-control" name="status">
+                        <select class="form-control" name="status" id="status">
                             <option value="">{{ __("All") }}</option>
                             <option @if(@$_GET['status'] == 1) selected @endif value=1>{{ __("Reserved") }}</option>
                             <option @if(@$_GET['status'] == 2) selected @endif value=2>{{ __("Delivered") }}</option>
@@ -94,6 +92,12 @@
                             <option @if(@$_GET['status'] == 4) selected @endif value=4>{{ __("Cancelled") }}</option>
                         </select>
                     </div>
+                    <script>
+                            @if( isset($_GET['status']) )
+                                $('#status').val("{{ $_GET['status'] }}");
+                            @endif
+
+                    </script>
                     <div class="col"><button class="btn btn-primary" role="button">{{ __("Search") }}</button></div>
                     <div class="col"><button class="btn btn-primary float-lg-right" style="float:right;" role="button" name="export" value="Export">{{ __("Export") }}</button></div>
                 </div>

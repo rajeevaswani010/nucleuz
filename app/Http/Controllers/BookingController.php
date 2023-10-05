@@ -9,6 +9,7 @@ use thiagoalessio\TesseractOCR\TesseractOCR;
 use Session;
 use Mail;
 use Excel;
+use DateTime;
 
 use App\Export\BookingExport;
 use App\Models\Vehicle;
@@ -817,6 +818,24 @@ class BookingController extends Controller
         $Booking = Booking::find($request->booking_id);
         $Vehicle = Vehicle::find($Input['vehicle_id']);
 
+        // validations
+        
+        // check license expiry
+        $licenseExpiry = new DateTime($Input["license_expiry_date"]);
+        $curDate = new DateTime();
+        $threeMonthsLater = $curDate->modify('+3 months');
+        if ($licenseExpiry < $threeMonthsLater) {
+            return json_encode(array("Status" => 0, "Message" => "Booking Error. License expiry date shall be more than 3 months", "Data" => null));
+        }
+
+        //check residence card expiry
+        $residencyCardExpiry = new DateTime($Input["residence_expiry_date"]);
+        if ($residencyCardExpiry < $threeMonthsLater) {
+            return json_encode(array("Status" => 0, "Message" => "Booking Error. Residence expiry date shall be more than 3 months", "Data" => null));
+        }
+
+        // return json_encode(array("Status" => 0, "Message" => "Doing testing.. ", "Data" => array()));
+
         $BookingVehicle = new BookingVehicle();
         $BookingVehicle->company_id = $Booking->company_id;
         $BookingVehicle->booking_id = $Booking->id;
@@ -842,7 +861,7 @@ class BookingController extends Controller
                 $BookingImages = new BookingImages();
                 $BookingImages->booking_id = $Booking->id;
                 $BookingImages->company_id = session("CompanyLinkID");
-                $BookingImages->vehicle_id = $Input["vehicle_id"];
+                // $BookingImages->vehicle_id = $Input["vehicle_id"];
                 $BookingImages->booking_vehicle_id = $BookingVehicle->id;
                 $BookingImages->type = "car_image";
 
@@ -854,6 +873,13 @@ class BookingController extends Controller
                 $BookingImages->save();
             }
         }
+
+        $data = array("Booking" => $Booking);
+        Log::debug("bookingcontroller update - sending email");
+        Mail::send("EmailTemplates.Booking2", $data, function ($m) use($Booking){
+            $m->from("no-reply@nucleuz.app", "Nucleuz");
+            $m->to($Booking->customer->email)->subject("New Car Booking");
+        });
         
         $data = array();
         return json_encode(array("Status" => 1, "Message" => "Vehicle successfully assigned", "Data" => $data));
@@ -869,8 +895,11 @@ class BookingController extends Controller
 
         $CurrentBookingVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))
                     ->where("booking_id",$Input["booking_id"])
-                    ->where("vehicle_id",$Input["cur_vehicle_id"])->first();
+                    ->where("vehicle_id",$Input["cur_vehicle_id"])
+                    ->orderby("updated_at")
+                    ->first();
         Log::debug($CurrentBookingVehicle);
+        // return json_encode(array("Status" => 0, "Message" => "Doing testing.. ", "Data" => array()));
 
         $CurrentBookingVehicle->km_drop_time = $Input["km_drop_time"];
         $CurrentBookingVehicle->dmage = $Input["dmage"];
@@ -884,7 +913,7 @@ class BookingController extends Controller
                 $BookingImages = new BookingImages();
                 $BookingImages->booking_id = $Booking->id;
                 $BookingImages->company_id = session("CompanyLinkID");
-                $BookingImages->vehicle_id = $CurrentBookingVehicle->vehicle_id;
+                // $BookingImages->vehicle_id = $CurrentBookingVehicle->vehicle_id;
                 $BookingImages->booking_vehicle_id = $CurrentBookingVehicle->id;
                 $BookingImages->type = "damge_image";
 
@@ -919,7 +948,7 @@ class BookingController extends Controller
                 $BookingImages = new BookingImages();
                 $BookingImages->booking_id = $Booking->id;
                 $BookingImages->company_id = session("CompanyLinkID");
-                $BookingImages->vehicle_id = $Vehicle->id;
+                // $BookingImages->vehicle_id = $Vehicle->id;
                 $BookingImages->booking_vehicle_id = $CurrentBookingVehicle->id;
                 $BookingImages->type = "car_image";
 
@@ -929,6 +958,13 @@ class BookingController extends Controller
                 $BookingImages->save();
             }
         }
+
+        $data = array("Booking" => $Booking);
+        Log::debug("bookingcontroller update - sending email");
+        Mail::send("EmailTemplates.Booking2", $data, function ($m) use($Booking){
+            $m->from("no-reply@nucleuz.app", "Nucleuz");
+            $m->to($Booking->customer->email)->subject("New Car Booking");
+        });
 
         $data = array();
         return json_encode(array("Status" => 1, "Message" => "Vehicle Replaced Successfully", "Data" => $data));
@@ -992,7 +1028,7 @@ class BookingController extends Controller
                 $BookingImages = new BookingImages();
                 $BookingImages->booking_id = $Booking->id;
                 $BookingImages->company_id = session("CompanyLinkID");
-                $BookingImages->vehicle_id = $CurrentBookingVehicle->vehicle_id;
+                // $BookingImages->vehicle_id = $CurrentBookingVehicle->vehicle_id;
                 $BookingImages->booking_vehicle_id = $CurrentBookingVehicle->id;
                 $BookingImages->type = "damge_image";
 
@@ -1008,7 +1044,6 @@ class BookingController extends Controller
     }
 
     public function completeBooking(Request $request){
-        Log::debug("completeBooking enter ");
         if(session("AdminID") == ""){
             return redirect("/");
         }
@@ -1024,8 +1059,48 @@ class BookingController extends Controller
         $Booking->status = 3;
         $Booking->save();
         
-        $data = array();
+        $data = array("Booking" => $Booking);
+        Mail::send("EmailTemplates.BookingComplete", $data, function ($m) use($Booking){
+            $m->from("no-reply@nucleuz.app", "Nucleuz");
+            $m->to($Booking->customer->email)->subject("New Car Booking");
+        });
+        
+        if($Booking->discount_amount > 0){
+        $data = array("Booking" => $Booking);
+            Mail::send("EmailTemplates.BookingComplete", $data, function ($m) use($Booking){
+                $m->from("no-reply@nucleuz.app", "Nucleuz");
+                $m->to("info@nucleuz.app")->subject("Added Discount for this Booking");
+            });
+        }
+
         return json_encode(array("Status" => 1, "Message" => "Booking closed successfully", "Data" => $data));
+    }
+
+    public function GetBookingVehicleImages(Request $request){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        $Input = $request->all();
+        Log::debug($Input);
+        $Booking = Booking::find($request->booking_id);
+
+        $BookingImages = BookingImages::select("type","link")
+                        ->where('booking_id',$Input["booking_id"])
+                        ->where("booking_vehicle_id",$Input["booking_vehicle_id"])
+                        // ->where('booking_id',$Input["type"])
+                        ->get()
+                        ;
+        $BookingImagesArr = [];
+        foreach ($BookingImages as $imageRow) {
+            $type = $imageRow->type;
+            if(!isset($BookingImagesArr[$type])){
+                $BookingImagesArr[$type] = []; 
+            }
+            array_push($BookingImagesArr[$type], $imageRow->link);
+        }
+        // Log::debug($BookingImagesArr);
+        $data = array("BookingImagesArr" => $BookingImagesArr);
+        return json_encode(array("Status" => 1, "Message" => "Images fetched successfully", "Data" => $data));
     }
 
     public function exportPdf($id){ //TODO add implementation

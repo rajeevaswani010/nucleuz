@@ -84,13 +84,13 @@ class ReportController extends Controller{
                 }
 
                 if ($request->from_date != null){
-                    $pickupDateTime = $request->from_date." 00:00";
+                    $pickupDateTime = $request->from_date." 00:00:00";
                 } else {
-                    $pickupDateTime = date('Y-m-d')." 00:00";
+                    $pickupDateTime = date('Y-m-d')." 00:00:00";
                 }
 
                 if ($request->to_date != null){
-                    $dropDateTime = date('Y-m-d')." 00:00";
+                    $dropDateTime = $request->to_date." 23:59:59";
                 } else {
                     $dropDateTime = date('Y-m-d')." 23:59:59";
                 }
@@ -107,11 +107,11 @@ class ReportController extends Controller{
                     $query = 'select car_type from bookings where company_id = '.session("CompanyLinkID")
                     .' and (car_type = "'.$request->vehicle_type.'")'
                     .' and ((status = 1 and pickup_date_time <= \''.$dropDateTime.'\' and dropoff_date >= \''.$pickupDateTime.'\') or ' 
-                    .' ( status = 2 and pickup_date_time <= \''.$dropDateTime.'\' ))';
+                    .' ( status = 2 and dropoff_date >= \''.$pickupDateTime.'\' ))';
                 } else {
                     $query = 'select car_type from bookings where company_id = '.session("CompanyLinkID")
                     .' and ((status = 1 and pickup_date_time <= \''.$dropDateTime.'\' and dropoff_date >= \''.$pickupDateTime.'\') or ' 
-                    .' ( status = 2 and pickup_date_time <= \''.$dropDateTime.'\' ))';
+                    .' ( status = 2 and dropoff_date >= \''.$pickupDateTime.'\' ))';
 
                 }                
                 $GetAllBookings = DB::select($query);

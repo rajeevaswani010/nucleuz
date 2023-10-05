@@ -50,6 +50,11 @@ input[type="number"]::-webkit-outer-spin-button {
     appearance: none;
 }
 
+.btn-tiny {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
 </style>
 <!-- [ Main Content ] start -->
 <div class="dash-container">
@@ -108,12 +113,13 @@ input[type="number"]::-webkit-outer-spin-button {
             
                             <div class="row">
                                 @if($Booking->status != 4)
-                                        @if($Booking->status == 1 && $Booking->pickup_date_time > date("Y-m-d H:i:s") )
+                                        @if($Booking->status == 1)
                                                 <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="assignVehicle();">{{ __("Assign") }}</button></div>
+                                                <!-- <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="changeDates();">{{ __("Change Dates") }}</button></div> -->
                                         @elseif($Booking->status == 2 )
                                                 <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="replaceVehicle();">{{ __("Replace") }}</button></a></div>
-
                                                 <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="dropOffVehicle();">{{ __("DropOFF") }}</button></a></div>
+                                                <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="changeDropOFF();">{{ __("Change DropOFF") }}</button></div>
                                         @endif
                                         @if($Booking->status == 1)
                                             <div class="inline-block-div mt-3 mb-3 mr-3"><a href="{{ URL('BookingCancel') }}/{{ $Booking->id }}" onClick="return confirmSubmit('Are you sure to cancel this booking')"><button class="btn btn-danger">{{ __("Cancel Booking") }}</button></a></div>
@@ -143,46 +149,46 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                 
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label>{{ __("KM Reading at time of pickup") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control h-auto" required name="km_reading_pickup">
+                                                                    <input type="text" class="form-control" required name="km_reading_pickup">
                                                                 </div>
 
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label>{{ __("Per day KM Allocation") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control h-auto" required name="km_allocation" value="{{ $Booking->km_allocation }}">
+                                                                    <input type="text" class="form-control" required name="km_allocation" value="{{ $Booking->km_allocation }}">
                                                                 </div>
                                                                 
 
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label>{{ __("Additional KM Amount") }}<span class="text-danger">*</span></label>
-                                                                    <input type="text" name="additional_kilometers_amount" class="form-control h-auto number" required value="{{ $Booking->additional_kilometers_amount }}">
+                                                                    <input type="text" name="additional_kilometers_amount" class="form-control number" required value="{{ $Booking->additional_kilometers_amount }}">
                                                                 </div>
                                                                 
 
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label>{{ __("Advance Amount") }}</label>
-                                                                    <input type="text" name="advance_amount" class="form-control h-auto number" value="0" id="AdvaneAmount" required onblur="fetchReviews()">
+                                                                    <input type="text" name="advance_amount" class="form-control number" value="0" id="AdvaneAmount" required onblur="fetchReviews()">
                                                                 </div>
 
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label>{{ __("Discount") }}<span class="text-danger">*</span></label>
-                                                                    <input type="text" name="discount_amount" class="form-control h-auto number" id="DiscountAmount" required value="{{ $Booking->discount_amount }}" onblur="fetchReviews()">
+                                                                    <input type="text" name="discount_amount" class="form-control number" id="DiscountAmount" required value="{{ $Booking->discount_amount }}" onblur="fetchReviews()">
                                                                 </div>
                                                                 
 
                                                                                 
                                                                 <div class="col-lg-4 mb-4">
                                                                     <label>{{ __("Licenses Expiry Date") }}<span class="text-danger">*</span></label>
-                                                                    <input type="date" class="form-control h-auto number" name="license_expiry_date" value="{{ $Booking->license_expiry_date }}" required min="{{ date('Y-m-d', strtotime('+3 months')) }}">
+                                                                    <input type="date" class="form-control number" name="license_expiry_date" value="{{ $Booking->license_expiry_date }}" required min="{{ date('Y-m-d') }}">
                                                                 </div>
                                                                 
                                                                 <div class="col-lg-4 mb-4">
                                                                     <label>{{ __("Residency Card ID") }}<span class="text-danger">*</span></label>
-                                                                    <input type="text" name="residency_card_id" class="form-control h-auto number" required>
+                                                                    <input type="text" name="residency_card_id" class="form-control number" required>
                                                                 </div>
 
                                                                 <div class="col-lg-4 mb-4">
                                                                     <label>{{ __("Residence Expiry Date") }}<span class="text-danger">*</span></label>
-                                                                    <input type="date" class="form-control h-auto number" name="residence_expiry_date" value="{{ $Booking->residence_expiry_date }}" required min="{{ date('Y-m-d') }}">
+                                                                    <input type="date" class="form-control number" name="residence_expiry_date" value="{{ $Booking->residence_expiry_date }}" required min="{{ date('Y-m-d') }}">
                                                                 </div>
 
                                                                 <div >
@@ -197,6 +203,11 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                     </div>
                                                                 </div>
 
+                                                            </div>
+                                                            <div id="errortext" style="color:red;margin-left:5px;" class="ml-3" hidden>
+                                                                <span><i class="fa fa-solid fa-exclamation"></i><span>
+                                                                <span id="errortext_p">                                                                    
+                                                                </span>
                                                             </div>
                                                             <input type="submit" class="btn btn-success mt-4" value="Submit">
                                                         </form>
@@ -222,25 +233,25 @@ input[type="number"]::-webkit-outer-spin-button {
                                                             <div class="row">
                                                                 <div class="col-lg-4 mb-3">
                                                                     <label class="col-form-label text-dark">Current Vehicle <span class="text-danger">*</span></label>
-                                                                    <select class="form-control h-auto" readonly id="cur_vehicle_id" name="cur_vehicle_id">
+                                                                    <select class="form-control" readonly id="cur_vehicle_id" name="cur_vehicle_id">
                                                                         <option value="{{ $CurrentVehicle->vehicle_id }}">
                                                                         {{ $CurrentVehicle->car_type }} / {{ $CurrentVehicle->make }}
                                                                         / {{ $CurrentVehicle->model }} / {{ $CurrentVehicle->variant }}
                                                                         / {{ $CurrentVehicle->reg_no }}
                                                                         </option>
                                                                     </select>
-                                                                    <!-- <input type="text" class="form-control h-auto" name="cur_vehicle_id" readonly  
+                                                                    <!-- <input type="text" class="form-control" name="cur_vehicle_id" readonly  
                                                                         value="{{ $Booking->vehicle_id }}">
                                                                         {{ $Booking->vehicle->make }} / {{ $Booking->vehicle->model }}
                                                                     </input> -->
                                                                 </div>
                                                                 <div class="col-lg-2 mb-3">
                                                                     <label class="col-form-label text-dark">{{ __("KM at time of Pickup") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control h-auto" name="km_pick_time" value="{{ $CurrentVehicle->km_reading_pickup }}" readonly>
+                                                                    <input type="text" class="form-control" name="km_pick_time" value="{{ $CurrentVehicle->km_reading_pickup }}" readonly>
                                                                 </div>                                                                                                                        
                                                                 <div class="col-lg-2 mb-3">
                                                                     <label class="col-form-label text-dark">{{ __("KM at time of Drop") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control h-auto" name="km_drop_time" value="{{ $Booking->km_drop_time }}">
+                                                                    <input type="number" class="form-control" name="km_drop_time" value="{{ $Booking->km_drop_time }}">
                                                                 </div>                                                                                                                        
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label class="col-form-label text-dark">{{ __("Any demage") }} <span class="text-danger">*</span></label><br>
@@ -260,7 +271,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                 </div>
                                                                 <div class="col-lg-6">
                                                                     <label class="col-form-label text-dark">{{ __("Return Notes") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control h-auto" name="return_note">
+                                                                    <input type="text" class="form-control" name="return_note">
                                                                 </div>
                                                             </div>
                                                             <div class="clearfix">&nbsp</div>
@@ -268,20 +279,20 @@ input[type="number"]::-webkit-outer-spin-button {
                                                             <div class="row">                            
                                                                 <div class="col-lg-6 mb-3">
                                                                     <label class="col-form-label text-dark">Vehicle <span class="text-danger">*</span></label>
-                                                                    <select class="form-control h-auto" id="vehicle_id" name="vehicle_id">
+                                                                    <select class="form-control" id="vehicle_id" name="vehicle_id">
                                                                         <option value="">{{ __("Select") }}</option>
                                                                     </select>
                                                                 </div>
                                                                 
-                                                                <div class="col-lg-4 mb-3">
+                                                                <div class="col-lg-2 mb-3">
                                                                     <label class="col-form-label text-dark">{{ __("KM Reading at time of pickup") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control h-auto" required name="km_reading_pickup">
+                                                                    <input type="number" class="form-control" required name="km_reading_pickup">
                                                                 </div>
 
-                                                                <div class="col-lg-2 mb-3">
+                                                                <!-- <div class="col-lg-2 mb-3">
                                                                     <label class="col-form-label text-dark">{{ __("Per day KM Allocation") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control h-auto" required name="km_allocation" value="{{ $Booking->km_allocation }}">
-                                                                </div>
+                                                                    <input type="text" class="form-control" required name="km_allocation" value="{{ $Booking->km_allocation }}">
+                                                                </div> -->
                                                                                                                                                 
                                                                 <div class="col-lg-12">
                                                                     <div id="file_car_image">
@@ -320,25 +331,25 @@ input[type="number"]::-webkit-outer-spin-button {
                                                             <div class="row">
                                                                 <div class="col-lg-4 mb-3">
                                                                     <label class="col-form-label text-dark">Current Vehicle <span class="text-danger">*</span></label>
-                                                                    <select class="form-control h-auto" readonly id="cur_vehicle_id" name="cur_vehicle_id">
+                                                                    <select class="form-control" readonly id="cur_vehicle_id" name="cur_vehicle_id">
                                                                         <option value="{{ $Booking->vehicle_id }}">
                                                                         {{ $CurrentVehicle->car_type }} / {{ $CurrentVehicle->make }}
                                                                         / {{ $CurrentVehicle->model }} / {{ $CurrentVehicle->variant }}
                                                                         / {{ $CurrentVehicle->reg_no }}
                                                                         </option>
                                                                     </select>
-                                                                    <!-- <input type="text" class="form-control h-auto" name="cur_vehicle_id" readonly  
+                                                                    <!-- <input type="text" class="form-control" name="cur_vehicle_id" readonly  
                                                                         value="{{ $Booking->vehicle_id }}">
                                                                         {{ $Booking->vehicle->make }} / {{ $Booking->vehicle->model }}
                                                                     </input> -->
                                                                 </div>
                                                                 <div class="col-lg-2 mb-3">
                                                                     <label class="col-form-label text-dark">{{ __("KM at time of Pickup") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control h-auto" name="km_pick_time" value="{{ $CurrentVehicle->km_reading_pickup }}" readonly>
+                                                                    <input type="text" class="form-control" name="km_pick_time" value="{{ $CurrentVehicle->km_reading_pickup }}" readonly>
                                                                 </div>                                                                                                                        
                                                                 <div class="col-lg-2 mb-3">
                                                                     <label class="col-form-label text-dark">{{ __("KM at time of Drop") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control h-auto" name="km_drop_time" value="{{ $Booking->km_drop_time }}">
+                                                                    <input type="text" class="form-control" name="km_drop_time" value="{{ $Booking->km_drop_time }}">
                                                                 </div>                                                                                                                        
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label class="col-form-label text-dark">{{ __("Any demage") }} <span class="text-danger">*</span></label><br>
@@ -358,7 +369,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                 </div>
                                                                 <div class="col-lg-6">
                                                                     <label class="col-form-label text-dark">{{ __("Return Notes") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control h-auto" name="return_note">
+                                                                    <input type="text" class="form-control" name="return_note">
                                                                 </div>
                                                             </div>
                                                             <input type="submit" class="btn btn-success mt-4" value="Submit">
@@ -369,6 +380,39 @@ input[type="number"]::-webkit-outer-spin-button {
                                 
                                 </div>
                                 <!-- drop off end -->
+
+                                <div class="booking-edit-panel" id="changeDatePanel">
+                                            <div class="card">
+                                                    <div class="card-header">
+                                                        <h3 style="display:inline-block;">{{ __("Change Reservation Date") }}</h3>
+                                                        <button class="btn btn-sm btn-danger" style="float:right;" onclick="hideEditPanels();"><i class="fa fa-times"></i></button>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <form id="changeDatesForm"  method="POST">
+                                                            @csrf
+                                                            <div class="row">       
+                                                                <div class="col-lg-3 mb-4">
+                                                                    <label>{{ __("Pickup Date") }}<span class="text-danger">*</span></label>
+                                                                    <input type="date" class="form-control number" name="pickup_date_time" value="{{ $Booking->pickup_date_time }}" required>
+                                                                </div>                     
+                                                                <div class="col-lg-3 mb-4">
+                                                                    <label>{{ __("Pickup Date") }}<span class="text-danger">*</span></label>
+                                                                    <input type="date" class="form-control number" name="pickup_date_time" value="{{ $Booking->pickup_date_time }}" required>
+                                                                </div>
+                                                                <div class="col-lg-3 mb-4">
+                                                                    <label>{{ __("DropOFF Date") }}<span class="text-danger">*</span></label>
+                                                                    <input type="date" class="form-control number" name="dropoff_date" value="{{ $Booking->dropoff_date }}" required >
+                                                                </div>
+                                                            </div>
+                                                            <input type="submit" class="btn btn-success mt-4" value="Submit">
+                                                        </form>
+                                                    </div>
+                                            </div>
+                                            <script>
+                                                console.log({{ $Booking->pickup_date_time }});
+                                                </script>
+                                      </div>
+                                </div>
 
                                 <div class="booking-edit-panel" id="someotherpanel">
                                 <!-- put  form here..  -->
@@ -414,6 +458,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                             <th>{{ __("DropOFF Time") }}</th>
                                                                             <th>{{ __("KM (dropOff)") }}</th>
                                                                             <th>{{ __("KM Driven") }}</th>
+                                                                            <th></th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>                                                                    
@@ -429,6 +474,9 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                                 <td>{{ $DT->dropoff_date }}</td>
                                                                                 <td>{{ $DT->km_drop_time }}</td>
                                                                                 <td>{{ $DT->km_driven }}</td>
+                                                                                <td>
+                                                                                    <button class="btn btn-primary btn-tiny" onclick="viewVehicleImages({{ $DT->id }});">View</button>
+                                                                                </td>
                                                                                 </tr>
                                                                             @endforeach
 
@@ -614,34 +662,34 @@ input[type="number"]::-webkit-outer-spin-button {
                                                 <div class="col-lg-4 mb-4">
                                                     <div class="mb-2">
                                                         <label>{{ __("Total") }} <span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control h-auto" name="total" readonly required value="{{ $Booking->total }}" id="total">
+                                                        <input type="text" class="form-control" name="total" readonly required value="{{ $Booking->total }}" id="total">
                                                     </div>
                                                     <div class="row mb-2">
                                                         <div class="col-lg-6">
                                                             <label>{{ __("Additional KM Charges") }} <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control h-auto" name="additional_km_charges" readonly required value="" id="additional_km_charges">
+                                                            <input type="text" class="form-control" name="additional_km_charges" readonly required value="" id="additional_km_charges">
                                                         </div>
                                                         <div class="col-lg-6">
                                                             <label>{{ __("Extra KM") }} <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control h-auto" name="additional_km_reunning" readonly required value="{{ $Booking->additional_km_reunning }}" id="additional_km_reunning	">
+                                                            <input type="text" class="form-control" name="additional_km_reunning" readonly required value="{{ $Booking->additional_km_reunning }}" id="additional_km_reunning	">
                                                         </div>
                                                     </div>
                                                     <div class="mb-2">
                                                         <label>{{ __("Additional Charges (Damage,Penalty,etc.)") }} <span class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control h-auto" name="additional_charges" required value="{{ $Booking->additional_charges }}" id="additional_charges">
+                                                        <input type="number" class="form-control" name="additional_charges" required value="{{ $Booking->additional_charges }}" id="additional_charges">
                                                     </div>
                                                     <div class="mb-2">
                                                         <label>{{ __("Sub Total") }}<span class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control h-auto" name="sub_total" readonly required value="{{ $Booking->sub_total }}" id="sub_total">
+                                                        <input type="number" class="form-control" name="sub_total" readonly required value="{{ $Booking->sub_total }}" id="sub_total">
                                                     </div>
                                                     <div class="row mb-2 ">
                                                         <div class="col-lg-4">
                                                             <label>{{ __("Discount Applied") }} <span class="text-danger">*</span></label>
-                                                            <input type="number" class="form-control h-auto" name="discount_amount" readonly value="{{ $Booking->discount_amount }}" id="discount_amount">
+                                                            <input type="number" class="form-control" name="discount_amount" readonly value="{{ $Booking->discount_amount }}" id="discount_amount">
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <label>{{ __("More Discount") }} <span class="text-danger">*</span></label>
-                                                            <input type="number" class="form-control h-auto" name="more_discount" value="0" id="more_discount">
+                                                            <input type="number" class="form-control" name="more_discount" value="0" id="more_discount">
                                                         </div>
                                                         <div class="col-lg-4 ">
                                                             <div class="form-check align-vertical-center">
@@ -652,25 +700,25 @@ input[type="number"]::-webkit-outer-spin-button {
                                                     </div>
                                                     <div class="mb-2">
                                                         <label>{{ __("VAT(5%)") }} <span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control h-auto" name="vat" readonly required value="" id="vat">
+                                                        <input type="text" class="form-control" name="vat" readonly required value="" id="vat">
                                                     </div>
                                                     <div class="mb-2">
                                                         <label>{{ __("Grand Total") }} <span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control h-auto" name="grand_total" readonly required value="{{ $Booking->grand_total }}" id="grand_total">
+                                                        <input type="text" class="form-control" name="grand_total" readonly required value="{{ $Booking->grand_total }}" id="grand_total">
                                                     </div>
                                                     <div class="row mb-2">
                                                         <div class="col-lg-6">
                                                             <label>{{ __("Advance Paid") }} <span class="text-danger">*</span></label>
-                                                            <input type="number" class="form-control h-auto" name="advance_amount" readonly required value="" id="advance_amount">                                                        
+                                                            <input type="number" class="form-control" name="advance_amount" readonly required value="" id="advance_amount">                                                        
                                                         </div>
                                                     </div>
                                                     <div class="mb-2">
                                                         <label>{{ __("Discount Note") }} <span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control h-auto" name="discount_note" required value="" id="discount_note">
+                                                        <input type="text" class="form-control" name="discount_note" required value="" id="discount_note">
                                                     </div>
                                                     <div class="mb-2">
                                                         <label class="mt-4">{{ __("Final Amount") }} <span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control h-auto" name="final_amount_paid" readonly required value="" id="final_amount_paid">
+                                                        <input type="text" class="form-control" name="final_amount_paid" readonly required value="" id="final_amount_paid">
                                                     </div>
                                                 </div>
                                             </div>
@@ -813,6 +861,11 @@ input[type="number"]::-webkit-outer-spin-button {
 
 <script>
 
+    function changeDates(){
+        $('.booking-edit-panel').css("display","none");
+        $("#changeDatePanel").fadeIn(200); // 200 milliseconds (1 second) animation
+    }
+
     function CalDis(){
         Disc = parseInt($("#discount_amount").val());
         if(Disc > 0){
@@ -830,6 +883,45 @@ input[type="number"]::-webkit-outer-spin-button {
         return false;
     }
 
+    function showImagesInLightBox(data) {
+
+    }
+
+    function viewVehicleImages(booking_vehicle_id){
+        console.log(booking_vehicle_id);
+
+        var formdata = new FormData();
+        formdata.append("booking_id", {{ $Booking->id }});
+        formdata.append("booking_vehicle_id",booking_vehicle_id);
+
+        $.ajax({
+                url: "{{ URL('Booking/GetBookingVehicleImages') }}",
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                processData: false, // Prevent jQuery from processing the data
+                contentType: false, // Set the content type to false to let the server handle it
+                data: formdata,
+                success: function( data, textStatus, jqXHR ) {
+                    JsData = JSON.parse(data);
+                    console.log(JsData);
+                    if(JsData.Status == 0){
+                        alert(JsData.Message);
+                    } else {
+                        showImagesInLightBox(JsData.Data);
+                    }
+                },
+                error: function( jqXHR, textStatus, errorThrown ) {
+                    console.error("Fail to get images. Error:"+jqXHR.status);
+                    // onFailure({
+                    //     "Status":jqXHR.status
+                    //     ,"Message":jqXHR.statusText
+                    // });
+                }              
+        });
+
+    }
 
     function assignVehicle(){
         $('.booking-edit-panel').css("display","none");
@@ -942,6 +1034,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
     $('#assignVehicleForm').submit(function(event) {
             event.preventDefault(); // Prevent the default form submission
+            showloading();
 
             var formdata = new FormData(this);
             formdata.append("booking_id",{{ $Booking->id }});
@@ -963,11 +1056,13 @@ input[type="number"]::-webkit-outer-spin-button {
                         toastr["success"](JsData.Message);
                         window.location.reload();
                     } else {
-                        toastr["error"](JsData.Message);
+                        hideloading();
+                        alert(JsData.Message);
                     }
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     console.error("Fail to get images. Error:"+jqXHR.status);
+                    hideloading();
                     toastr["error"](jqXHR.statusText);
                 }              
             });
@@ -976,6 +1071,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
     $('#replaceVehicleForm').submit(function(event) {
             event.preventDefault(); // Prevent the default form submission
+            showloading();
 
             var formdata = new FormData(this);
             formdata.append("booking_id",{{ $Booking->id }});
@@ -997,11 +1093,13 @@ input[type="number"]::-webkit-outer-spin-button {
                         toastr["success"](JsData.Message);
                         window.location.reload();
                     } else {
-                        toastr["error"](JsData.Message);
+                        hideloading();
+                        alert(JsData.Message);
                     }
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     console.error("Fail to get images. Error:"+jqXHR.status);
+                    hideloading();
                     toastr["error"](jqXHR.statusText);
                 }              
             });
@@ -1010,6 +1108,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
     $('#dropOffVehicleForm').submit(function(event) {
             event.preventDefault(); // Prevent the default form submission
+            showloading();
 
             var formdata = new FormData(this);
             formdata.append("booking_id",{{ $Booking->id }});
@@ -1031,11 +1130,13 @@ input[type="number"]::-webkit-outer-spin-button {
                         toastr["success"](JsData.Message);
                         window.location.reload();
                     } else {
-                        toastr["error"](JsData.Message);
+                        hideloading();
+                        alert(JsData.Message);
                     }
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     console.error("Fail to get images. Error:"+jqXHR.status);
+                    hideloading();
                     toastr["error"](jqXHR.statusText);
                 }              
             });
@@ -1044,6 +1145,7 @@ input[type="number"]::-webkit-outer-spin-button {
     $('#completeBookingForm').submit(function(event){
         event.preventDefault();
         //alert("complete booking");
+        showloading();
 
         var formdata = new FormData(event.target);
         formdata.append("booking_id",{{ $Booking->id }});
@@ -1065,12 +1167,14 @@ input[type="number"]::-webkit-outer-spin-button {
                         toastr["success"](JsData.Message);
                         window.location.reload();
                     } else {
-                        toastr["error"](JsData.Message);
+                        hideloading();
+                        alert(JsData.Message);
                     }
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     console.error("Fail to get images. Error:"+jqXHR.status);
-                    toastr["error"](jqXHR.statusText);
+                    hideloading();
+                    alert(jqXHR.statusText);
                 }              
         });
     });
