@@ -131,7 +131,7 @@
             </div>
         </div>
     </div>
-
+<!--
     <div class="card mt-5"> 
         <div class="card-body"> 
             <h2>{{ __("Update Subscription") }}</h2>
@@ -152,7 +152,7 @@
             <button class="btn btn-success mt-4">{{ __("Save") }}</button>
             {!! Form::close() !!}
         </div>
-    </div>
+    </div> -->
 
     <!-- [ Main Content ] end -->
     </div>

@@ -17,6 +17,7 @@ use App\Models\Admin;
 use App\Models\User;
 use App\Models\Subscription;
 use DB;
+use Log;
 
 class LicenseController extends Controller
 {
@@ -64,11 +65,13 @@ class LicenseController extends Controller
      */
     public function store(Request $request)
     {
+        Log::debug("licensecontroller store - enter");
         if(session("AdminID") == ""){
             return redirect("/");
         }
         
         $Input = $request->all();
+        Log::debug($Input);
         // echo '<pre>';print_r($Input);echo '</pre>';die();
         $v = \Validator::make($request->all(),[
             'email' => 'required|unique:admin|email',
@@ -130,13 +133,13 @@ class LicenseController extends Controller
             $adminUpdateObj->save();
 
             // $Office = License::create($Input);
-            $SubObj = new Subscription();
-            $SubObj->company_id = $Office->id;
+            //$SubObj = new Subscription();
+            //$SubObj->company_id = $Office->id;
             // $SubObj->company_id=$Licenseid;
-            $SubObj->validity = $Input["validay"];
-            $SubObj->start_date = date("Y-m-d");
-            $SubObj->end_date = $expiry_date;
-            $SubObj->save();
+            //$SubObj->validity = $Input["validay"];
+            //$SubObj->start_date = date("Y-m-d");
+            //$SubObj->end_date = $expiry_date;
+            //$SubObj->save();
 
 
             $Link = URL("login");
@@ -146,6 +149,7 @@ class LicenseController extends Controller
                 $m->from("no-reply@nucleuz.app", "Nucleuz");
                 $m->to($Input['email'])->subject("Login Detail for Nucleuz");
             });
+            Log::debug("licensecontroller store - exit");
             return redirect("license");
         }
     }
@@ -169,18 +173,22 @@ class LicenseController extends Controller
      */
     public function edit($id)
     {
+        Log::debug("licensecontroller edit - enter");
         if(session("AdminID") == ""){
             return redirect("/");
         }
         
         $Data = License::find($id);
+        Log::debug($Data);
         $products = Product::where("status",'active')->get();
         // echo '<pre>';print_r($Data);echo '<pre>';
-        $Subscription = Subscription::where("company_id", $id)->latest()->get();
+        //$Subscription = Subscription::where("company_id", $id)->latest()->get();
         $AllCompany = Office::orderBy("name")->get();
         
         $ActiveAction = "license";
-        return view('license.edit', compact("Data", "ActiveAction", "Subscription", "AllCompany","products"));
+        Log::debug("licensecontroller edit - exit");
+        //return view('license.edit', compact("Data", "ActiveAction", "Subscription", "AllCompany","products"));
+        return view('license.edit', compact("Data", "ActiveAction", "AllCompany","products"));
     }
 
     /**
@@ -192,10 +200,13 @@ class LicenseController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::debug("licensecontroller update - enter");
         if(session("AdminID") == ""){
             return redirect("/");
         }
         $Input = $request->all();
+        Log::debug($Input);
+        $expiry_date = date("Y-m-d h:i:s", strtotime("+".$Input["validay"]." days"));
         // echo '<pre>';print_r($Input);echo '</pre>';die();
         $total_employee=isset($Input["total_employee"]) ? $Input["total_employee"] : 0;
         $LicenseObj=License::find($id);
@@ -211,6 +222,7 @@ class LicenseController extends Controller
 
         $LicenseObj->license_key=$Input["license_key"];
         $LicenseObj->status=$Input["status"];
+        $LicenseObj->expiration_date=$expiry_date;
 
         if($Input["user_type"] == "1"){
             $AdminObj->role = 2;
@@ -227,10 +239,12 @@ class LicenseController extends Controller
         // Admin::where('id', $id)->update([
         //     'name'=>$Input[''],
         // ]);
+        Log::debug("licensecontroller update - exit");
         return redirect("license");
     }
 
     public function UpdateSubscription(Request $request){
+        Log::debug("licensecontroller UpdateSubscription - enter");
         $ExpiryDate = date("Y-m-d", strtotime("+".$request->validity." days", strtotime($request->start_date)));
         $Office = License::find($request->OfficeID);
         $Office->expiration_date = $ExpiryDate;
@@ -249,6 +263,7 @@ class LicenseController extends Controller
             $ad->save();
         }
 
+        Log::debug("licensecontroller UpdateSubscription - exit");
         return redirect()->back();
     }
 
