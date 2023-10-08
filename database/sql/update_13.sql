@@ -1,7 +1,7 @@
 INSERT INTO db_version
 (db_id,name,descr)
 VALUES
-(13,'vehicle status added..  ')
+(13,'database version 0.1','vehicle status added')
 ;
 
 ALTER TABLE vehicles ADD COLUMN status int(11) DEFAULT 1;
