@@ -152,6 +152,7 @@ class VehicleController extends Controller
             return redirect("/");
         }
         $Input = $request->all();
+        Log::debug($Input);
         unset($Input["_method"]);
         unset($Input["_token"]);
 

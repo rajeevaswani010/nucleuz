@@ -77,11 +77,9 @@ class BookingInviteController extends Controller
 
         // echo '<pre>';print_r($Input);echo '</pre>';die();
 
-        $Input["link"] = URL("CustomerRegister")."/".base64_encode($Input["email"]);
         $Input["user_id"] = session("AdminID");
         $Input["company_id"] = session("CompanyLinkID");
         $Office = BookingInvite::create($Input);
-
         $Office->link = URL("CustomerRegister")."/".base64_encode($Office->id."#".$Input["email"]);
         $Office->save();
         
@@ -98,16 +96,13 @@ class BookingInviteController extends Controller
 
     public function add(Request $request){
         try {
-            
             $Input = $request->all();
 
             // echo '<pre>';print_r($Input);echo '</pre>';die();
 
-            $Input["link"] = URL("CustomerRegister")."/".base64_encode($Input["email"]);
             $Input["user_id"] = session("AdminID");
             $Input["company_id"] = session("CompanyLinkID");
             $Office = BookingInvite::create($Input);
-        
             $Office->link = URL("CustomerRegister")."/".base64_encode($Office->id."#".$Input["email"]);
             $Office->save();
 

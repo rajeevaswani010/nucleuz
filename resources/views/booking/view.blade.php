@@ -5,7 +5,7 @@
 <script>
     //get parameters
         const urlParams = new URLSearchParams(window.location.search);
-</script>
+</script>   
 
 <style>
 .booking-status {
@@ -89,7 +89,7 @@
                             <option value="">{{ __("All") }}</option>
                             <option @if(@$_GET['status'] == 1) selected @endif value=1>{{ __("Reserved") }}</option>
                             <option @if(@$_GET['status'] == 2) selected @endif value=2>{{ __("Delivered") }}</option>
-                            <option @if(@$_GET['status'] == 5) selected @endif value=4>{{ __("DroppedOff") }}</option>
+                            <option @if(@$_GET['status'] == 5) selected @endif value=5>{{ __("DroppedOFF") }}</option>
                             <option @if(@$_GET['status'] == 3) selected @endif value=3>{{ __("Complete") }}</option>
                             <option @if(@$_GET['status'] == 4) selected @endif value=4>{{ __("Cancelled") }}</option>
                         </select>
@@ -168,7 +168,13 @@
 
     </div>
     </td>
-    <td>OMR {{ number_format($DT->grand_total, 2) }}</td>
+    <td>
+        @if($DT->status == 3)
+            OMR {{ number_format($DT->grand_total, 2) }}
+        @else
+            ---
+        @endif
+    </td>
     <td>
     @if($DT->status == 3)
     <span class="indicator-line rounded bg-success booking-status complete">{{ __("Complete") }}</span>
@@ -185,8 +191,9 @@
     @if($DT->status == 4)
     <span class="indicator-line rounded bg-danger booking-status cancelled">{{ __("Cancelled") }}</span>
     @endif
+
     @if($DT->status == 5)
-    <span class="indicator-line rounded bg-info booking-status droppedOff">{{ __("DroppedOff") }}</span>
+    <span class="indicator-line rounded bg-info booking-status info">{{ __("DroppedOFF") }}</span>
     @endif
 </td>
 <td>{{ $DT->updated_at }}</td>

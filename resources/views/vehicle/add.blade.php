@@ -109,19 +109,55 @@
 
 
 
-                        <div class="form-group col-4">
-                            <label for="subject" class="col-form-label text-dark">{{ __("AC") }}</label>
-                            <input class="form-control font-style"  name="ac" name="ac" value="{{ old('ac') }}" type="text"  />
+                        <div class="row mt-4 mb-2">
+                        <div class="form-group col-3">
+                            <label for="subject" class="form-check-label text-dark" style="margin-right:10px;" >{{ __("AC") }}</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="ac" id="ac1" value="yes" >
+                                <label class="form-check-label" for="ac1">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="ac" id="ac2" value="no" checked>
+                                <label class="form-check-label" for="ac2">
+                                    No
+                                </label>
+                            </div>
                         </div>
 
-                        <div class="form-group col-4">
-                            <label for="subject" class="col-form-label text-dark">{{ __("Audio") }}</label>
-                            <input class="form-control font-style"  name="Audio" value="{{ old('Audio') }}" type="text"  />
+                        <div class="form-group col-3">
+                            <label for="subject" class="form-check-label text-dark" style="margin-right:10px;" >{{ __("Audio") }}</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="Audio" id="Audio1" value="yes" >
+                                <label class="form-check-label" for="Audio1">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="Audio" id="Audio2" value="no" checked >
+                                <label class="form-check-label" for="Audio2">
+                                    No
+                                </label>
+                            </div>
                         </div>
 
-                        <div class="form-group col-4">
-                            <label for="subject" class="col-form-label text-dark">{{ __("GPS") }}</label>
-                            <input class="form-control font-style"  name="gps" value="{{ old('gps') }}" type="text"  />
+                        <div class="form-group col-3">
+                            <label for="subject" class="form-check-label text-dark" style="margin-right:10px;" >{{ __("GPS") }}</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gps" id="gps1" value="yes" >
+                                <label class="form-check-label" for="gps1">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gps" id="gps2" value="no" checked>
+                                <label class="form-check-label" for="gps2">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+
                         </div>
 
                         <div class="form-group col-4">

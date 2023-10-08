@@ -85,14 +85,19 @@ Route::resource('booking-invite', BookingInviteController::class);
 Route::post('booking-invite/add', [BookingInviteController::class,'add']);
 Route::post('booking-invite/delete', [BookingInviteController::class,'delete']);
 Route::post('Booking/Review', [BookingController::class, 'review']);
+Route::post('Booking/GetAvailableVehicles', [BookingController::class, 'GetAvailableVehicles']);
 Route::post('Booking/GetAvailableCarTypes', [BookingController::class, 'GetAvailableCarTypes']);
-Route::get('Vehicle/GetAllCarTypes', [VehicleController::class, 'GetAllCarTypes']);
-Route::post("booking/assignVehicle", [BookingController::class, 'AssignVehicle']);
+Route::post("Booking/assignVehicle", [BookingController::class, 'AssignVehicle']);
+Route::post("Booking/replaceVehicle", [BookingController::class, 'ReplaceVehicle']);
+Route::post("Booking/dropOffVehicle", [BookingController::class, 'dropOffVehicle']);
+Route::post("Booking/completeBooking", [BookingController::class, 'completeBooking']);
 Route::get('/booking/pdf/{ID}', [BookingController::class, 'exportPdf']);
 Route::get("BookingCancel/{ID}", [BookingController::class, 'CancelBooking']);
 Route::post('Customer/Review', [BookingController::class, 'ReviewCustomer']);
 Route::post('BookingExceed/{id}', [BookingController::class, 'BookingExceed']);
 Route::get('Booking/Get', [DashboardController::class, 'GetBookings']);
+
+Route::get('Vehicle/GetAllCarTypes', [VehicleController::class, 'GetAllCarTypes']);
 
 //===========my new code==================================//
 Route::get('bookingreciepts', [BookingController::class, 'BookingReciept']);

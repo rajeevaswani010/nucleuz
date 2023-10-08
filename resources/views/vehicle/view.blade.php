@@ -12,6 +12,19 @@
     const urlParams = new URLSearchParams(window.location.search);
 </script>
 
+<style>
+.status {
+    padding: 6px;
+    font-size: small;
+    font-weight: bold;
+}
+
+.status.bg-danger {
+    color: #fff
+}
+
+</style>
+
 <!-- [ Main Content ] start -->
 <div class="dash-container">
 <div class="dash-content">
@@ -116,6 +129,7 @@ $("#make").on("change",function(){
 <th>{{ __("Mfg. Year") }}</th>
 <th>{{ __("Reg. No.") }}</th>
 <th>{{ __("Additional Features") }}</th>
+<th>{{ __("Status") }}</th>
 <th>{{ __("Action") }}</th>
 </tr>
 </thead>
@@ -132,6 +146,15 @@ $("#make").on("change",function(){
     <td>{{ $DT->reg_no }}</td>
     <td>AC:{{ $DT->ac }} | Audio:{{ $DT->Audio }} | GPS:{{ $DT->gps }} </td>
     
+    <td>
+        @if($DT->status == 3)
+            <span class="indicator-line rounded bg-danger status">{{ __("Repair") }}</span>
+        @elseif($DT->status == 2)
+            <span class="indicator-line rounded bg-warning status">{{ __("Service") }}</span>
+        @else
+            <span class="indicator-line rounded bg-success status">{{ __("Active") }}</span>
+        @endif
+    </td>
     <td class="Action">
         <span>
 

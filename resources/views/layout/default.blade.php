@@ -116,6 +116,30 @@
             alert(JSON.stringify(data));
         });
     </script>
+
+    <script>
+
+        //a navtive event bus for communication between main section and side / upper tabs. Also notifications.. 
+        const myEventBus = (function(){
+            this.domObj = new Comment('my-event-bus'); //this dom element is used as an anchor for event bus callbacks.
+
+            this.subscribe = function(event, fn, options){
+                this.domObj.addEventListener(event, fn, options);
+            }
+
+            this.publish = function(event){
+                this.domObj.dispatchEvent(event);
+            }
+            
+            this.getEventListener = function(){
+                return this.domObj;
+            }
+            
+            return this;
+        })();
+
+    </script>
+
     <!-- app css -->
     <link rel="stylesheet" href="{{ URL('resources/css/app.css') }}">
     <!-- <script src="{{ URL('resources/js/app.js') }}"></script> -->
