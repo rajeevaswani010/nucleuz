@@ -210,10 +210,11 @@ class LicenseController extends Controller
         // echo '<pre>';print_r($Input);echo '</pre>';die();
         $total_employee=isset($Input["total_employee"]) ? $Input["total_employee"] : 0;
         $LicenseObj=License::find($id);
+        Log::debug($LicenseObj);
         
-
         // $LicenseArr=License::where('id', $id)->first();
-        $AdminObj = Admin::find($LicenseObj->user_id);
+        //$AdminObj = Admin::find($LicenseObj->user_id);
+        $AdminObj = Admin::where('link_id', $id)->first();
         $AdminObj->name = $Input["conact_name"];
         $AdminObj->company_id = $Input["company_id"];
         // $AdminObj->email = $Input["email"];

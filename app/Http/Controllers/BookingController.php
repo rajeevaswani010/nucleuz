@@ -144,6 +144,7 @@ class BookingController extends Controller
         if(session("AdminID") == ""){
             return redirect("/");
         }
+        Log::debug("bookingcontroller store - enter");
         
         $Input = $request->all();
         Log::debug($Input); //just check what is there.. 
@@ -189,6 +190,8 @@ class BookingController extends Controller
 
         $Day = $Input["tarrif_detail"];
         $DopDate = date("Y-m-d", strtotime("+".$Day." days", strtotime($Input["PickupDate"]))). " 00:00:00";
+
+        Log::debug("DopDate : ".$DopDate); 
         
         $BookingObj->dropoff_date = $DopDate;
         $BookingObj->additional_info = $Input["additional_info"];
@@ -264,7 +267,7 @@ class BookingController extends Controller
         // if($CheckInvite > 0){
         //     BookingInvite::where("email", $Input["email"])->delete();
         // }
-
+        Log::debug("bookingcontroller store - exit");
         return json_encode(array("Status" =>  1, "Message" => "Booking Recorded Successfully"));
     }
 
@@ -675,6 +678,7 @@ class BookingController extends Controller
 
     public function review(Request $request){
         Log::debug("bookingcontroller review - enter");
+        Log::debug(sprintf("%s - line %d - review", __FILE__, __LINE__));
 
         try{
             $Input = $request->all();
@@ -735,6 +739,7 @@ class BookingController extends Controller
     }
     
     public function GetAvailableVehicles(Request $request){
+        Log::debug("bookingcontroller GetAvailableVehicles - enter");
         try {
             $Input = $request->all();
             Log::debug($Input);
@@ -764,6 +769,7 @@ class BookingController extends Controller
 
 
     public function GetAvailableCarTypes(Request $request){
+        Log::debug("bookingcontroller GetAvailableCarTypes - enter");
         try {
             $GetAllVehicles = DB::table('vehicles')
                         ->selectRaw('car_type, count(*) as count')
@@ -809,6 +815,7 @@ class BookingController extends Controller
     }
 
     public function AssignVehicle(Request $request){ //TODO add implementation
+        Log::debug("bookingcontroller AssignVehicle - enter");
         if(session("AdminID") == ""){
             return redirect("/");
         }
@@ -856,10 +863,12 @@ class BookingController extends Controller
         }
         
         $data = array();
+        Log::debug("bookingcontroller AssignVehicle - exit");
         return json_encode(array("Status" => 1, "Message" => "Vehicle successfully assigned", "Data" => $data));
     }
 
     public function ReplaceVehicle(Request $request){ //TODO add implementation
+        Log::debug("bookingcontroller ReplaceVehicle - enter");
         if(session("AdminID") == ""){
             return redirect("/");
         }
@@ -931,6 +940,7 @@ class BookingController extends Controller
         }
 
         $data = array();
+        Log::debug("bookingcontroller ReplaceVehicle - exit");
         return json_encode(array("Status" => 1, "Message" => "Vehicle Replaced Successfully", "Data" => $data));
     }
 
@@ -1004,6 +1014,7 @@ class BookingController extends Controller
         }
 
         $data = array();
+        Log::debug("dropOFfVehicle exit ");
         return json_encode(array("Status" => 1, "Message" => "Vehicle Dropped Successfully", "Data" => $data));
     }
 
@@ -1025,6 +1036,7 @@ class BookingController extends Controller
         $Booking->save();
         
         $data = array();
+        Log::debug("completeBooking exit ");
         return json_encode(array("Status" => 1, "Message" => "Booking closed successfully", "Data" => $data));
     }
 

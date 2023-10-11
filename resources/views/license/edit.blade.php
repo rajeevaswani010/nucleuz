@@ -28,7 +28,7 @@
             <div class="card">
                 <div class="card-body ">
                 <?php
-                $admininfo=DB::table('admin')->where('admin_id',$Data->user_id)->first();
+                $admininfo=DB::table('admin')->where('link_id',$Data->id)->first();
                 ?>
                     
                     {!! Form::open(['url' => 'license/'.$Data->id, 'enctype' => 'multipart/form-data', 'method' => 'PUT']) !!}
