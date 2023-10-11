@@ -155,3 +155,51 @@ function addImageHrefToGallery(imgLink,parentDivId,delEventHandler){
 }
 
 // ---------------------------------------------------
+
+
+// gets first and last date of the month when passed month name.. 
+function getFirstAndLastDateOfMonth(monthName) {
+    // Define an array of month names
+    const months = [
+        'Jan',
+        'Feb',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec'
+    ];
+  
+    // Parse the input month name and find its index in the array
+    const monthIndex = months.findIndex(month => month.toLowerCase() === monthName.toLowerCase());
+  
+    // Check if the month name is valid
+    if (monthIndex === -1) {
+      return "Invalid month name";
+    }
+  
+    // Create a new Date object for the specified month
+    const firstDate = new Date(new Date().getFullYear(), monthIndex, 1);
+    const lastDate = new Date(new Date().getFullYear(), monthIndex + 1, 0);
+  
+    // Format the dates as "mm/dd/yy"
+    const formatDate = date => {
+        const mm = (date.getMonth() + 1).toString().padStart(2, '0');
+        const dd = date.getDate().toString().padStart(2, '0');
+        const yy = date.getFullYear().toString();
+        return `${yy}-${mm}-${dd}`;
+    };
+
+    return {
+      firstDate: formatDate(firstDate),
+      lastDate: formatDate(lastDate)
+    };
+  }
+  
+  
+  

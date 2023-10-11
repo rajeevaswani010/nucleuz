@@ -434,6 +434,15 @@
                         chart: {
                             height: '100%',
                             type: 'bar',
+                            events:{
+                                dataPointSelection: function(event, chartContext, config) {
+                                    console.log(config.w.config.xaxis.categories[config.dataPointIndex]);
+                                    console.log(config.w.config.series[0].data[config.dataPointIndex]);
+                                    const result = getFirstAndLastDateOfMonth(config.w.config.xaxis.categories[config.dataPointIndex]);
+                                    console.log(result);
+                                    return document.location.href = "/booking/?from_date="+result.firstDate+"&to_date="+result.lastDate;
+                                }
+                            }
                         },
                         plotOptions: {
                             bar: {

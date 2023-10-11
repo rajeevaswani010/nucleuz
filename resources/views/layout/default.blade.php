@@ -142,7 +142,7 @@
 
     <!-- app css -->
     <link rel="stylesheet" href="{{ URL('resources/css/app.css') }}">
-    <!-- <script src="{{ URL('resources/js/app.js') }}"></script> -->
+    <script src="{{ URL('resources/js/app.js') }}"></script>
     </head>
 <body class="theme-4">
 

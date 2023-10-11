@@ -2,11 +2,6 @@
 
 @section("content")
 
-<script>
-    //get parameters
-        const urlParams = new URLSearchParams(window.location.search);
-</script>
-
 <!-- [ Main Content ] start -->
 <div class="dash-container">
 <div class="dash-content">
@@ -52,7 +47,9 @@
                             <option value="Billing">{{ __("Billing") }}</option>
                         </select>
                         <script>
-                                $('#report_type').val(urlParams.get('report_type'));
+                                @if( isset($_GET['report_type']) )
+                                    $('#report_type').val("{{ $_GET['report_type'] }}");
+                                @endif
                         </script>
                     </div>
 
@@ -64,7 +61,9 @@
                              <option value={{ $vehicle['name'] }}>{{ $vehicle['name'] }}</option>
                             @endforeach
                             <script>
-                                $('#vehicle_type').val(urlParams.get('vehicle_type'));
+                                @if( isset($_GET['vehicle_type']) )
+                                    $('#vehicle_type').val("{{ $_GET['vehicle_type'] }}");
+                                @endif
                             </script>
 
                         </select>
@@ -74,13 +73,12 @@
                         <label>{{ __("From") }}</label>
                         <input type="date" class="form-control" id="from_date" onchange="validateDateRange()" name="from_date" value="{{ @$_GET['from_date'] }}">
                         <script>
-                                console.log(urlParams.get('from_date'));
-                                if(urlParams.get('from_date') == ""){
-                                    curDate = new Date().toISOString().substr(0,10);
-                                    $("#from_date").val(curDate);
-                                } else {
-                                    $("#from_date").val(urlParams.get('from_date'));
-                                }
+                            @if( isset($_GET['from_date']) )
+                                $('#from_date').val("{{ $_GET['from_date'] }}");
+                            @else
+                                curDate = new Date().toISOString().substr(0,10);
+                                $("#from_date").val(curDate);
+                            @endif
                         </script>
                     </div>
 
@@ -89,13 +87,12 @@
                         <input type="date" class="form-control" id="to_date" onchange="validateDateRange()" name="to_date" value="{{ @$_GET['to_date'] }}">
                     </div>
                         <script>
-                                console.log(urlParams.get('to_date'));
-                                if(urlParams.get('to_date') == ""){
+                                @if( isset($_GET['to_date']) )
+                                    $('#to_date').val("{{ $_GET['to_date'] }}");
+                                @else
                                     curDate = new Date().toISOString().substr(0,10);
                                     $("#to_date").val(curDate);
-                                } else {
-                                    $("#to_date").val(urlParams.get('to_date'));
-                                }
+                                @endif
                         </script>
                     <div class="col"><button class="btn btn-success mt-4" type="submit" name="search" value="search" role="button"><i class="fa fa-sech"> {{ __("Search") }}</i></button></div>
                 </div>
