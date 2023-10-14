@@ -491,33 +491,38 @@
                 success: function( data, textStatus, jqXHR ) {
 
                         JsData = JSON.parse(data);
-                        select = document.getElementById('VehicleData');
-                        select.innerHTML='';
-                        var opt = document.createElement('option');
-                        opt.value = "";
-                        opt.innerHTML = '--Select Vehicle--';
-                        select.appendChild(opt);
-
-                        for (const key in JsData) {
+                        console.log(data);
+                        if(JsData.Status == 1){
+                            select = document.getElementById('VehicleData');
+                            select.innerHTML='';
                             var opt = document.createElement('option');
-                            opt.value = key;
-                            opt.innerHTML = key;
-                            if(JsData[key]<=0) {
-                                opt.disabled = "disabled";
-                                opt.style = "color:red; font-style: italic;";
-                            }
+                            opt.value = "";
+                            opt.innerHTML = '--Select Vehicle--';
                             select.appendChild(opt);
-                        }
 
-                        @if(!empty($Requirements["car_type"])) 
-                            carType = '{{ @$Requirements["car_type"] }}';
-                            if(JsData[carType] > 0) {
-                                $("#VehicleData").val(carType);
-                                fetchReviews();
-                            } else {
-                                alert("Customer required cartype - "+carType+" is not available for selected dates."); //style this
+                            for (const key in JsData.Data) {
+                                var opt = document.createElement('option');
+                                opt.value = key;
+                                opt.innerHTML = key;
+                                if(JsData.Data[key]<=0) {
+                                    opt.disabled = "disabled";
+                                    opt.style = "color:red; font-style: italic;";
+                                }
+                                select.appendChild(opt);
                             }
-                        @endif
+
+                            @if(!empty($Requirements["car_type"])) 
+                                carType = '{{ @$Requirements["car_type"] }}';
+                                if(JsData.Data[carType] > 0) {
+                                    $("#VehicleData").val(carType);
+                                    fetchReviews();
+                                } else {
+                                    alert("Customer required cartype - "+carType+" is not available for selected dates."); //style this
+                                }
+                            @endif
+                        } else {
+                            alert("fail to get available vehicle information.");
+                        }
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     alert("Fail to fetch vehicles for selected date. Please contact company for assistance. Error: " + errorThrown);             

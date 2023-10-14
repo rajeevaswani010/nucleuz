@@ -770,41 +770,13 @@ class BookingController extends Controller
 
 
     public function GetAvailableCarTypes(Request $request){
-        Log::debug("bookingcontroller GetAvailableCarTypes - enter");
-        try {
-            $GetAllVehicles = DB::table('vehicles')
-                        ->selectRaw('car_type, count(*) as count')
-                        ->where("company_id",session("CompanyLinkID"))
-                        ->groupBy('car_type')
-                        ->orderBy('car_type')
-                        ->get()
-                        ;
-
             $numOfDays = $request->numOfDays;
             $pickupDateTime = $request->pickupDate." 00:00:00";
             $dropDateTime = date('Y-m-d 23:59:59', strtotime("$pickupDateTime +$numOfDays days"));
             Log::info($dropDateTime);
 
-            $getAllVehicleResp = collect();
-            foreach ( $GetAllVehicles as $obj ){
-                $getAllVehicleResp[$obj->car_type] = $obj->count;
-            }
-
-            $query = 'select car_type from bookings where company_id = '.session("CompanyLinkID")
-                    .' and ((status = 1 and pickup_date_time <= \''.$dropDateTime.'\' and dropoff_date >= \''.$pickupDateTime.'\') or ' 
-                    .' ( status = 2 and pickup_date_time <= \''.$dropDateTime.'\' ))';
-                    
-                        
-            //Log::info($query);
-            $GetAllBookings = DB::select($query);
-            foreach ($GetAllBookings as $obj){
-                $getAllVehicleResp[$obj->car_type] -= 1;
-            }
-
-            return json_encode($getAllVehicleResp);
-        } catch(Exception $e){
-            echo $e.getMessage();
-        }
+            $data = $this->_getAvailableCarTypes($pickupDateTime,$dropDateTime);
+            return json_encode(array("Status" => 1, "Message" => "", "Data" => $data));
     }
 
     public function CancelBooking($id){
@@ -1087,6 +1059,37 @@ class BookingController extends Controller
         return json_encode(array("Status" => 1, "Message" => "Booking closed successfully", "Data" => $data));
     }
 
+    public function changeDropOFF(Request $request){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        $Input = $request->all();
+        Log::debug($Input);
+        $Booking = Booking::find($request->booking_id);
+
+        $curDropOff = $Booking->dropoff_date;
+        $newDropOff = $Input["dropoff_date"];
+        if($newDropOff > $curDropOff){
+            Log::debug("postpone");
+            $nextDate = date('Y-m-d', strtotime($curDropOff . ' +1 day')); // Increment the date by 1 day
+            $getAvailableCartypes = $this->_getAvailableCarTypes($nextDate,$newDropOff);
+            if($getAvailableCartypes[$Booking->car_type]<0){
+                return json_encode(array("Status" => 0, "Message" => "Vehicle not available for additional days", "Data" => $Data));
+            }
+        } else {
+            Log::debug("prepone");
+        }
+        $date1 = new DateTime($Booking->pickup_date_time); // Replace with your first date
+        $date2 = new DateTime($newDropOff); // Replace with your second date
+        
+        $interval = $date1->diff($date2);
+        $numberOfDays = $interval->days;
+        $Booking->tarrif_detail = $numberOfDays;
+        $Booking->dropoff_date = $newDropOff;
+        $Booking->save();
+        return json_encode(array("Status" => 1, "Message" => "Dates changed successfully", "Data" => array()));
+    }
+
     public function GetBookingVehicleImages(Request $request){
         if(session("AdminID") == ""){
             return redirect("/");
@@ -1337,5 +1340,37 @@ class BookingController extends Controller
         return $UpdatedInput;
     }
 
+    protected function _getAvailableCarTypes($pickupDate,$dropoffDate){
+        Log::debug($pickupDate);
+        $getAllVehicleResp = collect();
 
+        try {
+            $GetAllVehicles = DB::table('vehicles')
+                        ->selectRaw('car_type, count(*) as count')
+                        ->where("company_id",session("CompanyLinkID"))
+                        ->groupBy('car_type')
+                        ->orderBy('car_type')
+                        ->get()
+                        ;
+
+            foreach ( $GetAllVehicles as $obj ){
+                $getAllVehicleResp[$obj->car_type] = $obj->count;
+            }
+
+            $query = 'select car_type from bookings where company_id = '.session("CompanyLinkID")
+                    .' and ((status = 1 and pickup_date_time <= \''.$dropoffDate.'\' and dropoff_date >= \''.$pickupDate.'\') or ' 
+                    .' ( status = 2 and pickup_date_time <= \''.$dropoffDate.'\' ))';
+                    
+                        
+            Log::info($query);
+            $GetAllBookings = DB::select($query);
+            foreach ($GetAllBookings as $obj){
+                $getAllVehicleResp[$obj->car_type] -= 1;
+            }            
+        } catch(Exception $e){
+            echo $e.getMessage();
+        }
+        Log::debug($getAllVehicleResp);
+        return $getAllVehicleResp;
+    }
 }

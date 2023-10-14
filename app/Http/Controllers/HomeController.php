@@ -329,4 +329,24 @@ class HomeController extends Controller
     	session()->flush();
 		return redirect('/');
     }
+
+	public function GetNotificationsForCurrentUser( Request $request ){
+		if(session("AdminID") == ""){
+            return redirect("/");
+        }
+		$notifications = Notification::where("user_id", session("AdminID"))->orderby("created_at","desc")->get();
+		return json_encode(array("Status" => 1, "Message" => "", "Data" => $notifications));
+	}
+
+	public function testui()
+    {
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        
+		$ActiveAction = "testui";
+		$Data = array();
+        return view('layout.testui', compact("Data","ActiveAction"));
+    }
+
 }

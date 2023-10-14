@@ -42,6 +42,8 @@ Route::get('reset-password', function () {
     return view('ResetPassword');
 });
 
+Route::get('testui', [HomeController::class, 'testui']);
+
 Route::post('login', [HomeController::class, 'DoLogin']);
 Route::post('DoReset', [HomeController::class, 'DoReset']);
 Route::get('SetPassword/{token}', [HomeController::class, 'SetPassword']);
@@ -53,6 +55,7 @@ Route::post('/ChangePassword/SavePass', [HomeController::class, 'SavePassword'])
 
 Route::get('logout', [HomeController::class, 'logout']);
 Route::get('ReadNotification', [HomeController::class, 'ReadNotification']);
+Route::get('/GetNotifications', [HomeController::class, 'GetNotificationsForCurrentUser']);
 
 Route::get('CustomerRegister/{ID}', [CustomerController::class, 'register']);
 Route::post('CustomerRegister', [CustomerController::class, 'registerPost']);
@@ -62,6 +65,7 @@ Route::get('thank-you', function(){
 
 
 Route::get('dashboard', [DashboardController::class, 'index']);
+
 Route::resource('office', OfficeController::class);
 Route::post('office/getCurrentSettings', [OfficeController::class, 'getCurrentSettingsAsJson']);
 Route::get('settings', [OfficeController::class, 'getSettings']);
@@ -90,6 +94,7 @@ Route::post('Booking/GetAvailableCarTypes', [BookingController::class, 'GetAvail
 Route::post("Booking/assignVehicle", [BookingController::class, 'AssignVehicle']);
 Route::post("Booking/replaceVehicle", [BookingController::class, 'ReplaceVehicle']);
 Route::post("Booking/dropOffVehicle", [BookingController::class, 'dropOffVehicle']);
+Route::post("Booking/changeDropOFF", [BookingController::class, 'changeDropOFF']);
 Route::post("Booking/completeBooking", [BookingController::class, 'completeBooking']);
 Route::post("Booking/GetBookingVehicleImages", [BookingController::class, 'GetBookingVehicleImages']);
 Route::get('/booking/pdf/{ID}', [BookingController::class, 'exportPdf']);

@@ -108,13 +108,14 @@
         Pusher.logToConsole = true;
 
         var pusher = new Pusher('c110e27ab4f0b7b2a002', {
-        cluster: 'ap2'
+            cluster: 'ap2'
         });
 
         var channel = pusher.subscribe('popup-channel');
         channel.bind('user-register', function(data) {
             alert(JSON.stringify(data));
         });
+
     </script>
 
     <script>
@@ -141,8 +142,12 @@
     </script>
 
     <!-- app css -->
+    <link rel="stylesheet" href="{{ URL('resources/css/components.css') }}">
     <link rel="stylesheet" href="{{ URL('resources/css/app.css') }}">
+
+    <script src="{{ URL('resources/js/components.js') }}"></script>
     <script src="{{ URL('resources/js/app.js') }}"></script>
+    <script src="{{ URL('resources/js/notifications.js') }}"></script>
     </head>
 <body class="theme-4">
 
@@ -267,6 +272,13 @@
             <span class="dash-micon"><i class="fa fa-cog"></i></span><span class="dash-mtext">{{ __("Settings") }}</span>
         </a>
     </li>
+<!--
+    <li class="dash-item dash-hasmenu @if($ActiveAction == 'testui') active @endif">
+        <a href="{{ URL('testui') }}" class="dash-link">
+            <span class="dash-micon"><i class="fa fa-bolt"></i></span><span class="dash-mtext">{{ __("testui") }}</span>
+        </a>
+    </li>
+-->
     <li class="dash-item dash-hasmenu
                 ">
                 <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-box"></i></span><span class="dash-mtext">{{ __("Accounting System") }} 
@@ -448,25 +460,17 @@ aria-expanded="false"
 </li>--}}
 
 <!-- Notifications dropdown -->
-<!-- <li class="dropdown dash-h-item ">
+<li class="dropdown dash-h-item ">
     <div class="dropdown dropdown-notifications">
-        <button type="button" class="btn btn-light" style="color: blue;font-size: 18px;">
-            <i class="fa fa-bell" aria-hidden="true"> </i>
-            <span class="badge" 
-                style=" font-size: 11px;    
-                        background: blue;
-                        margin-left: 2px;
-                        border-radius: 12px;
-                        font-weight: bold;">
-            4 </span>
+        <button type="button" id="notification-btn" class="btn btn-light" >
+            <i class="fa fa-regular fa-bell" aria-hidden="true"> </i>
+            <span class="badge" >
+            124 </span>
         </button>    
-        <div data-perfect-scrollbar
-                class="position-relative">
-            <div class="dropdown-header"><strong>{{ __('Booking Notifications') }}</strong></div>
-            <div class="list-group list-group-flush mb-0">            </div>
+        <div class="card" id="notification-panel">
         </div>
     </div>
-</div> -->
+</div>
 <!-- // END Notifications dropdown -->
 <!-- </li> -->
 
@@ -506,7 +510,7 @@ aria-expanded="false"
 .spanner{
   position:absolute;
   top: 50%;
-  left: 0;
+  left: 0%;
   background: #2a2a2a55;
   width: 100%;
   display:block;
@@ -519,11 +523,14 @@ aria-expanded="false"
 }
 
 .overlay{
-  position: fixed;
-	width: 100%;
-	height: 100%;
-  background: rgba(0,0,0,0.5);
-  visibility: hidden;
+    position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black overlay */
+            display: none; /* Initially hidden */
+            z-index: 999; /* Adjust the z-index to c*/
 }
 
 .loader,
@@ -567,21 +574,67 @@ aria-expanded="false"
   visibility: visible;
 }
 
-.spanner, .overlay{
-	opacity: 0;
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	transition: all 0.3s;
+/* Styling for the overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black overlay */
+    display: none; /* Initially hidden */
+    z-index: 100000; /* Adjust the z-index to control the overlay's stacking order */
 }
 
-.spanner.show, .overlay.show {
-	opacity: 1
+.loader {
+  font-size: 10px;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  position: relative;
+  text-indent: -9999em;
+  animation: mulShdSpin 1.1s infinite ease;
+  transform: translateZ(0);
+  position: absolute;
 }
-#default-spinner{
+@keyframes mulShdSpin {
+  0%,
+  100% {
+    box-shadow: 0em -2.6em 0em 0em #ffffff, 1.8em -1.8em 0 0em rgba(255,255,255, 0.2), 2.5em 0em 0 0em rgba(255,255,255, 0.2), 1.75em 1.75em 0 0em rgba(255,255,255, 0.2), 0em 2.5em 0 0em rgba(255,255,255, 0.2), -1.8em 1.8em 0 0em rgba(255,255,255, 0.2), -2.6em 0em 0 0em rgba(255,255,255, 0.5), -1.8em -1.8em 0 0em rgba(255,255,255, 0.7);
+  }
+  12.5% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.7), 1.8em -1.8em 0 0em #ffffff, 2.5em 0em 0 0em rgba(255,255,255, 0.2), 1.75em 1.75em 0 0em rgba(255,255,255, 0.2), 0em 2.5em 0 0em rgba(255,255,255, 0.2), -1.8em 1.8em 0 0em rgba(255,255,255, 0.2), -2.6em 0em 0 0em rgba(255,255,255, 0.2), -1.8em -1.8em 0 0em rgba(255,255,255, 0.5);
+  }
+  25% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.5), 1.8em -1.8em 0 0em rgba(255,255,255, 0.7), 2.5em 0em 0 0em #ffffff, 1.75em 1.75em 0 0em rgba(255,255,255, 0.2), 0em 2.5em 0 0em rgba(255,255,255, 0.2), -1.8em 1.8em 0 0em rgba(255,255,255, 0.2), -2.6em 0em 0 0em rgba(255,255,255, 0.2), -1.8em -1.8em 0 0em rgba(255,255,255, 0.2);
+  }
+  37.5% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.2), 1.8em -1.8em 0 0em rgba(255,255,255, 0.5), 2.5em 0em 0 0em rgba(255,255,255, 0.7), 1.75em 1.75em 0 0em #ffffff, 0em 2.5em 0 0em rgba(255,255,255, 0.2), -1.8em 1.8em 0 0em rgba(255,255,255, 0.2), -2.6em 0em 0 0em rgba(255,255,255, 0.2), -1.8em -1.8em 0 0em rgba(255,255,255, 0.2);
+  }
+  50% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.2), 1.8em -1.8em 0 0em rgba(255,255,255, 0.2), 2.5em 0em 0 0em rgba(255,255,255, 0.5), 1.75em 1.75em 0 0em rgba(255,255,255, 0.7), 0em 2.5em 0 0em #ffffff, -1.8em 1.8em 0 0em rgba(255,255,255, 0.2), -2.6em 0em 0 0em rgba(255,255,255, 0.2), -1.8em -1.8em 0 0em rgba(255,255,255, 0.2);
+  }
+  62.5% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.2), 1.8em -1.8em 0 0em rgba(255,255,255, 0.2), 2.5em 0em 0 0em rgba(255,255,255, 0.2), 1.75em 1.75em 0 0em rgba(255,255,255, 0.5), 0em 2.5em 0 0em rgba(255,255,255, 0.7), -1.8em 1.8em 0 0em #ffffff, -2.6em 0em 0 0em rgba(255,255,255, 0.2), -1.8em -1.8em 0 0em rgba(255,255,255, 0.2);
+  }
+  75% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.2), 1.8em -1.8em 0 0em rgba(255,255,255, 0.2), 2.5em 0em 0 0em rgba(255,255,255, 0.2), 1.75em 1.75em 0 0em rgba(255,255,255, 0.2), 0em 2.5em 0 0em rgba(255,255,255, 0.5), -1.8em 1.8em 0 0em rgba(255,255,255, 0.7), -2.6em 0em 0 0em #ffffff, -1.8em -1.8em 0 0em rgba(255,255,255, 0.2);
+  }
+  87.5% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.2), 1.8em -1.8em 0 0em rgba(255,255,255, 0.2), 2.5em 0em 0 0em rgba(255,255,255, 0.2), 1.75em 1.75em 0 0em rgba(255,255,255, 0.2), 0em 2.5em 0 0em rgba(255,255,255, 0.2), -1.8em 1.8em 0 0em rgba(255,255,255, 0.5), -2.6em 0em 0 0em rgba(255,255,255, 0.7), -1.8em -1.8em 0 0em #ffffff;
+  }
+}
+/* Additional styling for the content within the overlay */
+.overlay-content {
     position: absolute;
-    top:50%;
-    left:50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    /* padding: 40px; */
+    border-radius: 5px;
 }
+
 </style>
 
 <!-- [ Header ] end -->
@@ -598,12 +651,12 @@ aria-expanded="false"
     </div>
 </footer>
 
-<div class="overlay"></div>
-<div class="spanner">
-  <div class="spinner-border text-primary" id="default-spinner" role="status">
-  <span class="sr-only">Loading...</span>
-  </div>
+<div class="overlay" id="fullViewportOverlay">
+    <div class="overlay-content">
+        <span id="default-spinner" class="loader"></span>
+    </div>
 </div>
+
 <!-- Warning Section Ends -->
 <!-- Required Js -->
 <script src="{{ URL('public/newasserts/js/jquery.form.js') }}"></script>
@@ -636,201 +689,17 @@ aria-expanded="false"
 <script>
 function showloading(){ 
     console.log("inside showloading");
-    $("div.spanner").addClass("show");
-    $("div.overlay").addClass("show");
+    document.getElementById('fullViewportOverlay').style.display = 'block';
 }
+
 function hideloading(){
     console.log("inside hideloading");
-    $("div.spanner").removeClass("show");
-    $("div.overlay").removeClass("show");
+    document.getElementById('fullViewportOverlay').style.display = 'none';
 }
+
+
+// showloading();
 </script>
-<!-- 
-    <script>
-                (function () {
-            var chartBarOptions = {
-                series: [
-                    {
-                        name: "Income",
-                        data:["0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00"]
-                    },
-                    {
-                        name: "Expense",
-                        data: ["0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00"]
-                    }
-                ],
-
-                chart: {
-                    height: 250,
-                    type: 'area',
-                    // type: 'line',
-                    dropShadow: {
-                        enabled: true,
-                        color: '#000',
-                        top: 18,
-                        left: 7,
-                        blur: 10,
-                        opacity: 0.2
-                    },
-                    toolbar: {
-                        show: false
-                    }
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    width: 2,
-                    curve: 'smooth'
-                },
-                title: {
-                    text: '',
-                    align: 'left'
-                },
-                xaxis: {
-                    categories:["31-Jan","30-Jan","29-Jan","28-Jan","27-Jan","26-Jan","25-Jan","24-Jan","23-Jan","22-Jan","21-Jan","20-Jan","19-Jan","18-Jan","17-Jan"],
-                    title: {
-                        text: 'Date'
-                    }
-                },
-                colors: ['#6fd944', '#6fd944'],
-
-                grid: {
-                    strokeDashArray: 4,
-                },
-                legend: {
-                    show: false,
-                },
-                // markers: {
-                //     size: 4,
-                //     colors: ['#6fd944', '#FF3A6E'],
-                //     opacity: 0.9,
-                //     strokeWidth: 2,
-                //     hover: {
-                //         size: 7,
-                //     }
-                // },
-                yaxis: {
-                    title: {
-                        text: 'Amount'
-                    },
-
-                }
-
-            };
-            var arChart = new ApexCharts(document.querySelector("#cash-flow"), chartBarOptions);
-            arChart.render();
-        })();
-        (function () {
-            var options = {
-                chart: {
-                    height: 180,
-                    type: 'bar',
-                    toolbar: {
-                        show: false,
-                    },
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    width: 2,
-                    curve: 'smooth'
-                },
-                series: [{
-                    name: "Income",
-                    data: [0,0,0,0,0,0,0,0,0,0,0,0]
-                }, {
-                    name: "Expense",
-                    data: [0,0,0,0,0,0,0,0,0,0,0,0]
-                }],
-                xaxis: {
-                    categories: ["January","February","March","April","May","June","July","August","September","October","November","December"],
-                },
-                colors: ['#3ec9d6', '#FF3A6E'],
-                fill: {
-                    type: 'solid',
-                },
-                grid: {
-                    strokeDashArray: 4,
-                },
-                legend: {
-                    show: true,
-                    position: 'top',
-                    horizontalAlign: 'right',
-                },
-                // markers: {
-                //     size: 4,
-                //     colors:  ['#3ec9d6', '#FF3A6E',],
-                //     opacity: 0.9,
-                //     strokeWidth: 2,
-                //     hover: {
-                //         size: 7,
-                //     }
-                // }
-            };
-            var chart = new ApexCharts(document.querySelector("#incExpBarChart"), options);
-            chart.render();
-        })();
-
-        (function () {
-            var options = {
-                chart: {
-                    height: 140,
-                    type: 'donut',
-                },
-                dataLabels: {
-                    enabled: false,
-                },
-                plotOptions: {
-                    pie: {
-                        donut: {
-                            size: '70%',
-                        }
-                    }
-                },
-                series: [],
-                colors: [],
-                labels: [],
-                legend: {
-                    show: true
-                }
-            };
-            var chart = new ApexCharts(document.querySelector("#expenseByCategory"), options);
-            chart.render();
-        })();
-
-        (function () {
-            var options = {
-                chart: {
-                    height: 140,
-                    type: 'donut',
-                },
-                dataLabels: {
-                    enabled: false,
-                },
-                plotOptions: {
-                    pie: {
-                        donut: {
-                            size: '70%',
-                        }
-                    }
-                },
-                series: [],
-                colors: [],
-                labels:  [],
-                legend: {
-                    show: true
-                }
-            };
-            var chart = new ApexCharts(document.querySelector("#incomeByCategory"), options);
-            chart.render();
-        })();
-            </script> -->
-
-
-
-
 
 <script>
 
@@ -863,20 +732,6 @@ function hideloading(){
         });
     }
     
-    // var custthemebg = document.querySelector("#cust-theme-bg");
-    // custthemebg.addEventListener("click", function () {
-    //     if (custthemebg.checked) {
-    //         document.querySelector(".dash-sidebar").classList.add("transprent-bg");
-    //         document
-    //             .querySelector(".dash-header:not(.dash-mob-header)")
-    //             .classList.add("transprent-bg");
-    //     } else {
-    //         document.querySelector(".dash-sidebar").classList.remove("transprent-bg");
-    //         document
-    //             .querySelector(".dash-header:not(.dash-mob-header)")
-    //             .classList.remove("transprent-bg");
-    //     }
-    // });
 
     function removeClassByPrefix(node, prefix) {
         for (let i = 0; i < node.classList.length; i++) {
@@ -886,6 +741,7 @@ function hideloading(){
             }
         }
     }
+
 </script>
 <!-- <script src="https://js.pusher.com/7.0.3/pusher.min.js"></script>
 <script >

@@ -154,6 +154,10 @@ class DashboardController extends Controller
 	}
 
 	public function GetBookings( Request $request){
+		if(session("AdminID") == ""){
+            return redirect("/");
+        }
+
         $from = $request->start;
         $to = $request->end;
         $Data = Booking::select(
@@ -175,6 +179,10 @@ class DashboardController extends Controller
     }
 
 	public function GetBookingGroupByVehicleType( Request $request){
+		if(session("AdminID") == ""){
+            return redirect("/");
+        }
+
 		$Data = DB::table('bookings')
 				->selectRaw('lower(car_type) as car_type, count(*) as count')
 				->where("company_id",session("CompanyLinkID"))

@@ -81,3 +81,39 @@
 .gallery-item button {
 	margin-top: 5px;
 }
+
+
+/* notification css */
+#notification-btn {
+	color: blue;
+	font-size: 18px;
+}
+
+#notification-btn .badge {
+	font-size: 11px;    
+	background: blue;
+	border-radius: 12px;
+	position: absolute;
+	top: 10%;
+}
+
+#notification-panel {
+	border: 1px solid #c7bdbd;
+	border-radius:0;
+	height: 600px;
+	width: 350px;
+	position: absolute;
+	top: 37px;
+	right: 15px;
+	z-index: 1000;                    
+	display: none;
+	padding: 10px;
+	overflow: auto;
+}
+
+#notification-panel .notification {
+	border: solid thin #c7bdbd;
+    padding: 2px 5px 2px 5px;
+	margin: 15px 0 15px 0;
+	border-radius: 0;
+}

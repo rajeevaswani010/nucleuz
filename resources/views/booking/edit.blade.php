@@ -56,6 +56,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 </style>
+
 <!-- [ Main Content ] start -->
 <div class="dash-container">
 
@@ -326,7 +327,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                     <button class="btn btn-sm btn-danger" style="float:right;" onclick="hideEditPanels();"><i class="fa fa-times"></i></button>
                                                 </div>
                                                 <div class="card-body">
-                                                    <form id="dropOffVehicleForm"  method="POST" onSubmit="confirmSubmit>
+                                                    <form id="dropOffVehicleForm"  method="POST" onSubmit="confirmSubmit">
                                                             @csrf
                                                             <div class="row">
                                                                 <div class="col-lg-4 mb-3">
@@ -381,36 +382,36 @@ input[type="number"]::-webkit-outer-spin-button {
                                 </div>
                                 <!-- drop off end -->
 
-                                <div class="booking-edit-panel" id="changeDatePanel">
+                                <div class="booking-edit-panel" id="changeDropOFFPanel">
                                             <div class="card">
                                                     <div class="card-header">
                                                         <h3 style="display:inline-block;">{{ __("Change Reservation Date") }}</h3>
                                                         <button class="btn btn-sm btn-danger" style="float:right;" onclick="hideEditPanels();"><i class="fa fa-times"></i></button>
                                                     </div>
                                                     <div class="card-body">
-                                                        <form id="changeDatesForm"  method="POST">
+                                                    <form id="changeDropOFFForm"  method="POST">
                                                             @csrf
-                                                            <div class="row">       
-                                                                <div class="col-lg-3 mb-4">
-                                                                    <label>{{ __("Pickup Date") }}<span class="text-danger">*</span></label>
-                                                                    <input type="date" class="form-control number" name="pickup_date_time" value="{{ $Booking->pickup_date_time }}" required>
-                                                                </div>                     
-                                                                <div class="col-lg-3 mb-4">
-                                                                    <label>{{ __("Pickup Date") }}<span class="text-danger">*</span></label>
-                                                                    <input type="date" class="form-control number" name="pickup_date_time" value="{{ $Booking->pickup_date_time }}" required>
-                                                                </div>
+                                                            <div class="row">    
                                                                 <div class="col-lg-3 mb-4">
                                                                     <label>{{ __("DropOFF Date") }}<span class="text-danger">*</span></label>
-                                                                    <input type="date" class="form-control number" name="dropoff_date" value="{{ $Booking->dropoff_date }}" required >
+                                                                    <input type="date" class="form-control number" name="dropoff_date" id="dropoff_date" value="{{ $Booking->dropOff_date }}" required min="{{ $Booking->pickup_date_time }}" >
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div id="available_vehicle_types">
+                                                                    
                                                                 </div>
                                                             </div>
                                                             <input type="submit" class="btn btn-success mt-4" value="Submit">
-                                                        </form>
+                                                            <script>
+                                                                console.log("{{ $Booking->pickup_date_time }}".slice(0,10));
+                                                                console.log("{{ $Booking->dropoff_date }}");
+                                                                $('#pickup_date').val("{{ $Booking->pickup_date_time }}".slice(0,10));
+                                                                $('#dropoff_date').val("{{ $Booking->dropoff_date }}".slice(0,10));
+                                                            </script>
+                                                    </form>
                                                     </div>
                                             </div>
-                                            <script>
-                                                console.log({{ $Booking->pickup_date_time }});
-                                                </script>
                                       </div>
                                 </div>
 
@@ -654,7 +655,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                 </div>
                                 @endif
 
-                                    
+                                    <div id="completeBookingPanel" class="row">
                                     @if($Booking->status == 5 && $Booking->drop_off_confirm == 1 )
                                         <h2>{{ __("Complete Booking") }}</h2>
                                         {!! Form::open(['id' => 'completeBookingForm', 'url' => 'booking/completeBooking', 'enctype' => 'multipart/form-data', "onSubmit" => "return confirmSubmit('Are you sure you want to close the booking')", 'method' => 'POST']) !!}
@@ -728,7 +729,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                             <script>
                                                 var extraKM = {{ $Booking->additional_km_reunning }} ;
                                                 var tariff = {{ $Booking->additional_kilometers_amount }};
-                                                $('#additional_km_charges').val(extraKM * tariff);
+                                                $('#additional_km_charges').val((extraKM * tariff).toFixed(2));
 
                                                 var final_amount_paid = {{ $Booking->grand_total - $Booking->advance_amount }}
                                                 $('#final_amount_paid').val(final_amount_paid.toFixed(2));
@@ -751,7 +752,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                     if ($(this).is(':checked')) {
                                                         var subtotal = {{ $Booking->sub_total }};
                                                         var advancepaid = {{ $Booking->advance_amount }};
-                                                        var additional_charges = parseInt($('#additional_charges').val());
+                                                        var additional_charges = $('#additional_charges').val();
                                                         
                                                         var full_discount = subtotal + advancepaid - (additional_charges/1.05).toFixed(2);
                                                         console.log("full discount-" +full_discount);
@@ -777,7 +778,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                     
                                                     var advancepaid = {{ $Booking->advance_amount }}
                                                     var additional_charges = parseInt($('#additional_charges').val());
-                                                    var more_discount = parseInt($('#more_discount').val());
+                                                    var more_discount = $('#more_discount').val();
 
                                                     if(isNaN(additional_charges)){
                                                         additional_charges = 0;
@@ -797,14 +798,15 @@ input[type="number"]::-webkit-outer-spin-button {
 
                                                     var final_amount_paid = grandtotal - advancepaid
 
-                                                    $('#sub_total').val(subtotal.toFixed(2));
+                                                    // $('#sub_total').val(subtotal.toFixed(2));
                                                     $('#vat').val(vat.toFixed(2));
                                                     $('#grand_total').val(grandtotal.toFixed(2));
                                                     $('#final_amount_paid').val(final_amount_paid.toFixed(2));
                                                 }
                                             </script>
                                     @endif
-                                    
+                                    </div>
+
                                     @if($Booking->status == 3)
                                         <div class="card mt-5">
                                             <div class="card-body">
@@ -859,13 +861,49 @@ input[type="number"]::-webkit-outer-spin-button {
             </div>
     <!-- [ Main Content ] end -->
 
+<div class="modal fade" id="booking-images-gallery" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Booking vehicle images</h5>
+        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+      <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="{{ URL('public') }}/logo.png" style="width:400px; height: auto;object-fit:cont;" alt="Image 1">
+        </div>
+        <div class="carousel-item">
+            <img src="{{ URL('public') }}/img2.png" style="width:400px; height: auto;object-fit:cont;" alt="Image 2">
+        </div>
+        <div class="carousel-item">
+            <img src="{{ URL('public') }}/speedy.png" style="width:400px; height: auto;object-fit:cont;" alt="Image 3">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+    </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- for image gallery -->
+<div id="booking-img">
+
+</div>
+
 <script>
-
-    function changeDates(){
-        $('.booking-edit-panel').css("display","none");
-        $("#changeDatePanel").fadeIn(200); // 200 milliseconds (1 second) animation
-    }
-
     function CalDis(){
         Disc = parseInt($("#discount_amount").val());
         if(Disc > 0){
@@ -894,6 +932,8 @@ input[type="number"]::-webkit-outer-spin-button {
         formdata.append("booking_id", {{ $Booking->id }});
         formdata.append("booking_vehicle_id",booking_vehicle_id);
 
+        // $('#booking-images-gallery').modal('show');
+
         $.ajax({
                 url: "{{ URL('Booking/GetBookingVehicleImages') }}",
                 method: "POST",
@@ -909,7 +949,8 @@ input[type="number"]::-webkit-outer-spin-button {
                     if(JsData.Status == 0){
                         alert(JsData.Message);
                     } else {
-                        showImagesInLightBox(JsData.Data);
+                        const imagePreviewModal = new ImagePreviewModal("booking-img",JsData.Data.BookingImagesArr);
+                        imagePreviewModal.show();
                     }
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
@@ -1026,6 +1067,11 @@ input[type="number"]::-webkit-outer-spin-button {
     function dropOffVehicle(){
         $('.booking-edit-panel').css("display","none");
         $("#dropOffVehiclePanel").fadeIn(200); // 200 milliseconds (1 second) animation
+    }
+
+    function changeDropOFF(){
+        $('.booking-edit-panel').css("display","none");
+        $("#changeDropOFFPanel").fadeIn(200); // 200 milliseconds (1 second) animation
     }
 
     function hideEditPanels(){
@@ -1178,6 +1224,52 @@ input[type="number"]::-webkit-outer-spin-button {
                 }              
         });
     });
+
+    $("#changeDropOFFForm").submit(function(){
+        event.preventDefault();
+        //alert("complete booking");
+        showloading();
+
+        var formdata = new FormData(event.target);
+        formdata.append("booking_id",{{ $Booking->id }});
+        console.log(formDataToJson(formdata));
+
+        $.ajax({
+                url: "{{ URL('Booking/changeDropOFF') }}",
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                processData: false, // Prevent jQuery from processing the data
+                contentType: false, // Set the content type to false to let the server handle it
+                data: formdata,
+                success: function( data, textStatus, jqXHR ) {
+                    JsData = JSON.parse(data);
+                    console.log(JsData);
+                    if(JsData.Status == 1){
+                        toastr["success"](JsData.Message);
+                        window.location.reload();
+                    } else {
+                        toastr["error"](JsData.Message);
+                    }
+                    hideloading();
+                },
+                error: function( jqXHR, textStatus, errorThrown ) {
+                    console.error("Fail to do operation. Error:"+jqXHR.status);
+                    hideloading();
+                    alert(jqXHR.statusText);
+                }              
+        });
+    });
 </script>
+
+@if($Booking->status == 5)
+<script>
+    var targetOffset = $("#completeBookingPanel").offset().top;
+    // Scroll to the target div
+    $("html, body").animate({ scrollTop: targetOffset }, 1000);
+</script>
+@endif
+
 
 @endsection

@@ -96,12 +96,17 @@ class BookingInviteController extends Controller
 
     public function add(Request $request){
         try {
+            if(session("AdminID") == ""){
+                return redirect("/");
+            }
+    
             $Input = $request->all();
 
             // echo '<pre>';print_r($Input);echo '</pre>';die();
 
             $Input["user_id"] = session("AdminID");
             $Input["company_id"] = session("CompanyLinkID");
+            $Input["link"] = URL("CustomerRegister")."/".base64_encode($Input["email"]);;
             $Office = BookingInvite::create($Input);
             $Office->link = URL("CustomerRegister")."/".base64_encode($Office->id."#".$Input["email"]);
             $Office->save();
