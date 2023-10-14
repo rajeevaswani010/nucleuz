@@ -460,7 +460,7 @@ aria-expanded="false"
 </li>--}}
 
 <!-- Notifications dropdown -->
-<li class="dropdown dash-h-item ">
+<!-- <li class="dropdown dash-h-item ">
     <div class="dropdown dropdown-notifications">
         <button type="button" id="notification-btn" class="btn btn-light" >
             <i class="fa fa-regular fa-bell" aria-hidden="true"> </i>
@@ -470,7 +470,7 @@ aria-expanded="false"
         <div class="card" id="notification-panel">
         </div>
     </div>
-</div>
+</div> -->
 <!-- // END Notifications dropdown -->
 <!-- </li> -->
 
