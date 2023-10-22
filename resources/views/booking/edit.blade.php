@@ -967,6 +967,10 @@ input[type="number"]::-webkit-outer-spin-button {
     function assignVehicle(){
         $('.booking-edit-panel').css("display","none");
         
+
+        @if($Booking->pickup_date_time > date('Y-m-d H:i:s', strtotime('+4 hour')))
+           alert("To Assign Vehicle, Pickup Date Should Be Today's Date, Still You Can Proceed, It Will Update Pickup As Today's Date")
+        @endif
         //get available vehicles
         var formdata = new FormData();
         formdata.append("booking_id", {{ $Booking->id }});

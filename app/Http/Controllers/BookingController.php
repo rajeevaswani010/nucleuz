@@ -797,6 +797,8 @@ class BookingController extends Controller
         $Booking = Booking::find($request->booking_id);
         $Vehicle = Vehicle::find($Input['vehicle_id']);
 
+        $GetPricing = Pricing::where("car_type", $Vehicle["car_type"])->where("company_id", session("CompanyLinkID"))->first();
+
         // validations
         
         // check license expiry
@@ -832,6 +834,29 @@ class BookingController extends Controller
         $Booking->vehicle_id = $BookingVehicle->vehicle_id;
         $Booking->status = 2;
         $Booking->advance_amount = $Input["advance_amount"];
+
+        #changing Assign Date calculations.
+        date_default_timezone_set("Asia/Muscat"); # setting current time zone
+        $DayDiff = $this->time_difference (date("Y-m-d"), $Booking->pickup_date_time,"day");
+        if($DayDiff != 0){
+           $ExtraAmount = $this->extraDays_calculation($DayDiff, $GetPricing);
+           $Booking->pickup_date_time = date("Y-m-d H:i:s");
+           $Booking->tarrif_detail += (int)$DayDiff;
+           $Booking->total +=  $ExtraAmount;
+        }else{
+           $Booking->pickup_date_time = date("Y-m-d H:i:s");
+        }
+        $BookingVehicle->pickup_date_time = $Booking->pickup_date_time;
+        $Booking->save();
+        $BookingVehicle->save();
+
+        $Booking = Booking::find($request->booking_id);
+        $SubTotal = $Booking->total - $Input["discount_amount"];
+        $TaxAmount = ($SubTotal * 5) / 100;
+        $Amount = $SubTotal + $TaxAmount;
+
+        $Booking->sub_total = $SubTotal;
+        $Booking->grand_total = $Amount;
         $Booking->save();
 
         //upload car image files..
