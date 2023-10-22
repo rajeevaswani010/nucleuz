@@ -1069,6 +1069,10 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     function dropOffVehicle(){
+        @if($Booking->dropoff_date > date('Y-m-d H:i:s', strtotime('+4 hour')))
+           alert("To Droff Off Vehicle, Droff Off Date Should Be Todays Date.")
+        @endif
+
         $('.booking-edit-panel').css("display","none");
         $("#dropOffVehiclePanel").fadeIn(200); // 200 milliseconds (1 second) animation
     }
