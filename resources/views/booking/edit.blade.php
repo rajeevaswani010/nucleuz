@@ -141,6 +141,12 @@ input[type="number"]::-webkit-outer-spin-button {
                                                         <form id="assignVehicleForm"  method="POST">
                                                             @csrf
                                                             <div class="row">                            
+                                                                <!-- <div class="col-lg-2 mb-12">
+                                                                    <label>Type <span class="text-danger">*</span></label>
+                                                                    <select class="form-control" id="car_type" name="car_type">
+                                                                        <option value="">{{ __("-Select-") }}</option>
+                                                                    </select>
+                                                                </div> -->
                                                                 <div class="col-lg-9 mb-12">
                                                                     <label>Vehicle <span class="text-danger">*</span></label>
                                                                     <select class="form-control" id="VehicleData" name="vehicle_id">
@@ -150,29 +156,29 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                 
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label>{{ __("KM Reading at time of pickup") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control" required name="km_reading_pickup">
+                                                                    <input type="number" class="form-control" required name="km_reading_pickup">
                                                                 </div>
 
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label>{{ __("Per day KM Allocation") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control" required name="km_allocation" value="{{ $Booking->km_allocation }}">
+                                                                    <input type="number" class="form-control" required name="km_allocation" value="{{ $Booking->km_allocation }}">
                                                                 </div>
                                                                 
 
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label>{{ __("Additional KM Amount") }}<span class="text-danger">*</span></label>
-                                                                    <input type="text" name="additional_kilometers_amount" class="form-control number" required value="{{ $Booking->additional_kilometers_amount }}">
+                                                                    <input type="number" name="additional_kilometers_amount" class="form-control number" required value="{{ $Booking->additional_kilometers_amount }}">
                                                                 </div>
                                                                 
 
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label>{{ __("Advance Amount") }}</label>
-                                                                    <input type="text" name="advance_amount" class="form-control number" value="0" id="AdvaneAmount" required onblur="fetchReviews()">
+                                                                    <input type="number" name="advance_amount" class="form-control number" value="0" id="AdvaneAmount" required onblur="fetchReviews()">
                                                                 </div>
 
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label>{{ __("Discount") }}<span class="text-danger">*</span></label>
-                                                                    <input type="text" name="discount_amount" class="form-control number" id="DiscountAmount" required value="{{ $Booking->discount_amount }}" onblur="fetchReviews()">
+                                                                    <input type="number" name="discount_amount" class="form-control number" id="DiscountAmount" required value="{{ $Booking->discount_amount }}" onblur="fetchReviews()">
                                                                 </div>
                                                                 
 
@@ -394,7 +400,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                             <div class="row">    
                                                                 <div class="col-lg-3 mb-4">
                                                                     <label>{{ __("DropOFF Date") }}<span class="text-danger">*</span></label>
-                                                                    <input type="date" class="form-control number" name="dropoff_date" id="dropoff_date" value="{{ $Booking->dropOff_date }}" required min="{{ $Booking->pickup_date_time }}" >
+                                                                    <input type="date" class="form-control number" name="dropoff_date" id="dropoff_date" value="{{ $Booking->dropOff_date }}" required >
                                                                 </div>
                                                             </div>
                                                             <div class="row">
@@ -403,12 +409,6 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                 </div>
                                                             </div>
                                                             <input type="submit" class="btn btn-success mt-4" value="Submit">
-                                                            <script>
-                                                                console.log("{{ $Booking->pickup_date_time }}".slice(0,10));
-                                                                console.log("{{ $Booking->dropoff_date }}");
-                                                                $('#pickup_date').val("{{ $Booking->pickup_date_time }}".slice(0,10));
-                                                                $('#dropoff_date').val("{{ $Booking->dropoff_date }}".slice(0,10));
-                                                            </script>
                                                     </form>
                                                     </div>
                                             </div>
@@ -752,10 +752,9 @@ input[type="number"]::-webkit-outer-spin-button {
                                                     if ($(this).is(':checked')) {
                                                         var subtotal = {{ $Booking->sub_total }};
                                                         var advancepaid = {{ $Booking->advance_amount }};
-                                                        var additional_charges = $('#additional_charges').val();
+                                                        var additional_charges = parseFloat($('#additional_charges').val());
                                                         
-                                                        var full_discount = subtotal + advancepaid - (additional_charges/1.05).toFixed(2);
-                                                        console.log("full discount-" +full_discount);
+                                                        var full_discount = subtotal + additional_charges;
 
                                                         $('#additional_charges').attr('readonly',true);
                                                         $('#more_discount').val(full_discount.toFixed(2));
@@ -768,17 +767,13 @@ input[type="number"]::-webkit-outer-spin-button {
                                                         computeBilling();
                                                     }
                                                 });
-
-                                                function setBilling(){
-                                                    //TODO
-                                                }
-                                            
+                                           
                                                 function computeBilling(){
                                                     var subtotal = {{ $Booking->sub_total }};
                                                     
                                                     var advancepaid = {{ $Booking->advance_amount }}
-                                                    var additional_charges = parseInt($('#additional_charges').val());
-                                                    var more_discount = $('#more_discount').val();
+                                                    var additional_charges = parseFloat($('#additional_charges').val());
+                                                    var more_discount = parseFloat($('#more_discount').val());
 
                                                     if(isNaN(additional_charges)){
                                                         additional_charges = 0;
@@ -787,18 +782,13 @@ input[type="number"]::-webkit-outer-spin-button {
                                                         more_discount = 0;
                                                     }
 
-                                                    console.log("subtotal - " + subtotal);
-                                                    console.log("advancepaid - " + advancepaid);
-                                                    console.log("additional_charges - " + additional_charges);
-                                                    console.log("more_discount - " + more_discount);
-
                                                     subtotal = subtotal + additional_charges - more_discount;
                                                     var vat = (subtotal * 0.05);
                                                     var grandtotal = subtotal + vat;
 
                                                     var final_amount_paid = grandtotal - advancepaid
 
-                                                    // $('#sub_total').val(subtotal.toFixed(2));
+                                                    $('#sub_total').val(subtotal.toFixed(2));
                                                     $('#vat').val(vat.toFixed(2));
                                                     $('#grand_total').val(grandtotal.toFixed(2));
                                                     $('#final_amount_paid').val(final_amount_paid.toFixed(2));
@@ -972,6 +962,57 @@ input[type="number"]::-webkit-outer-spin-button {
            alert("To Assign Vehicle, Pickup Date Should Be Today's Date, Still You Can Proceed, It Will Update Pickup As Today's Date")
         @endif
         //get available vehicles
+
+        // $today = new Date();
+        // $pickupDate = new Date("{{ $Booking->pickup_date_time }}");
+        // console.log($pickupDate.toDateString());
+
+        // if($today < $pickupDate){
+        //     var confirmation = window.confirm("You are trying to book ahead of actual pickup date of Booking.\
+        //     Vehicle availability will be checked for new date range before proceeding to assign vehicle.\
+        //     Are you sure you want to continue ?");
+        //     if(confirmation){
+        //             console.log("check for vehicle availability");
+
+        //             var formdata = new FormData();
+        //             formdata.append("booking_id", {{ $Booking->id }});
+        //             formdata.append("pickupDate", $today);
+        //             formdata.append("dropoffDate","{{ $Booking->dropoff_date }}");
+        //             $.ajax({
+        //                     url: "{{ URL('Booking/GetAvailableCarTypes') }}",
+        //                     method: "POST",
+        //                     headers: {
+        //                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //                     },
+        //                     processData: false, // Prevent jQuery from processing the data
+        //                     contentType: false, // Set the content type to false to let the server handle it
+        //                     data: formdata,
+        //                     success: function( data, textStatus, jqXHR ) {
+        //                         JsData = JSON.parse(data);
+        //                         console.log(JsData);
+        //                         if(JsData.Status == 0){
+        //                             alert("Available vehicles info is not available.")
+        //                         } else {
+        //                             console.log(JsData.Data);
+        //                             if(JsData.Data['{{ $Booking->car_type }}']<=0)
+        //                                 alert("Vehicle type - {{ $Booking->car_type }} is not available. Kindly choose another vehicle type for this booking.");
+        //                         }
+        //                     },
+        //                     error: function( jqXHR, textStatus, errorThrown ) {
+        //                         console.error("Fail to get info. Error:"+jqXHR.status);
+        //                         // onFailure({
+        //                         //     "Status":jqXHR.status
+        //                         //     ,"Message":jqXHR.statusText
+        //                         // });
+        //                     }              
+        //             });
+        //         } else {
+        //             console.log("assign vehicle");
+        //         }
+        //     }
+        //getAvailableVehicleTypes----------------------------
+
+        // //get available vehicles
         var formdata = new FormData();
         formdata.append("booking_id", {{ $Booking->id }});
         $.ajax({
@@ -990,11 +1031,11 @@ input[type="number"]::-webkit-outer-spin-button {
                         alert("Available vehicles info is not available.")
                     } else {
                         var select = $('#assignVehicleForm #VehicleData');
-                        select.innerHTML='';
+                        select.html('');
                         var opt = document.createElement('option');
                         opt.value = "";
-                        // opt.innerHTML = '--Select Vehicle--';
-                        // select.append(opt);
+                        opt.innerHTML = '--Select Vehicle--';
+                        select.append(opt);
 
                         JsData.Data.forEach(function(item, index, array) {
                             console.log(`Item at index ${index} is `);
@@ -1079,6 +1120,12 @@ input[type="number"]::-webkit-outer-spin-button {
 
     function changeDropOFF(){
         $('.booking-edit-panel').css("display","none");
+        
+        console.log("{{ $Booking->pickup_date_time }}".slice(0,10));
+        console.log("{{ $Booking->dropoff_date }}");
+        $('#pickup_date').val("{{ $Booking->pickup_date_time }}".slice(0,10));
+        $('#dropoff_date').val("{{ $Booking->dropoff_date }}".slice(0,10));
+        $('#dropoff_date').attr("min","{{ $Booking->pickup_date_time }}".slice(0,10));
         $("#changeDropOFFPanel").fadeIn(200); // 200 milliseconds (1 second) animation
     }
 
@@ -1260,7 +1307,7 @@ input[type="number"]::-webkit-outer-spin-button {
                     } else {
                         toastr["error"](JsData.Message);
                     }
-                    hideloading();
+                    // hideloading();
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     console.error("Fail to do operation. Error:"+jqXHR.status);

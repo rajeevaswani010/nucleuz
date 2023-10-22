@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Session;
 use Mail;
+use Log;
 
 use App\Models\Admin;
 use App\Models\License;
@@ -50,6 +51,9 @@ class HomeController extends Controller
 
 	public function DoLogin(Request $request){
 		$CheckAdmin = Admin::where('email', $request->Username)->count();
+		$Input = $request->all();
+
+		Log::debug($Input);
 
 		if( $CheckAdmin > 0 )
 		{
@@ -106,6 +110,7 @@ class HomeController extends Controller
 			session(['AdminImage' => $GetAdmin->image]);
 			// session(['Admin' => $admin]);
 			session(['Link_Id' => $GetAdmin->link_id]);
+			session(['TimeZone' => $Input["timezone"]]);
 			return redirect('dashboard');
 		} else {
 			Session::flash('Danger', "Invalid Email");

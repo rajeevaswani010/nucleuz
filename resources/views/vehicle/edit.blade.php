@@ -1,6 +1,30 @@
 @extends("layout.default")
 
 @section("content")
+<style>
+#statusactive:checked + label {
+    background-color: #198754 !important;
+    color: white;
+    font-weight: bold;
+}
+
+#statusservice:checked + label {
+  background-color: #ffa21d !important;
+  color: white;
+  font-weight: bold;
+}
+
+#statusrepair:checked + label {
+  background-color: #dc3545 !important;
+  color: white;
+  font-weight: bold;
+}
+
+/* #vehicleinfo.card {
+    border-right: 5px solid green;
+} */
+
+</style>
 
 <!-- [ Main Content ] start -->
 <div class="dash-container">
@@ -25,7 +49,7 @@
         </div>
         <div class="row">
         <div class="col-xl-12">
-            <div class="card">
+            <div class="card" id="vehicleinfo">
                 <div class="card-body ">
                     
                 {!! Form::open(['url' => 'vehicle/'.$Data->id, 'enctype' => 'multipart/form-data', 'method' => 'PUT']) !!}
@@ -50,15 +74,32 @@
                                     <option @if($Data->car_type == "4wd") selected @endif value="4wd">{{ __("4WD") }}</option> -->
                                 </select>
                             </div>
-                            <div class="form-group col-6"></div>
-                            <div class="form-group col-2">  <!-- vehicle status -->
-                                <label for="from" class="col-form-label text-dark">{{ __("Status") }}</label>
-                                <select class="form-control font-style" name="status" required >
-                                    <option value="">{{ __("--Select--") }}</option>
-                                    <option @if($Data->status == 1) selected @endif value="1">{{ __("ACTIVE") }}</option>
-                                    <option @if($Data->status == 2) selected @endif value="2">{{ __("SERVICE") }}</option>
-                                    <option @if($Data->status == 3) selected @endif value="3">{{ __("REPAIR") }}</option>
-                                </select>
+                            <div class="form-group col-5">
+                            </div>
+                            <div class="form-group col-3">  <!-- vehicle status -->
+                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group" id="statusradio">
+                                    <input type="radio" class="btn-check" name="status" id="statusactive" autocomplete="off" value="1" @if($Data->status == 1) checked @endif >
+                                    <label class="btn btn-lg btn-outline-success" for="statusactive">Active</label>
+
+                                    <input type="radio" class="btn-check" name="status" id="statusservice" value="2" autocomplete="off" @if($Data->status == 2) checked @endif >
+                                    <label class="btn btn-lg btn-outline-warning" for="statusservice">Service</label>
+
+                                    <input type="radio" class="btn-check" name="status" id="statusrepair" value="3" autocomplete="off" @if($Data->status == 3) checked @endif>
+                                    <label class="btn btn-lg btn-outline-danger" for="statusrepair">Repair</label>
+                                </div>
+
+                                <!-- <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="status" id="statusradio1" value="1">
+                                    <label class="form-check-label" for="statusradio1">ACTIVE</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="status" id="statusradio2" value="2">
+                                    <label class="form-check-label" for="statusradio2">SERVICE</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="status" id="statusradio3" value="3">
+                                    <label class="form-check-label" for="statusradio3">REPAIR</label>
+                                </div>                             -->
                             </div>
                         </div>
 

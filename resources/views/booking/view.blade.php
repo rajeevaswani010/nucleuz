@@ -173,11 +173,7 @@
     </div>
     </td>
     <td>
-        @if($DT->status == 3)
-            OMR {{ number_format($DT->grand_total, 2) }}
-        @else
-            ---
-        @endif
+        OMR {{ number_format($DT->grand_total, 2) }}
     </td>
     <td>
     @if($DT->status == 3)
