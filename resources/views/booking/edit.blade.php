@@ -798,7 +798,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
                                                     var final_amount_paid = grandtotal - advancepaid
 
-                                                    // $('#sub_total').val(subtotal.toFixed(2));
+                                                    $('#sub_total').val(subtotal.toFixed(2));
                                                     $('#vat').val(vat.toFixed(2));
                                                     $('#grand_total').val(grandtotal.toFixed(2));
                                                     $('#final_amount_paid').val(final_amount_paid.toFixed(2));
@@ -833,7 +833,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
                                             <h3>{{ __("Drop off Details") }}</h3>
                                             
-                                            <div><b>{{ __("Final Amount Paid") }} :</b> OMR {{ $Booking->final_amount_paid }}</div>
+                                            <div><b>{{ __("Final Amount Paid") }} :</b> OMR {{ number_format($Booking->final_amount_paid, 2 )}}</div>
                                             <!-- @if($Booking->damge_image != "")
                                             <div class="mt-3">
                                                 <b>{{ __("Car Image") }}</b>

@@ -1064,6 +1064,7 @@ class BookingController extends Controller
         $Booking->grand_total = $Input["grand_total"];
         $Booking->discount_note = $Input["discount_note"];
         $Booking->final_amount_paid = $Input["final_amount_paid"];
+        $Booking->additional_charges = $Input["additional_charges"];
         $Booking->status = 3;
         $Booking->save();
         
