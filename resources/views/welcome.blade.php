@@ -83,10 +83,16 @@
             
         </div>
 
-                <div class="form-group mb-4">
-
-            <a href="{{ URL('reset-password') }}" class="text-xs">Forgot Your Password?</a>
-                
+        <div class="form-group mb-4">
+                <a href="{{ URL('reset-password') }}" class="text-xs">Forgot Your Password?</a>
+                <div class="form-group" hidden>
+                    <label for="timezone" class="form-label form-label-sm">Time Zone</label>
+                    <input class="form-control form-control-sm" id="timezone" type="text" name="timezone" required readonly/>
+                        <script>
+                            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                            $('#timezone').val(timeZone);
+                        </script>
+                </div>
         </div>
         <div class="d-grid">
             <button type="submit" class="btn-login btn btn-primary btn-block mt-2" id="login_button">Login</button>

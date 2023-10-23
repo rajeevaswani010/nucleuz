@@ -128,10 +128,10 @@ class BookingController extends Controller
         }
 
         $ActiveAction = "booking";
-        $AllVehicles = Vehicle::where("company_id", session("CompanyLinkID"))->get();
-        $AllPricing = Pricing::where("company_id", session("CompanyLinkID"))->get();
+        // $AllVehicles = Vehicle::where("company_id", session("CompanyLinkID"))->get();
+        // $AllPricing = Pricing::where("company_id", session("CompanyLinkID"))->get();
         $Conuntry = Country::orderBy("name")->get();
-        return view('booking.add', compact("ActiveAction", "AllVehicles", "AllPricing", "Conuntry", "Requirements", "CustomerId", "InviteId"));
+        return view('booking.add', compact("ActiveAction", "Conuntry", "Requirements", "CustomerId", "InviteId"));
     }
 
     /**
@@ -734,9 +734,7 @@ class BookingController extends Controller
             return json_encode(array("GrandTotal" => $Amount, "Tax" => $TaxAmount, "SubTotal" => $SubTotal, "Discount" => $DiscountAmount, "Due" => number_format($DueAmount, 2), "Advance" => $AdvanceAmount));
         }catch(Exception $e){
             echo $e->getMessage();
-        }
-
-        
+        }        
     }
     
     public function GetAvailableVehicles(Request $request){
@@ -760,7 +758,7 @@ class BookingController extends Controller
                 $BookedVehiclesId[] = $obj->vehicle_id;
             }
 
-            $AllVehicles = Vehicle::whereNotIn("id", $BookedVehiclesId)->where("car_type", $Booking->car_type)->where("company_id", $Booking->company_id)->get();
+            $AllVehicles = Vehicle::whereNotIn("id", $BookedVehiclesId)->where("car_type", $Booking->car_type)->where("company_id", $Booking->company_id)->where("status",1)->get();
             return json_encode(array("Status" => 1 , "Message" => "" , "Data" => $AllVehicles));
         } catch(Exception $e){
             echo $e.getMessage();
@@ -770,13 +768,31 @@ class BookingController extends Controller
 
 
     public function GetAvailableCarTypes(Request $request){
-            $numOfDays = $request->numOfDays;
-            $pickupDateTime = $request->pickupDate." 00:00:00";
-            $dropDateTime = date('Y-m-d 23:59:59', strtotime("$pickupDateTime +$numOfDays days"));
+        try {
+            $Input = $request->all();
+            Log::debug($Input);
+
+            $dropDateTime;
+            $booking_id = null;
+            $pickupDateTime = $Input["pickupDate"]." 00:00:00";
+            if (isset($Input['booking_id'])) {
+                $booking_id = $Input['booking_id']; //counter the current booking for checking vehicle availability
+            }
+            
+            if (isset($Input['numOfDays'])) {
+                $numOfDays = $request->numOfDays;
+                $dropDateTime = date('Y-m-d 23:59:59', strtotime("$pickupDateTime +$numOfDays days"));
+            } else {
+                $dropDateTime = $Input["dropoffDate"];
+            }
             Log::info($dropDateTime);
 
-            $data = $this->_getAvailableCarTypes($pickupDateTime,$dropDateTime);
+            $data = $this->_getAvailableCarTypes($pickupDateTime,$dropDateTime,$booking_id);
             return json_encode(array("Status" => 1, "Message" => "", "Data" => $data));
+        } catch(Exception $e){
+            echo $e.getMessage();
+            return json_encode(array("Status" => 0 , "Message" => "Fail to get available vehicles types." , "Data" => array()));
+        }
     }
 
     public function CancelBooking($id){
@@ -788,7 +804,6 @@ class BookingController extends Controller
     }
 
     public function AssignVehicle(Request $request){ //TODO add implementation
-        Log::debug("bookingcontroller AssignVehicle - enter");
         if(session("AdminID") == ""){
             return redirect("/");
         }
@@ -832,31 +847,41 @@ class BookingController extends Controller
         Log::debug($BookingVehicle->id);
 
         $Booking->vehicle_id = $BookingVehicle->vehicle_id;
+        $Booking->advance_amount += $Input["advance_amount"];
+        $Booking->discount_amount += $Input["discount_amount"];
         $Booking->status = 2;
-        $Booking->advance_amount = $Input["advance_amount"];
 
-        #changing Assign Date calculations.
-        date_default_timezone_set("Asia/Muscat"); # setting current time zone
-        $DayDiff = $this->time_difference (date("Y-m-d"), $Booking->pickup_date_time,"day");
-        if($DayDiff != 0){
-           $ExtraAmount = $this->extraDays_calculation($DayDiff, $GetPricing);
-           $Booking->pickup_date_time = date("Y-m-d H:i:s");
-           $Booking->tarrif_detail += (int)$DayDiff;
-           $Booking->total +=  $ExtraAmount;
-        }else{
-           $Booking->pickup_date_time = date("Y-m-d H:i:s");
-        }
-        $BookingVehicle->pickup_date_time = $Booking->pickup_date_time;
-        $Booking->save();
-        $BookingVehicle->save();
+        // $Booking->advance_amount = $Input["advance_amount"];
 
-        $Booking = Booking::find($request->booking_id);
-        $SubTotal = $Booking->total - $Input["discount_amount"];
-        $TaxAmount = ($SubTotal * 5) / 100;
-        $Amount = $SubTotal + $TaxAmount;
+        // #changing Assign Date calculations.
+        // date_default_timezone_set("Asia/Muscat"); # setting current time zone
+        // $DayDiff = $this->time_difference (date("Y-m-d"), $Booking->pickup_date_time,"day");
+        // if($DayDiff != 0){
+        //    $ExtraAmount = $this->extraDays_calculation($DayDiff, $GetPricing);
+        //    $Booking->pickup_date_time = date("Y-m-d H:i:s");
+        //    $Booking->tarrif_detail += (int)$DayDiff;
+        //    $Booking->total +=  $ExtraAmount;
+        // }else{
+        //    $Booking->pickup_date_time = date("Y-m-d H:i:s");
+        // }
+        // $BookingVehicle->pickup_date_time = $Booking->pickup_date_time;
+        // $Booking->save();
+        // $BookingVehicle->save();
 
-        $Booking->sub_total = $SubTotal;
-        $Booking->grand_total = $Amount;
+        // $Booking = Booking::find($request->booking_id);
+        // $SubTotal = $Booking->total - $Input["discount_amount"];
+        // $TaxAmount = ($SubTotal * 5) / 100;
+        // $Amount = $SubTotal + $TaxAmount;
+
+        // $Booking->sub_total = $SubTotal;
+        // $Booking->grand_total = $Amount;
+
+        $Booking->pickup_date_time =  $BookingVehicle->pickup_date_time;
+
+        //update tarrif
+        $this->_updateBillingDetails($Booking);
+        Log::debug("new tariff detail - ".$Booking->tarrif_detail);
+
         $Booking->save();
 
         //upload car image files..
@@ -886,7 +911,6 @@ class BookingController extends Controller
         });
         
         $data = array();
-        Log::debug("bookingcontroller AssignVehicle - exit");
         return json_encode(array("Status" => 1, "Message" => "Vehicle successfully assigned", "Data" => $data));
     }
 
@@ -978,11 +1002,11 @@ class BookingController extends Controller
     }
 
     public function dropOffVehicle(Request $request){ //TODO add implementation
-        Log::debug("dropOFfVehicle enter ");
         if(session("AdminID") == ""){
             return redirect("/");
         }
         $Input = $request->all();
+
         Log::debug($Input);
         $Booking = Booking::find($request->booking_id);
 
@@ -1027,6 +1051,7 @@ class BookingController extends Controller
         $Booking->status = 5;
         $Booking->drop_off_confirm = 1;
 
+        $this->_updateBillingDetails($Booking);
         $Booking->save();
 
         // upload car damge  files..
@@ -1047,7 +1072,6 @@ class BookingController extends Controller
         }
 
         $data = array();
-        Log::debug("dropOFfVehicle exit ");
         return json_encode(array("Status" => 1, "Message" => "Vehicle Dropped Successfully", "Data" => $data));
     }
 
@@ -1098,20 +1122,18 @@ class BookingController extends Controller
         if($newDropOff > $curDropOff){
             Log::debug("postpone");
             $nextDate = date('Y-m-d', strtotime($curDropOff . ' +1 day')); // Increment the date by 1 day
-            $getAvailableCartypes = $this->_getAvailableCarTypes($nextDate,$newDropOff);
+            $getAvailableCartypes = $this->_getAvailableCarTypes($nextDate,$newDropOff,null);
             if($getAvailableCartypes[$Booking->car_type]<0){
                 return json_encode(array("Status" => 0, "Message" => "Vehicle not available for additional days", "Data" => $Data));
             }
         } else {
             Log::debug("prepone");
         }
-        $date1 = new DateTime($Booking->pickup_date_time); // Replace with your first date
-        $date2 = new DateTime($newDropOff); // Replace with your second date
-        
-        $interval = $date1->diff($date2);
-        $numberOfDays = $interval->days;
-        $Booking->tarrif_detail = $numberOfDays;
+
         $Booking->dropoff_date = $newDropOff;
+        
+        //update billing.. 
+        Log::debug($this->_updateBillingDetails($Booking));
         $Booking->save();
         return json_encode(array("Status" => 1, "Message" => "Dates changed successfully", "Data" => array()));
     }
@@ -1366,7 +1388,54 @@ class BookingController extends Controller
         return $UpdatedInput;
     }
 
-    protected function _getAvailableCarTypes($pickupDate,$dropoffDate){
+    protected function _updateBillingDetails($Booking){
+        $DopDate = new DateTime($Booking->dropoff_date);
+        $pickupDate = new DateTime(substr($Booking->pickup_date_time, 0, 10));
+        
+        $interval = $DopDate->diff($pickupDate);
+        $numberOfDays = $interval->days;
+
+        $GetPricing = Pricing::where("car_type", $Booking->car_type)->first();
+
+        $DailyBasePrice = $WeeklyBasePrice = $MonthlyBasePrice = 0;
+        if(isset($GetPricing->daily_pricing)){
+            $DailyBasePrice = $GetPricing->daily_pricing;
+        }
+        if(isset($GetPricing->weekly_pricing)){
+            $WeeklyBasePrice = $GetPricing->weekly_pricing;
+        }
+
+        if(isset($GetPricing->monthly_pricing)){
+            $MonthlyBasePrice = $GetPricing->monthly_pricing;
+        }
+
+        $Amount = $this->rent_calculation($numberOfDays, $GetPricing);
+        $Total = $Amount;
+        
+        $Amount -= $Booking["discount_amount"]; 
+        $Amount -= $Booking["advance_amount"];
+        $SubTotal = $Amount;           
+        
+        $TaxAmount = ($Amount * 5) / 100;
+        $Amount += $TaxAmount;
+        $GrandTotal = $Amount;
+    
+        $Booking["tarrif_detail"] = $numberOfDays;
+        $Booking["total"] = $Total;
+        $Booking["sub_total"] = $SubTotal;
+        $Booking["grand_total"] = $GrandTotal;
+
+        return array(
+            "total" => $Total,
+            "discount" => $Booking["discount_amount"],
+            "advance_amount" => $Booking["advance_amount"],
+            "sub_total" => $SubTotal,
+            "tax" => $TaxAmount,
+            "grand_total" => $GrandTotal
+        );
+    }
+    
+    protected function _getAvailableCarTypes($pickupDate,$dropoffDate,$booking_id){
         Log::debug($pickupDate);
         $getAllVehicleResp = collect();
 
@@ -1374,6 +1443,7 @@ class BookingController extends Controller
             $GetAllVehicles = DB::table('vehicles')
                         ->selectRaw('car_type, count(*) as count')
                         ->where("company_id",session("CompanyLinkID"))
+                        ->where("status",1)
                         ->groupBy('car_type')
                         ->orderBy('car_type')
                         ->get()
@@ -1383,14 +1453,27 @@ class BookingController extends Controller
                 $getAllVehicleResp[$obj->car_type] = $obj->count;
             }
 
-            $query = 'select car_type from bookings where company_id = '.session("CompanyLinkID")
+            $today = date("Y-m-d");
+            if($booking_id != null){
+                $query = 'select car_type from bookings where company_id = '.session("CompanyLinkID")
+                    .' and (id != '.$booking_id.')' //by default this argument is null... so no worry
+                    .' and (status = 1 and pickup_date_time >= \''.$today.'\' )'
                     .' and ((status = 1 and pickup_date_time <= \''.$dropoffDate.'\' and dropoff_date >= \''.$pickupDate.'\') or ' 
-                    .' ( status = 2 and pickup_date_time <= \''.$dropoffDate.'\' ))';
-                    
+                    .' ( status = 2 and pickup_date_time <= \''.$dropoffDate.'\' ))'
+                ;
+            } else {
+                $query = 'select car_type from bookings where company_id = '.session("CompanyLinkID")
+                    .' and (status = 1 and pickup_date_time >= \''.$today.'\' )'
+                    .' and ((status = 1 and pickup_date_time <= \''.$dropoffDate.'\' and dropoff_date >= \''.$pickupDate.'\') or ' 
+                    .' ( status = 2 and pickup_date_time <= \''.$dropoffDate.'\' ))'
+                ;
+            }
                         
             Log::info($query);
             $GetAllBookings = DB::select($query);
             foreach ($GetAllBookings as $obj){
+                if( !isset($getAllVehicleResp[$obj->car_type]) ) 
+                    $getAllVehicleResp[$obj->car_type] = 0;
                 $getAllVehicleResp[$obj->car_type] -= 1;
             }            
         } catch(Exception $e){
