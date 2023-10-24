@@ -831,6 +831,7 @@ class BookingController extends Controller
         }
 
         // return json_encode(array("Status" => 0, "Message" => "Doing testing.. ", "Data" => array()));
+        date_default_timezone_set("Asia/Muscat"); # setting current time zone
 
         $BookingVehicle = new BookingVehicle();
         $BookingVehicle->company_id = $Booking->company_id;
@@ -847,8 +848,8 @@ class BookingController extends Controller
         Log::debug($BookingVehicle->id);
 
         $Booking->vehicle_id = $BookingVehicle->vehicle_id;
-        $Booking->advance_amount += $Input["advance_amount"];
-        $Booking->discount_amount += $Input["discount_amount"];
+        $Booking->advance_amount = $Input["advance_amount"];
+        $Booking->discount_amount = $Input["discount_amount"];
         $Booking->status = 2;
 
         // $Booking->advance_amount = $Input["advance_amount"];
@@ -922,6 +923,8 @@ class BookingController extends Controller
         $Input = $request->all();
         Log::debug($Input);
         $Booking = Booking::find($request->booking_id);
+
+        date_default_timezone_set("Asia/Muscat"); # setting current time zone
 
         $CurrentBookingVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))
                     ->where("booking_id",$Input["booking_id"])
@@ -1009,10 +1012,17 @@ class BookingController extends Controller
 
         Log::debug($Input);
         $Booking = Booking::find($request->booking_id);
-
         $CurrentBookingVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))
                     ->where("booking_id",$Input["booking_id"])
                     ->where("vehicle_id",$Input["cur_vehicle_id"])->first();
+
+        //check residence card expiry
+        if ( $Input["km_drop_time"] <= 0 && $Input["km_drop_time"] < $CurrentBookingVehicle->km_reading_pickup ) {
+            return json_encode(array("Status" => 0, "Message" => "Booking Error. invalid input", "Data" => null));
+        }
+        
+        date_default_timezone_set("Asia/Muscat"); # setting current time zone
+
 
         $CurrentBookingVehicle->km_drop_time = $Input["km_drop_time"];
         $CurrentBookingVehicle->dmage = $Input["dmage"];
@@ -1045,13 +1055,11 @@ class BookingController extends Controller
         
         $Booking->sub_total = $subTotal;
         $TaxAmount = ($subTotal * 5) / 100;
-        $Booking->grand_total = $subTotal + $TaxAmount;
-
         //update status
         $Booking->status = 5;
         $Booking->drop_off_confirm = 1;
 
-        $this->_updateBillingDetails($Booking);
+       $this->_updateBillingDetails($Booking);
         $Booking->save();
 
         // upload car damge  files..
@@ -1394,6 +1402,12 @@ class BookingController extends Controller
         
         $interval = $DopDate->diff($pickupDate);
         $numberOfDays = $interval->days;
+        if($numberOfDays==0){
+            $Booking["tarrif_detail"] = 0;
+            $numberOfDays = 1;
+        } else 
+            $Booking["tarrif_detail"] = $numberOfDays;
+
 
         $GetPricing = Pricing::where("car_type", $Booking->car_type)->first();
 
@@ -1413,14 +1427,13 @@ class BookingController extends Controller
         $Total = $Amount;
         
         $Amount -= $Booking["discount_amount"]; 
-        $Amount -= $Booking["advance_amount"];
+        // $Amount -= $Booking["advance_amount"];
         $SubTotal = $Amount;           
         
-        $TaxAmount = ($Amount * 5) / 100;
-        $Amount += $TaxAmount;
-        $GrandTotal = $Amount;
+        $TaxAmount = ($SubTotal * 5) / 100;
+        $GrandTotal = $SubTotal + $TaxAmount;
     
-        $Booking["tarrif_detail"] = $numberOfDays;
+        // $Booking["tarrif_detail"] = $numberOfDays;
         $Booking["total"] = $Total;
         $Booking["sub_total"] = $SubTotal;
         $Booking["grand_total"] = $GrandTotal;
