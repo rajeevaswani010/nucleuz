@@ -342,7 +342,7 @@
     </div>
 
     <style>
-        #LoadSubTotal, #LoadTax, #LoadDiscount, #LoadGrandTotal, #LoadDue{
+        .billingElement{
             margin-left: 100px!important;
             margin-top: -20px!important;
         }
@@ -355,27 +355,32 @@
 
                 <div class="mt-4">
                     <b>{{ __("Sub Total") }} :</b>
-                     <div id="LoadSubTotal"><b>0.0</b></div>
+                     <div id="LoadSubTotal" class="billingElement"><b>0.0</b></div>
                 </div>
 
                 <div class="mt-2">
                     <b>{{ __("Discount") }} :</b>
-                     <div id="LoadDiscount"><b>0.0</b></div>
+                     <div id="LoadDiscount" class="billingElement"><b>0.0</b></div>
                 </div>
 
                 <div class="mt-2">
                     <b>{{ __("VAT") }}(5%) :</b>
-                     <div id="LoadTax"><b>0.0</b></div>
+                     <div id="LoadTax" class="billingElement"><b>0.0</b></div>
                 </div>
 
                 <div class="mt-2">
                     <b>{{ __("Grand Total") }} :</b>
-                    <div id="LoadGrandTotal"><b>0.0</b></div>
+                    <div id="LoadGrandTotal" class="billingElement"><b>0.0</b></div>
                 </div>
+
+               <!-- <div class="mt-2">
+                    <b>{{ __("Advance") }} :</b>
+                    <div id="LoadAdvance" class="billingElement"><b>0.0</b></div>
+                </div> --> 
               
                 <div class="mt-2">
                     <b>{{ __("Due") }} :</b>
-                    <div id="LoadDue"><b>0.0</b></div>
+                    <div id="LoadDue" class="billingElement"><b>0.0</b></div>
                 </div>
               
                 <div class="clearfix"></div>
@@ -535,7 +540,7 @@
         $("#LoadTax").html('<b>0.0</b>');
         $("#LoadGrandTotal").html('<b>0.0</b>');
         $("#LoadDiscount").html('<b>0.0</b>');
-        //$("#LoadAdvance").html('<b>0.0</b>');
+        $("#LoadAdvance").html('<b>0.0</b>');
         $("#LoadDue").html('<b>0.0</b>');
 
     }
@@ -564,7 +569,7 @@
               $("#LoadTax").html('<b>'+JsData.Tax+'</b>');
               $("#LoadGrandTotal").html('<b>'+JsData.GrandTotal+'</b>');
               $("#LoadDiscount").html('<b>'+JsData.Discount+'</b>');
-              //$("#LoadAdvance").html('<b>'+JsData.Advance+'</b>');
+              $("#LoadAdvance").html('<b>'+JsData.Advance+'</b>');
               $("#LoadDue").html('<b>'+JsData.Due+'</b>');
           },
           error: function( jqXHR, textStatus, errorThrown ) {
