@@ -158,8 +158,7 @@ class BookingController extends Controller
 
         $Customer = Customer::where("company_id", session("CompanyLinkID"))->where("id",$CustomerID)->get();
 
-        // $CustomerFound = 0;
-        
+        // $CustomerFound = 0;        
         
         if($Input["payment_mode"] == "Card"){
             if($request->file('card_details') == null){

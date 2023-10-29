@@ -29,7 +29,7 @@
         </div>
 
         <div style="float: left; width: 45%;">
-            <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 250px;">
+            <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 350px;">
                 <div style="flex: 1 1 auto; padding: 1rem 1rem;">
                     <h2>{{ __("Booking Details") }}</h2>
                   <!--  <div class="mt-4"><b>Tarrif</b> {{ $Booking->tarrif_type }}</div> -->

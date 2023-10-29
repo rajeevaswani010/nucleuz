@@ -900,8 +900,8 @@ input[type="number"]::-webkit-outer-spin-button {
 
         @if($Booking->pickup_date_time > date('Y-m-d H:i:s', strtotime('+4 hour')))
         //    alert("To Assign Vehicle, Pickup Date Should Be Today's Date, Still You Can Proceed, It Will Update Pickup As Today's Date")
-           alert("You are assigning vehicle before the scheduled pickup date. Billing will be adjusted accordingly.");
-v        @endif
+           alert("You are assigning vehicle before the scheduled pickup date. Billing will be adjusted accordingly.")
+        @endif
 
         console.log("{{ $Booking->residency_card_id }}");
         
