@@ -855,10 +855,6 @@ input[type="number"]::-webkit-outer-spin-button {
         return false;
     }
 
-    function showImagesInLightBox(data) {
-
-    }
-
     function viewVehicleImages(booking_vehicle_id){
         console.log(booking_vehicle_id);
 
@@ -903,8 +899,9 @@ input[type="number"]::-webkit-outer-spin-button {
         
 
         @if($Booking->pickup_date_time > date('Y-m-d H:i:s', strtotime('+4 hour')))
-           alert("To Assign Vehicle, Pickup Date Should Be Today's Date, Still You Can Proceed, It Will Update Pickup As Today's Date")
-        @endif
+        //    alert("To Assign Vehicle, Pickup Date Should Be Today's Date, Still You Can Proceed, It Will Update Pickup As Today's Date")
+           alert("You are assigning vehicle before the scheduled pickup date. Billing will be adjusted accordingly.");
+v        @endif
 
         console.log("{{ $Booking->residency_card_id }}");
         
@@ -1012,7 +1009,8 @@ input[type="number"]::-webkit-outer-spin-button {
 
     function dropOffVehicle(){
         @if($Booking->dropoff_date > date('Y-m-d H:i:s', strtotime('+4 hour')))
-           alert("To Droff Off Vehicle, Droff Off Date Should Be Todays Date.")
+           //alert("To Droff Off Vehicle, Droff Off Date Should Be Todays Date.");
+           alert("You are dropping off vehicle prior to scheduled drop off date. Billing will be adjusted accordingly. Kindly use additional charge field at billing time to adjust for any penalties. ");
         @endif
 
         $('.booking-edit-panel').css("display","none");

@@ -765,12 +765,12 @@ class BookingController extends Controller
 
             Log::info($query);
             $BookedVehicles = DB::select($query);
+            $BookedVehiclesId = array();
             foreach ( $BookedVehicles as $obj ){
                 $BookedVehiclesId[] = $obj->vehicle_id;
             }
 
             Log::debug($BookedVehiclesId);
-            // return json_encode(array("Status" => 0 , "Message" => "" , "Data" => $AllVehicles)); //for testing.. 
 
             if($Input["car_type"] != ""){
                 $AllVehicles = Vehicle::whereNotIn("id", $BookedVehiclesId)->where("car_type", $Input["car_type"])->where("company_id", $Booking->company_id)->where("status",1)->get();
