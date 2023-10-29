@@ -55,6 +55,34 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 0.75rem;
 }
 
+
+
+/* Hide all steps by default: */
+.tab {
+  display: none;
+}
+
+/* Make circles that indicate the steps of the form: */
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+
+/* Mark the active step: */
+.step.active {
+  opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+  background-color: #04AA6D;
+}
 </style>
 
 <!-- [ Main Content ] start -->
@@ -114,13 +142,21 @@ input[type="number"]::-webkit-outer-spin-button {
             
                             <div class="row">
                                 @if($Booking->status != 4)
-                                        @if($Booking->status == 1)
+                                        @if( ($Booking->status == 1 || $Booking->status == 5) 
+                                            && $Booking->drop_off_confirm !=1 
+                                            && $Booking->dropoff_date > date('Y-m-d') 
+                                        ) <!-- if booking drop off date crosses current date.. do not show assign btn. -->
+
                                                 <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="assignVehicle();">{{ __("Assign") }}</button></div>
                                                 <!-- <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="changeDates();">{{ __("Change Dates") }}</button></div> -->
-                                        @elseif($Booking->status == 2 )
-                                                <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="replaceVehicle();">{{ __("Replace") }}</button></a></div>
+                                        
+                                        @elseif($Booking->status == 2 )                                        
                                                 <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="dropOffVehicle();">{{ __("DropOFF") }}</button></a></div>
-                                                <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="changeDropOFF();">{{ __("Change DropOFF") }}</button></div>
+                                                <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="changeDropOFF();">{{ __("Change DropOFF Date") }}</button></div>
+                                        @endif
+
+                                        @if($Booking->status == 5 && $Booking->drop_off_confirm == 0 )
+                                            <div class="inline-block-div mt-3 mb-3 mr-3"><a href="{{ URL('BookingClose') }}/{{ $Booking->id }}" onClick="return confirmSubmit('Are you sure to close this booking')"><button class="btn btn-danger">{{ __("Close Booking") }}</button></a></div>
                                         @endif
                                         @if($Booking->status == 1)
                                             <div class="inline-block-div mt-3 mb-3 mr-3"><a href="{{ URL('BookingCancel') }}/{{ $Booking->id }}" onClick="return confirmSubmit('Are you sure to cancel this booking')"><button class="btn btn-danger">{{ __("Cancel Booking") }}</button></a></div>
@@ -131,7 +167,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
                             <div class="row">
                                 <div class="booking-edit-panel" id="assignVehiclePanel">
-                                    @if($Booking->status == 1)
+                                    @if($Booking->status == 1 || $Booking->status == 5)
                                             <div class="card">
                                                     <div class="card-header">
                                                         <h3 style="display:inline-block;">{{ __("Assign Vehicle") }}</h3>
@@ -141,20 +177,20 @@ input[type="number"]::-webkit-outer-spin-button {
                                                         <form id="assignVehicleForm"  method="POST">
                                                             @csrf
                                                             <div class="row">                            
-                                                                <!-- <div class="col-lg-2 mb-12">
+                                                                <div class="col-lg-2 mb-12">
                                                                     <label>Type <span class="text-danger">*</span></label>
                                                                     <select class="form-control" id="car_type" name="car_type">
                                                                         <option value="">{{ __("-Select-") }}</option>
                                                                     </select>
-                                                                </div> -->
-                                                                <div class="col-lg-9 mb-12">
+                                                                </div>
+                                                                <div class="col-lg-8 mb-12">
                                                                     <label>Vehicle <span class="text-danger">*</span></label>
                                                                     <select class="form-control" id="VehicleData" name="vehicle_id">
                                                                         <option value="">{{ __("Select") }}</option>
                                                                     </select>
                                                                 </div>
                                                                 
-                                                                <div class="col-lg-3 mb-3">
+                                                                <div class="col-lg-2 mb-3">
                                                                     <label>{{ __("KM Reading at time of pickup") }} <span class="text-danger">*</span></label>
                                                                     <input type="number" class="form-control" required name="km_reading_pickup">
                                                                 </div>
@@ -180,9 +216,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                     <label>{{ __("Discount") }}<span class="text-danger">*</span></label>
                                                                     <input type="number" name="discount_amount" class="form-control number" id="DiscountAmount" required value="{{ $Booking->discount_amount }}" onblur="fetchReviews()">
                                                                 </div>
-                                                                
-
-                                                                                
+                                                                                                                                             
                                                                 <div class="col-lg-4 mb-4">
                                                                     <label>{{ __("Licenses Expiry Date") }}<span class="text-danger">*</span></label>
                                                                     <input type="date" class="form-control number" name="license_expiry_date" value="{{ $Booking->license_expiry_date }}" required min="{{ date('Y-m-d') }}">
@@ -190,7 +224,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                 
                                                                 <div class="col-lg-4 mb-4">
                                                                     <label>{{ __("Residency Card ID") }}<span class="text-danger">*</span></label>
-                                                                    <input type="text" name="residency_card_id" class="form-control number" required>
+                                                                    <input type="text" name="residency_card_id" class="form-control number" value="{{ $Booking->residency_card_id }}" required>
                                                                 </div>
 
                                                                 <div class="col-lg-4 mb-4">
@@ -225,108 +259,9 @@ input[type="number"]::-webkit-outer-spin-button {
                                 </div>                    
                                 <!-- assignVehiclePanel - end -->
 
-                                <div class="booking-edit-panel" id="replaceVehiclePanel">
-                                    <!-- put replace form here..  -->
-                                    @if($Booking->status == 2)
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h3 style="display:inline-block;">{{ __("Replace Vehicle") }}</h3>
-                                                    <button class="btn btn-sm btn-danger" style="float:right;" onclick="hideEditPanels();"><i class="fa fa-times"></i></button>
-                                                </div>
-                                                <div class="card-body">
-                                                    <form id="replaceVehicleForm"  method="POST">
-                                                            @csrf
-                                                            <h5>Drop OFF current Vehicle</h5>
-                                                            <div class="row">
-                                                                <div class="col-lg-4 mb-3">
-                                                                    <label class="col-form-label text-dark">Current Vehicle <span class="text-danger">*</span></label>
-                                                                    <select class="form-control" readonly id="cur_vehicle_id" name="cur_vehicle_id">
-                                                                        <option value="{{ $CurrentVehicle->vehicle_id }}">
-                                                                        {{ $CurrentVehicle->car_type }} / {{ $CurrentVehicle->make }}
-                                                                        / {{ $CurrentVehicle->model }} / {{ $CurrentVehicle->variant }}
-                                                                        / {{ $CurrentVehicle->reg_no }}
-                                                                        </option>
-                                                                    </select>
-                                                                    <!-- <input type="text" class="form-control" name="cur_vehicle_id" readonly  
-                                                                        value="{{ $Booking->vehicle_id }}">
-                                                                        {{ $Booking->vehicle->make }} / {{ $Booking->vehicle->model }}
-                                                                    </input> -->
-                                                                </div>
-                                                                <div class="col-lg-2 mb-3">
-                                                                    <label class="col-form-label text-dark">{{ __("KM at time of Pickup") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control" name="km_pick_time" value="{{ $CurrentVehicle->km_reading_pickup }}" readonly>
-                                                                </div>                                                                                                                        
-                                                                <div class="col-lg-2 mb-3">
-                                                                    <label class="col-form-label text-dark">{{ __("KM at time of Drop") }} <span class="text-danger">*</span></label>
-                                                                    <input type="number" class="form-control" name="km_drop_time" value="{{ $Booking->km_drop_time }}">
-                                                                </div>                                                                                                                        
-                                                                <div class="col-lg-3 mb-3">
-                                                                    <label class="col-form-label text-dark">{{ __("Any demage") }} <span class="text-danger">*</span></label><br>
-                                                                    <input type="radio" name="dmage" value="0" checked> {{ __("No Damage") }} &nbsp;&nbsp;
-                                                                    <input type="radio" name="dmage" value="1"> {{ __("Damage") }}
-                                                                </div>
-
-                                                                <div class="col-lg-6">
-                                                                        <div id="file_damge_image">
-                                                                            <label for="subject" class="col-form-label text-dark">{{ __("Image of Car While Drop") }} <span class="text-danger">*</span></label>
-                                                                            <input type="file" multiple class="col-lg-4 form-control font-style file_input" name="damge_image[]" 
-                                                                                    id="file_damge_image_input" capture onchange="showFileSelection(this,'file_damge_image')"
-                                                                                    accept=".jpg,.jpeg,.png" >
-                                                                            <div id="file_gallery" class="gallery">
-                                                                            </div>
-                                                                        </div>
-                                                                </div>
-                                                                <div class="col-lg-6">
-                                                                    <label class="col-form-label text-dark">{{ __("Return Notes") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control" name="return_note">
-                                                                </div>
-                                                            </div>
-                                                            <div class="clearfix">&nbsp</div>
-                                                            <h5>Assign new vehicle</h5>
-                                                            <div class="row">                            
-                                                                <div class="col-lg-6 mb-3">
-                                                                    <label class="col-form-label text-dark">Vehicle <span class="text-danger">*</span></label>
-                                                                    <select class="form-control" id="vehicle_id" name="vehicle_id">
-                                                                        <option value="">{{ __("Select") }}</option>
-                                                                    </select>
-                                                                </div>
-                                                                
-                                                                <div class="col-lg-2 mb-3">
-                                                                    <label class="col-form-label text-dark">{{ __("KM Reading at time of pickup") }} <span class="text-danger">*</span></label>
-                                                                    <input type="number" class="form-control" required name="km_reading_pickup">
-                                                                </div>
-
-                                                                <!-- <div class="col-lg-2 mb-3">
-                                                                    <label class="col-form-label text-dark">{{ __("Per day KM Allocation") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control" required name="km_allocation" value="{{ $Booking->km_allocation }}">
-                                                                </div> -->
-                                                                                                                                                
-                                                                <div class="col-lg-12">
-                                                                    <div id="file_car_image">
-                                                                    <label class="col-form-label text-dark">{{ __("Car Image") }} <span class="text-danger">*</span></label>
-                                                                        <!-- <label for="subject" class="col-form-label text-dark">{{ __("Car Image") }}</label> -->
-                                                                        <input type="file" multiple class="form-control font-style file_input col-lg-4 mb-4" name="car_image[]" 
-                                                                                    id="file_car_image_input" capture onchange="showFileSelection(this,'file_car_image')"
-                                                                                accept=".jpg,.jpeg,.png" >
-                                                                        <div id="file_gallery" class="gallery">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-                                                            <input type="submit" class="btn btn-success mt-4" value="Submit">
-                                                        </form>
-                                                        </div>
-                                                        </div>
-                                                </div>
-                                            </div>
-                                    @endif
-                                </div>
-                                <!-- replace - end -->
-
                                 <div class="booking-edit-panel" id="dropOffVehiclePanel">
                                     <!-- put drop off form here  -->
-                                    @if($Booking->drop_off_confirm == 0 && $Booking->status == 2)
+                                    @if($Booking->status == 2)
                                     <div class="card">
                                                 <div class="card-header" >
                                                     <h3 style="display:inline-block;">{{ __("Drop OFF Vehicle") }}</h3>
@@ -339,7 +274,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                 <div class="col-lg-4 mb-3">
                                                                     <label class="col-form-label text-dark">Current Vehicle <span class="text-danger">*</span></label>
                                                                     <select class="form-control" readonly id="cur_vehicle_id" name="cur_vehicle_id">
-                                                                        <option value="{{ $Booking->vehicle_id }}">
+                                                                        <option value="{{ $CurrentVehicle->id }}">
                                                                         {{ $CurrentVehicle->car_type }} / {{ $CurrentVehicle->make }}
                                                                         / {{ $CurrentVehicle->model }} / {{ $CurrentVehicle->variant }}
                                                                         / {{ $CurrentVehicle->reg_no }}
@@ -365,6 +300,15 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                 </div>
 
                                                                 <div class="col-lg-6">
+                                                                    <label class="col-form-label text-dark">{{ __("Return Notes") }} <span class="text-danger">*</span></label>
+                                                                    <input type="text" class="form-control" name="return_note">
+                                                                </div>
+                                                                <div class="col-lg-2">
+                                                                    <div class="form-check form-check-lg align-vertical-center" style="float: right;">
+                                                                        <input class="form-check-input" type="checkbox" value="1" id="confirm_dropoff" name="confirm_dropoff">
+                                                                        <label class="form-check-label" for="confirm_dropoff">{{ __("Drop OFF Confirm ?") }}</div>                                                                
+                                                                    </div>
+                                                                <div class="col-lg-12">
                                                                         <div id="file_damge_image">
                                                                             <label for="subject" class="col-form-label text-dark">{{ __("Image of Car While Drop") }} <span class="text-danger">*</span></label>
                                                                             <input type="file" multiple class="col-lg-4 form-control font-style file_input" name="damge_image[]" 
@@ -373,10 +317,6 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                             <div id="file_gallery" class="gallery">
                                                                             </div>
                                                                         </div>
-                                                                </div>
-                                                                <div class="col-lg-6">
-                                                                    <label class="col-form-label text-dark">{{ __("Return Notes") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control" name="return_note">
                                                                 </div>
                                                             </div>
                                                             <input type="submit" class="btn btn-success mt-4" value="Submit">
@@ -438,6 +378,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                     <div class="mt-2 col-lg-4"><b>{{ __("Payment Mode") }}</b> {{ $Booking->payment_mode }}</div>
                                                     <div class="mt-2 col-lg-4"><b>{{ __("Additional Detail") }}</b> {{ $Booking->additional_info }}</div>
                                                 </div>
+                                                <div class="clearfix">&nbsp;</div>
                                                 <div class="row mt-4">
                                                     <h5>{{ __("Vehicle Details") }}</h5>
                                                     <hr/>
@@ -603,7 +544,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
                                     <div style="clear: both; margin-top: 20px;">&nbsp;</div>
 
-                                    @if($Booking->status == 1 || $Booking->status == 2 )
+                                    @if( $Booking->status == 1 || $Booking->status == 2 || ($Booking->status == 5 && $Booking->drop_off_confirm == 0))
                                     <div class="col-lg-12">
                                         <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 400px;">
                                             <div style="flex: 1 1 auto; padding: 1rem 1rem;">
@@ -896,6 +837,7 @@ input[type="number"]::-webkit-outer-spin-button {
 </div>
 
 <script>
+
     function CalDis(){
         Disc = parseInt($("#discount_amount").val());
         if(Disc > 0){
@@ -963,152 +905,109 @@ input[type="number"]::-webkit-outer-spin-button {
         @if($Booking->pickup_date_time > date('Y-m-d H:i:s', strtotime('+4 hour')))
            alert("To Assign Vehicle, Pickup Date Should Be Today's Date, Still You Can Proceed, It Will Update Pickup As Today's Date")
         @endif
-        //get available vehicles
 
-        // $today = new Date();
-        // $pickupDate = new Date("{{ $Booking->pickup_date_time }}");
-        // console.log($pickupDate.toDateString());
+        console.log("{{ $Booking->residency_card_id }}");
+        
+        $('#assignVehicleForm #car_type').on("change", function(event){
+            console.log(event);
+            var formdata = new FormData();
+            formdata.append("car_type",$(this).val())
+            formdata.append("booking_id", {{ $Booking->id }});
+            $.ajax({
+                    url: "{{ URL('Booking/GetAvailableVehicles') }}",
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    processData: false, // Prevent jQuery from processing the data
+                    contentType: false, // Set the content type to false to let the server handle it
+                    data: formdata,
+                    success: function( data, textStatus, jqXHR ) {
+                        JsData = JSON.parse(data);
+                        console.log(JsData);
+                        if(JsData.Status == 0){
+                            alert("Available vehicles info is not available.")
+                        } else {
+                            var select = $('#assignVehicleForm #VehicleData');
+                            select.html('');
+                            var opt = document.createElement('option');
+                            opt.value = "";
+                            opt.innerHTML = '--Select Vehicle--';
+                            select.append(opt);
 
-        // if($today < $pickupDate){
-        //     var confirmation = window.confirm("You are trying to book ahead of actual pickup date of Booking.\
-        //     Vehicle availability will be checked for new date range before proceeding to assign vehicle.\
-        //     Are you sure you want to continue ?");
-        //     if(confirmation){
-        //             console.log("check for vehicle availability");
+                            JsData.Data.forEach(function(item, index, array) {
+                                console.log(`Item at index ${index} is `);
+                                console.log(item);
+                                var opt = document.createElement('option');
+                                opt.value = item.id
+                                opt.innerHTML = item.car_type+" / "+item.make+" / "+item.model+" / "+item.variant+" / "+item.reg_no;
+                                select.append(opt);
+                            });
+                        }
+                    },
+                    error: function( jqXHR, textStatus, errorThrown ) {
+                        console.error("Fail to get images. Error:"+jqXHR.status);
+                        // onFailure({
+                        //     "Status":jqXHR.status
+                        //     ,"Message":jqXHR.statusText
+                        // });
+                    }              
+            });
+        });
 
-        //             var formdata = new FormData();
-        //             formdata.append("booking_id", {{ $Booking->id }});
-        //             formdata.append("pickupDate", $today);
-        //             formdata.append("dropoffDate","{{ $Booking->dropoff_date }}");
-        //             $.ajax({
-        //                     url: "{{ URL('Booking/GetAvailableCarTypes') }}",
-        //                     method: "POST",
-        //                     headers: {
-        //                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //                     },
-        //                     processData: false, // Prevent jQuery from processing the data
-        //                     contentType: false, // Set the content type to false to let the server handle it
-        //                     data: formdata,
-        //                     success: function( data, textStatus, jqXHR ) {
-        //                         JsData = JSON.parse(data);
-        //                         console.log(JsData);
-        //                         if(JsData.Status == 0){
-        //                             alert("Available vehicles info is not available.")
-        //                         } else {
-        //                             console.log(JsData.Data);
-        //                             if(JsData.Data['{{ $Booking->car_type }}']<=0)
-        //                                 alert("Vehicle type - {{ $Booking->car_type }} is not available. Kindly choose another vehicle type for this booking.");
-        //                         }
-        //                     },
-        //                     error: function( jqXHR, textStatus, errorThrown ) {
-        //                         console.error("Fail to get info. Error:"+jqXHR.status);
-        //                         // onFailure({
-        //                         //     "Status":jqXHR.status
-        //                         //     ,"Message":jqXHR.statusText
-        //                         // });
-        //                     }              
-        //             });
-        //         } else {
-        //             console.log("assign vehicle");
-        //         }
-        //     }
-        //getAvailableVehicleTypes----------------------------
-
-        // //get available vehicles
+        //get available vehicles types
         var formdata = new FormData();
-        formdata.append("booking_id", {{ $Booking->id }});
         $.ajax({
-                url: "{{ URL('Booking/GetAvailableVehicles') }}",
-                method: "POST",
+                url: "{{ URL('Vehicle/GetAllCarTypes') }}",
+                method: "GET",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 processData: false, // Prevent jQuery from processing the data
                 contentType: false, // Set the content type to false to let the server handle it
-                data: formdata,
                 success: function( data, textStatus, jqXHR ) {
                     JsData = JSON.parse(data);
                     console.log(JsData);
                     if(JsData.Status == 0){
-                        alert("Available vehicles info is not available.")
+                        alert("Available vehicles type info is not available.")
                     } else {
-                        var select = $('#assignVehicleForm #VehicleData');
+                        console.log(JsData.Data);
+                        var select = $('#assignVehicleForm #car_type');
                         select.html('');
                         var opt = document.createElement('option');
-                        opt.value = "";
-                        opt.innerHTML = '--Select Vehicle--';
+                        opt.value = ""
+                        opt.innerHTML = "-All-";
                         select.append(opt);
 
-                        JsData.Data.forEach(function(item, index, array) {
-                            console.log(`Item at index ${index} is `);
-                            console.log(item);
+                        const keys = Object.keys(JsData.Data);
+                        for (const key of keys) {
+                            console.log(key);
                             var opt = document.createElement('option');
-                            opt.value = item.id
-                            opt.innerHTML = item.car_type+" / "+item.make+" / "+item.model+" / "+item.variant+" / "+item.reg_no;
+                            opt.value = key
+                            opt.innerHTML = key;
                             select.append(opt);
-                        });
+                        };
+
+                        select.val('{{ $Booking->car_type }}'); //set current value.. 
+                        // const event = new Event('change', { bubbles: true });
+                        select.trigger('change');
                     }
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
-                    console.error("Fail to get images. Error:"+jqXHR.status);
+                    console.error("Fail to get info. Error:"+jqXHR.status);
                     // onFailure({
                     //     "Status":jqXHR.status
                     //     ,"Message":jqXHR.statusText
                     // });
                 }              
         });
+            
+        //getAvailableVehicleTypes----------------------------
 
-        $("#assignVehiclePanel").fadeIn(200); // 200 milliseconds (1 second) animation
-    }
-
-    function replaceVehicle(){
-        $('.booking-edit-panel').css("display","none");
+        console.log("{{ $Booking->car_type }}");
 
         //get available vehicles
-        var formdata = new FormData();
-        formdata.append("booking_id", {{ $Booking->id }});
-        $.ajax({
-                url: "{{ URL('Booking/GetAvailableVehicles') }}",
-                method: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                processData: false, // Prevent jQuery from processing the data
-                contentType: false, // Set the content type to false to let the server handle it
-                data: formdata,
-                success: function( data, textStatus, jqXHR ) {
-                    JsData = JSON.parse(data);
-                    console.log(JsData);
-                    if(JsData.Status == 0){
-                        alert("Available vehicles info is not available.")
-                    } else {
-                        var select = $('#replaceVehicleForm #vehicle_id');
-                        select.innerHTML='';
-                        var opt = document.createElement('option');
-                        opt.value = "";
-                        // opt.innerHTML = '--Select Vehicle--';
-                        // select.append(opt);
-
-                        JsData.Data.forEach(function(item, index, array) {
-                            console.log(`Item at index ${index} is `);
-                            console.log(item);
-                            var opt = document.createElement('option');
-                            opt.value = item.id
-                            opt.innerHTML = item.car_type+" / "+item.make+" / "+item.model+" / "+item.variant+" / "+item.reg_no;
-                            select.append(opt);
-                        });
-                    }
-                },
-                error: function( jqXHR, textStatus, errorThrown ) {
-                    console.error("Fail to get images. Error:"+jqXHR.status);
-                    // onFailure({
-                    //     "Status":jqXHR.status
-                    //     ,"Message":jqXHR.statusText
-                    // });
-                }              
-        });
-
-        $("#replaceVehiclePanel").fadeIn(200); // 200 milliseconds (1 second) animation
+        $("#assignVehiclePanel").fadeIn(200); // 200 milliseconds (1 second) animation
     }
 
     function dropOffVehicle(){
@@ -1145,43 +1044,6 @@ input[type="number"]::-webkit-outer-spin-button {
 
             $.ajax({
                 url: "{{ URL('Booking/assignVehicle') }}",
-                method: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                processData: false, // Prevent jQuery from processing the data
-                contentType: false, // Set the content type to false to let the server handle it
-                data: formdata,
-                success: function( data, textStatus, jqXHR ) {
-                    JsData = JSON.parse(data);
-                    console.log(JsData);
-                    if(JsData.Status == 1){
-                        toastr["success"](JsData.Message);
-                        window.location.reload();
-                    } else {
-                        hideloading();
-                        alert(JsData.Message);
-                    }
-                },
-                error: function( jqXHR, textStatus, errorThrown ) {
-                    console.error("Fail to get images. Error:"+jqXHR.status);
-                    hideloading();
-                    toastr["error"](jqXHR.statusText);
-                }              
-            });
-        }
-    );
-
-    $('#replaceVehicleForm').submit(function(event) {
-            event.preventDefault(); // Prevent the default form submission
-            showloading();
-
-            var formdata = new FormData(this);
-            formdata.append("booking_id",{{ $Booking->id }});
-            console.log(formDataToJson(formdata));
-
-            $.ajax({
-                url: "{{ URL('Booking/replaceVehicle') }}",
                 method: "POST",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1320,7 +1182,7 @@ input[type="number"]::-webkit-outer-spin-button {
     });
 </script>
 
-@if($Booking->status == 5)
+@if($Booking->status == 5 && $Booking->drop_off_confirm == 1)
 <script>
     var targetOffset = $("#completeBookingPanel").offset().top;
     // Scroll to the target div

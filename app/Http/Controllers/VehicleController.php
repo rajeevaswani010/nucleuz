@@ -218,7 +218,7 @@ class VehicleController extends Controller
                 $getAllVehicleResp[$obj->car_type] = $obj->count;
             }
 
-            return json_encode($getAllVehicleResp);
+            return json_encode(array("Status" => 1, "Message" => "", "Data" => $getAllVehicleResp));
         } catch(Exception $e){
             echo $e.getMessage();
         }

@@ -354,11 +354,14 @@ class BookingController extends Controller
         }
         
         $Booking = Booking::find($id);
+        Log::debug($Booking);
         $BookingVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))->where("booking_id",$id)->orderBy('created_at', 'desc')->get();
         Log::debug($BookingVehicle);
         $CurrentVehicle = null;
-        if($Booking->status != 1 || $Booking->status != 3){
-            $CurrentVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))->where("booking_id",$id)->where("vehicle_id",$Booking->vehicle_id)->first();
+        if($Booking->cur_booking_vehicle_id != null){
+            $CurrentVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))->where("booking_id",$id)->where("id",$Booking->cur_booking_vehicle_id)->first();
+            // $CurrentVehicle = Vehicle::where("company_id",session("CompanyLinkID"))->where("id",$CurrentVehicleId->vehicle_id)->get();
+            Log::debug("current vehicle - ");
             Log::debug($CurrentVehicle);
         }
 
@@ -747,18 +750,34 @@ class BookingController extends Controller
             $Booking_pickupdate = substr($Booking->pickup_date_time,0,10)." 00:00:00";
             $Booking_dropoffdate = substr($Booking->dropoff_date,0,10)." 23:59:59";
     
-            $BookedVehicle = Booking::select("vehicle_id")
-                ->where("company_id", $Booking->company_id)
-                ->where("status",2)
-                ->where("pickup_date_time","<=",$Booking_dropoffdate)
-                ->where("dropoff_date",">=",$Booking_pickupdate)
-                ->get();
-            $BookedVehiclesId = array();
-            foreach ( $BookedVehicle as $obj ){
+            // $BookedVehicle = Booking::select("vehicle_id")
+            //     ->where("company_id", $Booking->company_id)
+            //     ->where("status",2)
+            //     ->where("pickup_date_time","<=",$Booking_dropoffdate)
+            //     ->where("dropoff_date",">=",$Booking_pickupdate)
+            //     ->get();
+            $query = 'select booking_vehicles.vehicle_id from booking_vehicles 
+                    INNER JOIN bookings on bookings.cur_booking_vehicle_id = booking_vehicles.id 
+                    where bookings.company_id = '.session("CompanyLinkID")
+                    .' and bookings.status = 2 and bookings.pickup_date_time <= \''.$Booking_dropoffdate.'\''
+                    .' and bookings.dropoff_date >= \''.$Booking_pickupdate.'\''
+                ;
+
+            Log::info($query);
+            $BookedVehicles = DB::select($query);
+            foreach ( $BookedVehicles as $obj ){
                 $BookedVehiclesId[] = $obj->vehicle_id;
             }
 
-            $AllVehicles = Vehicle::whereNotIn("id", $BookedVehiclesId)->where("car_type", $Booking->car_type)->where("company_id", $Booking->company_id)->where("status",1)->get();
+            Log::debug($BookedVehiclesId);
+            // return json_encode(array("Status" => 0 , "Message" => "" , "Data" => $AllVehicles)); //for testing.. 
+
+            if($Input["car_type"] != ""){
+                $AllVehicles = Vehicle::whereNotIn("id", $BookedVehiclesId)->where("car_type", $Input["car_type"])->where("company_id", $Booking->company_id)->where("status",1)->get();
+            } else {
+                $AllVehicles = Vehicle::whereNotIn("id", $BookedVehiclesId)->where("company_id", $Booking->company_id)->where("status",1)->get();
+            }
+
             return json_encode(array("Status" => 1 , "Message" => "" , "Data" => $AllVehicles));
         } catch(Exception $e){
             echo $e.getMessage();
@@ -803,12 +822,55 @@ class BookingController extends Controller
         return redirect("booking");
     }
 
+    public function CloseBooking($id){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        Log::debug($id);
+        $Booking = Booking::find($id);
+
+        Log::debug("close booking");
+        $Booking->dropoff_date = date('Y-m-d H:i:s'); // change to time recieved from browser
+
+        //update billing details
+        $total = $Booking->total;
+        $subTotal = $total - $Booking->discount_amount;
+
+        $TotalKm = 0;
+        $BookingVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))->where("booking_id",$Booking->id)->orderBy('created_at', 'desc')->get();
+        foreach ($BookingVehicle as $vehicle) {
+            $TotalKm += $vehicle->km_driven;
+        }
+        Log::debug($TotalKm);
+        $AllowedKM = $Booking->km_allocation * $Booking->tarrif_detail;
+        $ExtraKM = $TotalKm - $AllowedKM;
+        
+        if($ExtraKM > 0){
+            $Booking->additional_km_reunning = $ExtraKM ;
+            $ExtraAmount = ($Booking->additional_kilometers_amount * $ExtraKM);
+            $subTotal += $ExtraAmount;   
+        } else {
+            $Booking->additional_km_reunning = 0;
+        }
+        
+        $Booking->sub_total = $subTotal;
+        $TaxAmount = ($subTotal * 5) / 100;
+        //update status
+        $Booking->drop_off_confirm = 1;
+        $this->_updateBillingDetails($Booking);
+
+        $Booking->save();
+        return redirect("booking/".$id."/edit");
+
+    }
+
     public function AssignVehicle(Request $request){ //TODO add implementation
         if(session("AdminID") == ""){
             return redirect("/");
         }
         $Input = $request->all();
         Log::debug($Input);
+        $reqCarType = $Input["car_type"];
         $Booking = Booking::find($request->booking_id);
         $Vehicle = Vehicle::find($Input['vehicle_id']);
 
@@ -847,10 +909,13 @@ class BookingController extends Controller
         $BookingVehicle->save();
         Log::debug($BookingVehicle->id);
 
+        $Booking->cur_booking_vehicle_id = $BookingVehicle->id;
         $Booking->vehicle_id = $BookingVehicle->vehicle_id;
         $Booking->advance_amount = $Input["advance_amount"];
         $Booking->discount_amount = $Input["discount_amount"];
-        $Booking->status = 2;
+        $Booking->license_expiry_date = $licenseExpiry;
+        $Booking->residence_expiry_date = $residencyCardExpiry;
+        $Booking->residency_card_id = $Input["residency_card_id"];
 
         // $Booking->advance_amount = $Input["advance_amount"];
 
@@ -877,13 +942,18 @@ class BookingController extends Controller
         // $Booking->sub_total = $SubTotal;
         // $Booking->grand_total = $Amount;
 
-        $Booking->pickup_date_time =  $BookingVehicle->pickup_date_time;
+        if($Booking->status == 1){
+            $Booking->pickup_date_time =  $BookingVehicle->pickup_date_time;
+            $this->_updateBillingDetails($Booking);
+        }
+        
+        $Booking->status = 2;
+
 
         //update tarrif
-        $this->_updateBillingDetails($Booking);
         Log::debug("new tariff detail - ".$Booking->tarrif_detail);
 
-        $Booking->save();
+        $Booking->save(); //save booking changes
 
         //upload car image files..
         if($request->file('car_image') && sizeof($request->file('car_image')) > 0){
@@ -915,95 +985,6 @@ class BookingController extends Controller
         return json_encode(array("Status" => 1, "Message" => "Vehicle successfully assigned", "Data" => $data));
     }
 
-    public function ReplaceVehicle(Request $request){ //TODO add implementation
-        Log::debug("bookingcontroller ReplaceVehicle - enter");
-        if(session("AdminID") == ""){
-            return redirect("/");
-        }
-        $Input = $request->all();
-        Log::debug($Input);
-        $Booking = Booking::find($request->booking_id);
-
-        date_default_timezone_set("Asia/Muscat"); # setting current time zone
-
-        $CurrentBookingVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))
-                    ->where("booking_id",$Input["booking_id"])
-                    ->where("vehicle_id",$Input["cur_vehicle_id"])
-                    ->orderby("updated_at")
-                    ->first();
-        Log::debug($CurrentBookingVehicle);
-        // return json_encode(array("Status" => 0, "Message" => "Doing testing.. ", "Data" => array()));
-
-        $CurrentBookingVehicle->km_drop_time = $Input["km_drop_time"];
-        $CurrentBookingVehicle->dmage = $Input["dmage"];
-        $CurrentBookingVehicle->km_driven = $CurrentBookingVehicle->km_drop_time - $CurrentBookingVehicle->km_reading_pickup;
-        $CurrentBookingVehicle->dropoff_date = date('Y-m-d H:i:s');
-        $CurrentBookingVehicle->save();
-        
-        //upload car damge  files..
-        if($request->file('damge_image') && sizeof($request->file('damge_image')) > 0){
-            for($i = 0; $i < sizeof($request->file('damge_image')); $i++ ){
-                $BookingImages = new BookingImages();
-                $BookingImages->booking_id = $Booking->id;
-                $BookingImages->company_id = session("CompanyLinkID");
-                // $BookingImages->vehicle_id = $CurrentBookingVehicle->vehicle_id;
-                $BookingImages->booking_vehicle_id = $CurrentBookingVehicle->id;
-                $BookingImages->type = "damge_image";
-
-                $path = $request->file('damge_image')[$i]->store('BookimngImages');
-                Log::debug($path);
-                $BookingImages->link = $path;
-                $BookingImages->save();
-            }
-        }
-
-        $Vehicle = Vehicle::find($Input['vehicle_id']);
-
-        $BookingVehicle = new BookingVehicle();
-        $BookingVehicle->company_id = $Booking->company_id;
-        $BookingVehicle->booking_id = $Booking->id;
-        $BookingVehicle->vehicle_id = $Vehicle->id;
-        $BookingVehicle->car_type = $Vehicle->car_type;
-        $BookingVehicle->make = $Vehicle->make;
-        $BookingVehicle->model = $Vehicle->model;
-        $BookingVehicle->variant = $Vehicle->variant;
-        $BookingVehicle->reg_no = $Vehicle->reg_no;
-        $BookingVehicle->pickup_date_time = date('Y-m-d H:i:s');
-        $BookingVehicle->km_reading_pickup = $Input["km_reading_pickup"];
-        $BookingVehicle->save();
-
-        $Booking->vehicle_id = $Vehicle->id;
-        $Booking->save();
-
-        //upload car image files..
-        if($request->file('car_image') && sizeof($request->file('car_image')) > 0){
-            for($i = 0; $i < sizeof($request->file('car_image')); $i++ ){
-                $BookingImages = new BookingImages();
-                $BookingImages->booking_id = $Booking->id;
-                $BookingImages->company_id = session("CompanyLinkID");
-                // $BookingImages->vehicle_id = $Vehicle->id;
-                $BookingImages->booking_vehicle_id = $CurrentBookingVehicle->id;
-                $BookingImages->type = "car_image";
-
-                $path = $request->file('car_image')[$i]->store('BookimngImages');
-                Log::debug($path);
-                $BookingImages->link = $path;
-                $BookingImages->save();
-            }
-        }
-
-        $data = array("Booking" => $Booking);
-        Log::debug("bookingcontroller update - sending email");
-        Mail::send("EmailTemplates.Booking2", $data, function ($m) use($Booking){
-            $m->from("no-reply@nucleuz.app", "Nucleuz");
-            $m->to($Booking->customer->email)->subject("New Car Booking");
-        });
-
-        $data = array();
-        Log::debug("bookingcontroller ReplaceVehicle - exit");
-        return json_encode(array("Status" => 1, "Message" => "Vehicle Replaced Successfully", "Data" => $data));
-    }
-
     public function dropOffVehicle(Request $request){ //TODO add implementation
         if(session("AdminID") == ""){
             return redirect("/");
@@ -1013,8 +994,10 @@ class BookingController extends Controller
         Log::debug($Input);
         $Booking = Booking::find($request->booking_id);
         $CurrentBookingVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))
+                    ->where("id",$Input["cur_vehicle_id"])
                     ->where("booking_id",$Input["booking_id"])
-                    ->where("vehicle_id",$Input["cur_vehicle_id"])->first();
+                    ->first()
+                ;
 
         //check residence card expiry
         if ( $Input["km_drop_time"] <= 0 && $Input["km_drop_time"] < $CurrentBookingVehicle->km_reading_pickup ) {
@@ -1023,45 +1006,14 @@ class BookingController extends Controller
         
         date_default_timezone_set("Asia/Muscat"); # setting current time zone
 
-
         $CurrentBookingVehicle->km_drop_time = $Input["km_drop_time"];
         $CurrentBookingVehicle->dmage = $Input["dmage"];
         $CurrentBookingVehicle->km_driven = $CurrentBookingVehicle->km_drop_time - $CurrentBookingVehicle->km_reading_pickup;
         $CurrentBookingVehicle->dropoff_date = date('Y-m-d H:i:s'); // change to time recieved from browser
         $CurrentBookingVehicle->save();
 
-        $Booking->dropoff_date = date('Y-m-d H:i:s'); // change to time recieved from browser
-
-        //update billing details
-        $total = $Booking->total;
-        $subTotal = $total - $Booking->discount_amount;
-
-        $TotalKm = 0;
-        $BookingVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))->where("booking_id",$Booking->id)->orderBy('created_at', 'desc')->get();
-        foreach ($BookingVehicle as $vehicle) {
-            $TotalKm += $vehicle->km_driven;
-        }
-        Log::debug($TotalKm);
-        $AllowedKM = $Booking->km_allocation * $Booking->tarrif_detail;
-        $ExtraKM = $TotalKm - $AllowedKM;
+        Log::debug($CurrentBookingVehicle);
         
-        if($ExtraKM > 0){
-            $Booking->additional_km_reunning = $ExtraKM ;
-            $ExtraAmount = ($Booking->additional_kilometers_amount * $ExtraKM);
-            $subTotal += $ExtraAmount;   
-        } else {
-            $Booking->additional_km_reunning = 0;
-        }
-        
-        $Booking->sub_total = $subTotal;
-        $TaxAmount = ($subTotal * 5) / 100;
-        //update status
-        $Booking->status = 5;
-        $Booking->drop_off_confirm = 1;
-
-       $this->_updateBillingDetails($Booking);
-        $Booking->save();
-
         // upload car damge  files..
         if($request->file('damge_image') && sizeof($request->file('damge_image')) > 0){
             for($i = 0; $i < sizeof($request->file('damge_image')); $i++ ){
@@ -1078,6 +1030,48 @@ class BookingController extends Controller
                 $BookingImages->save();
             }
         }
+        
+        $curVehicle = Vehicle::where("company_id",session("CompanyLinkID"))->where("id",$Input["cur_vehicle_id"])->first();
+        if($Input["dmage"] == 1){
+             $curVehicle->status = 3;
+            $curVehicle->save();
+        }
+        Log::debug($curVehicle);
+
+        if(isset($Input["confirm_dropoff"]) && $Input["confirm_dropoff"] == 1){
+            Log::debug("close booking");
+            $Booking->dropoff_date = date('Y-m-d H:i:s'); // change to time recieved from browser
+
+            //update billing details
+            $total = $Booking->total;
+            $subTotal = $total - $Booking->discount_amount;
+
+            $TotalKm = 0;
+            $BookingVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))->where("booking_id",$Booking->id)->orderBy('created_at', 'desc')->get();
+            foreach ($BookingVehicle as $vehicle) {
+                $TotalKm += $vehicle->km_driven;
+            }
+            Log::debug($TotalKm);
+            $AllowedKM = $Booking->km_allocation * $Booking->tarrif_detail;
+            $ExtraKM = $TotalKm - $AllowedKM;
+            
+            if($ExtraKM > 0){
+                $Booking->additional_km_reunning = $ExtraKM ;
+                $ExtraAmount = ($Booking->additional_kilometers_amount * $ExtraKM);
+                $subTotal += $ExtraAmount;   
+            } else {
+                $Booking->additional_km_reunning = 0;
+            }
+            
+            $Booking->sub_total = $subTotal;
+            $TaxAmount = ($subTotal * 5) / 100;
+            //update status
+            $Booking->drop_off_confirm = 1;
+
+            $this->_updateBillingDetails($Booking);
+        }
+        $Booking->status = 5;
+        $Booking->save();
 
         $data = array();
         return json_encode(array("Status" => 1, "Message" => "Vehicle Dropped Successfully", "Data" => $data));
@@ -1410,6 +1404,7 @@ class BookingController extends Controller
 
 
         $GetPricing = Pricing::where("car_type", $Booking->car_type)->first();
+        Log::debug($GetPricing);
 
         $DailyBasePrice = $WeeklyBasePrice = $MonthlyBasePrice = 0;
         if(isset($GetPricing->daily_pricing)){

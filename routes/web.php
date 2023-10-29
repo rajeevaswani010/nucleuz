@@ -99,6 +99,7 @@ Route::post("Booking/completeBooking", [BookingController::class, 'completeBooki
 Route::post("Booking/GetBookingVehicleImages", [BookingController::class, 'GetBookingVehicleImages']);
 Route::get('/booking/pdf/{ID}', [BookingController::class, 'exportPdf']);
 Route::get("BookingCancel/{ID}", [BookingController::class, 'CancelBooking']);
+Route::get("BookingClose/{ID}", [BookingController::class, 'CloseBooking']);
 Route::post('Customer/Review', [BookingController::class, 'ReviewCustomer']);
 Route::post('BookingExceed/{id}', [BookingController::class, 'BookingExceed']);
 Route::get('Booking/Get', [DashboardController::class, 'GetBookings']);
