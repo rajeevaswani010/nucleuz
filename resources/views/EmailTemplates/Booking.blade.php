@@ -7,7 +7,7 @@
   </head>
   <body>
     <div class="container">
-        <div><img src="{{ URL('public/logo.png') }}" style="width: 20%;"></div>
+        <div><img src="{{ URL('public') }}/logo.png" style="width: 20%;"></div>
 
         <h1>{{ __("Your Nucleuz Booking ID") }} : #{{ $Booking->id }}</h1>
 

@@ -195,28 +195,38 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                     <input type="number" class="form-control" required name="km_reading_pickup">
                                                                 </div>
 
-                                                                <div class="col-lg-3 mb-3">
+                                                                <div class="col-lg-2 mb-3">
                                                                     <label>{{ __("Per day KM Allocation") }} <span class="text-danger">*</span></label>
                                                                     <input type="number" class="form-control" required name="km_allocation" value="{{ $Booking->km_allocation }}">
                                                                 </div>
                                                                 
 
-                                                                <div class="col-lg-3 mb-3">
+                                                                <div class="col-lg-2 mb-3">
                                                                     <label>{{ __("Additional KM Amount") }}<span class="text-danger">*</span></label>
                                                                     <input type="number" name="additional_kilometers_amount" class="form-control number" required value="{{ $Booking->additional_kilometers_amount }}">
                                                                 </div>
                                                                 
 
-                                                                <div class="col-lg-3 mb-3">
+                                                                <div class="col-lg-2 mb-3">
                                                                     <label>{{ __("Advance Amount") }}</label>
-                                                                    <input type="number" name="advance_amount" class="form-control number" value="0" id="AdvaneAmount" required onblur="fetchReviews()">
+                                                                    <input type="number" name="advance_amount" class="form-control number" value="{{ $Booking->advance_amount }}" id="AdvanceAmount" required onblur="fetchReviews()" readonly>
                                                                 </div>
 
-                                                                <div class="col-lg-3 mb-3">
-                                                                    <label>{{ __("Discount") }}<span class="text-danger">*</span></label>
-                                                                    <input type="number" name="discount_amount" class="form-control number" id="DiscountAmount" required value="{{ $Booking->discount_amount }}" onblur="fetchReviews()">
+                                                                <div class="col-lg-2 mb-3">
+                                                                    <label>{{ __("Add advance") }}</label>
+                                                                    <input type="number" name="more_advance" class="form-control number" value="0" id="more_advance" min="0" required onblur="fetchReviews()">
                                                                 </div>
-                                                                                                                                             
+
+                                                                <div class="col-lg-2 mb-3">
+                                                                    <label>{{ __("Discount") }}<span class="text-danger">*</span></label>
+                                                                    <input type="number" name="discount_amount" class="form-control number" id="DiscountAmount" required value="{{ $Booking->discount_amount }}" onblur="fetchReviews()" readonly>
+                                                                </div>
+
+                                                                <div class="col-lg-2 mb-3">
+                                                                    <label>{{ __("Add discount") }}<span class="text-danger">*</span></label>
+                                                                    <input type="number" name="more_discount" class="form-control number" id="more_discount" min="0" required value="0" onblur="fetchReviews()">
+                                                                </div>
+
                                                                 <div class="col-lg-4 mb-4">
                                                                     <label>{{ __("Licenses Expiry Date") }}<span class="text-danger">*</span></label>
                                                                     <input type="date" class="form-control number" name="license_expiry_date" value="{{ $Booking->license_expiry_date }}" required min="{{ date('Y-m-d') }}">
@@ -287,11 +297,11 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                 </div>
                                                                 <div class="col-lg-2 mb-3">
                                                                     <label class="col-form-label text-dark">{{ __("KM at time of Pickup") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control" name="km_pick_time" value="{{ $CurrentVehicle->km_reading_pickup }}" readonly>
+                                                                    <input type="number" class="form-control" name="km_pick_time" value="{{ $CurrentVehicle->km_reading_pickup }}" readonly>
                                                                 </div>                                                                                                                        
                                                                 <div class="col-lg-2 mb-3">
                                                                     <label class="col-form-label text-dark">{{ __("KM at time of Drop") }} <span class="text-danger">*</span></label>
-                                                                    <input type="text" class="form-control" name="km_drop_time" value="{{ $Booking->km_drop_time }}">
+                                                                    <input type="number" class="form-control" name="km_drop_time" value="" min="{{ $CurrentVehicle->km_reading_pickup }}">
                                                                 </div>                                                                                                                        
                                                                 <div class="col-lg-3 mb-3">
                                                                     <label class="col-form-label text-dark">{{ __("Any demage") }} <span class="text-danger">*</span></label><br>
@@ -549,16 +559,17 @@ input[type="number"]::-webkit-outer-spin-button {
                                         <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 400px;">
                                             <div style="flex: 1 1 auto; padding: 1rem 1rem;">
                                                 <h2>{{ __("Tentative Billable Amount") }}</h2>
-                                                <div class="mt-4"><b>{{ __("Sub Total") }} : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->sub_total, 2) }}</div>
+                                                <div class="mt-4"><b>{{ __("Rental") }} : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->total, 2) }}</div>
+                                                <div class="mt-2"><b>{{ __("Discount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->discount_amount, 2) }}</div>
+                                                <div class="mt-2"><b>{{ __("Additional KM Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(($Booking->additional_km_reunning * $Booking->additional_kilometers_amount), 2) }}</div>
+                                                <div class="mt-2"><b>{{ __("Additional Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->additional_charges, 2) }}</div>
+                                                <div class="mt-2"><b>{{ __("Sub Total") }} : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->sub_total, 2) }}</div>
                                                 @if($Booking->sub_total < 0)
                                                 <div class="mt-2"><b>{{ __("VAT") }} ({{ $Booking->tax_percentage }}%) : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(0, 2) }}</div>
                                                 @else
                                                 <div class="mt-2"><b>{{ __("VAT") }} ({{ $Booking->tax_percentage }}%) : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(((($Booking->sub_total) * $Booking->tax_percentage) / 100), 2) }}</div>
                                                 @endif
-                                                <div class="mt-2"><b>{{ __("Discount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->discount_amount, 2) }}</div>
                                                 <div class="mt-2"><b>{{ __("Advance Amount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->advance_amount, 2) }}</div>
-                                                <div class="mt-2"><b>{{ __("Additional KM Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(($Booking->additional_km_reunning * $Booking->additional_kilometers_amount), 2) }}</div>
-                                                <div class="mt-2"><b>{{ __("Additional Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->additional_charges, 2) }}</div>
                                                 <div class="mt-2"><b>{{ __("Grand Total") }} : &nbsp;OMR {{ number_format($Booking->grand_total, 2) }}</b> </div>
                                                 <div class="mt-2"><b>{{ __("Due") }} : &nbsp;OMR {{ number_format(($Booking->grand_total - $Booking->advance_amount), 2) }}</b> </div>
                                                 <div class="mt-2"><b><span style="float:left; font-style:italic; color:red;">{{ __("*The above value may change at the time of vehicle return") }}</span> </b> </div>
@@ -588,7 +599,6 @@ input[type="number"]::-webkit-outer-spin-button {
                                         @endif 
                                     </div>
                                 </div> -->
-                                </div>
 
                                 @if(Session::has('Danger'))
                                 <div class="alert alert-danger" role="alert">
@@ -597,8 +607,8 @@ input[type="number"]::-webkit-outer-spin-button {
                                 </div>
                                 @endif
 
-                                    <div id="completeBookingPanel" class="row">
                                     @if($Booking->status == 5 && $Booking->drop_off_confirm == 1 )
+                                        <div id="completeBookingPanel" class="row">
                                         <h2>{{ __("Complete Booking") }}</h2>
                                         {!! Form::open(['id' => 'completeBookingForm', 'url' => 'booking/completeBooking', 'enctype' => 'multipart/form-data', "onSubmit" => "return confirmSubmit('Are you sure you want to close the booking')", 'method' => 'POST']) !!}
                                             <div class="row">
@@ -632,7 +642,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <label>{{ __("More Discount") }} <span class="text-danger">*</span></label>
-                                                            <input type="number" class="form-control" name="more_discount" value="0" id="more_discount">
+                                                            <input type="number" class="form-control" name="more_discount" min="0" value="0" id="more_discount">
                                                         </div>
                                                         <div class="col-lg-4 ">
                                                             <div class="form-check align-vertical-center">
@@ -652,12 +662,12 @@ input[type="number"]::-webkit-outer-spin-button {
                                                     <div class="row mb-2">
                                                         <div class="col-lg-6">
                                                             <label>{{ __("Advance Paid") }} <span class="text-danger">*</span></label>
-                                                            <input type="number" class="form-control" name="advance_amount" readonly required value="" id="advance_amount">                                                        
+                                                            <input type="number" class="form-control" name="advance_amount" value="{{ $Booking->advance_amount }} "readonly required value="" id="advance_amount">                                                        
                                                         </div>
                                                     </div>
                                                     <div class="mb-2">
                                                         <label>{{ __("Discount Note") }} <span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control" name="discount_note" required value="" id="discount_note">
+                                                        <input type="text" class="form-control" name="discount_note" value="" id="discount_note">
                                                     </div>
                                                     <div class="mb-2">
                                                         <label class="mt-4">{{ __("Final Amount") }} <span class="text-danger">*</span></label>
@@ -686,7 +696,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                     computeBilling();
                                                 });
 
-                                                $('#more_discount').on('input', function(event) {
+                                                $('#completeBookingPanel #more_discount').on('input', function(event) {
                                                     computeBilling();
                                                 });
 
@@ -699,23 +709,24 @@ input[type="number"]::-webkit-outer-spin-button {
                                                         var full_discount = subtotal + additional_charges;
 
                                                         $('#additional_charges').attr('readonly',true);
-                                                        $('#more_discount').val(full_discount.toFixed(2));
-                                                        $('#more_discount').attr('readonly',true);
+                                                        $('#completeBookingPanel #more_discount').val(full_discount.toFixed(2));
+                                                        $('#completeBookingPanel #more_discount').attr('readonly',true);
                                                         computeBilling();
                                                     } else {
                                                         $('#additional_charges').attr('readonly',false);
-                                                        $('#more_discount').val(0);
-                                                        $('#more_discount').attr('readonly',false);
+                                                        $('#completeBookingPanel #more_discount').val(0);
+                                                        $('#completeBookingPanel #more_discount').attr('readonly',false);
                                                         computeBilling();
                                                     }
                                                 });
                                            
                                                 function computeBilling(){
+                                                    console.log("inside compute billing");
                                                     var subtotal = {{ $Booking->sub_total }};
                                                     
                                                     var advancepaid = {{ $Booking->advance_amount }}
                                                     var additional_charges = parseFloat($('#additional_charges').val());
-                                                    var more_discount = parseFloat($('#more_discount').val());
+                                                    var more_discount = parseFloat($('#completeBookingPanel #more_discount').val());
 
                                                     if(isNaN(additional_charges)){
                                                         additional_charges = 0;
@@ -723,39 +734,44 @@ input[type="number"]::-webkit-outer-spin-button {
                                                     if(isNaN(more_discount)){
                                                         more_discount = 0;
                                                     }
+                                                    console.log("additional_charges - " + additional_charges);
+                                                    console.log("more_discount - " + more_discount);
 
                                                     subtotal = subtotal + additional_charges - more_discount;
+                                                    console.log("subtotal - " + subtotal);
                                                     var vat = (subtotal * 0.05);
                                                     var grandtotal = subtotal + vat;
 
                                                     var final_amount_paid = grandtotal - advancepaid
 
-                                                    $('#sub_total').val(subtotal.toFixed(2));
-                                                    $('#vat').val(vat.toFixed(2));
-                                                    $('#grand_total').val(grandtotal.toFixed(2));
+                                                    $('#completeBookingPanel #sub_total').val(subtotal.toFixed(2));
+                                                    $('#completeBookingPanel #vat').val(vat.toFixed(2));
+                                                    $('#completeBookingPanel #grand_total').val(grandtotal.toFixed(2));
                                                     $('#final_amount_paid').val(final_amount_paid.toFixed(2));
                                                 }
                                             </script>
-                                    @endif
                                     </div>
+                                    @endif
 
                                     @if($Booking->status == 3)
+                                    </div> 
+
                                         <div class="card mt-5">
                                             <div class="card-body">
                                                 <div style="flex: 1 1 auto; padding: 1rem 1rem;">
                                                     <h2>{{ __("Payment Details") }}</h2>
-                                                    <div class="mt-4"><b>{{ __("Sub Total") }} : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->sub_total, 2) }}</div>
+                                                    <div class="mt-4"><b>{{ __("Rental") }} : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->total, 2) }}</div>
+                                                    <div class="mt-2"><b>{{ __("Additional KM Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(($Booking->additional_km_reunning * $Booking->additional_kilometers_amount), 2) }}</div>
+                                                    <div class="mt-2"><b>{{ __("Additional Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->additional_charges, 2) }}</div>
+                                                    <div class="mt-2"><b>{{ __("Discount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->discount_amount, 2) }}</div>
+                                                    <div class="mt-2"><b>{{ __("Sub Total") }} : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->sub_total, 2) }}</div>
                                                     @if($Booking->sub_total < 0)
                                                     <div class="mt-2"><b>{{ __("VAT") }} ({{ $Booking->tax_percentage }}%) : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(0, 2) }}</div>
                                                     @else
                                                     <div class="mt-2"><b>{{ __("VAT") }} ({{ $Booking->tax_percentage }}%) : &nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(((($Booking->sub_total) * $Booking->tax_percentage) / 100), 2) }}</div>
                                                     @endif
-                                                    <div class="mt-2"><b>{{ __("Discount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->discount_amount, 2) }}</div>
-                                                    <div class="mt-2"><b>{{ __("Advance Amount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->advance_amount, 2) }}</div>
-                                                    <div class="mt-2"><b>{{ __("Additional KM Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format(($Booking->additional_km_reunning * $Booking->additional_kilometers_amount), 2) }}</div>
-                                                    <div class="mt-2"><b>{{ __("Additional Charges") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->additional_charges, 2) }}</div>
                                                     <div class="mt-2"><b>{{ __("Grand Total") }} : &nbsp;OMR {{ number_format($Booking->grand_total , 2) }}</b> </div>
-                                                    <div class="mt-2"><b>{{ __("Due") }} : &nbsp;OMR {{ number_format(($Booking->grand_total - $Booking->advance_amount), 2) }}</b> </div>
+                                                    <div class="mt-2"><b>{{ __("Advance Amount") }} : &nbsp;&nbsp;&nbsp;&nbsp;</b> OMR {{ number_format($Booking->advance_amount, 2) }}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -787,6 +803,9 @@ input[type="number"]::-webkit-outer-spin-button {
                                 <div class="mt-3 mb-3 mr-3">
                                     <a href="{{ URL('/booking/pdf/') }}/{{ $Booking->id }}"><button class="btn btn-primary"  style="float:right;">{{ __("Print Booking") }}</button></a>
                                 </div>
+                                <!-- <div class="mt-3 mb-3 mr-3">
+                                    <a href="{{ URL('/booking/email/') }}/{{ $Booking->id }}"><button class="btn btn-primary"  style="float:right;margin-right:5px;">{{ __("Send Email Again") }}</button></a>
+                                </div> -->
                             </div>
                         </div>                        
                     </div>

@@ -222,7 +222,7 @@ class BookingController extends Controller
         }
 
         //$Amount = $BasePrice * $Input["tarrif_detail"];
-        $Amount = $this->rent_calculation($Day, $GetPricing);
+        $Amount = $this->_rentCalculation($Day, $GetPricing);
         $Total = $Amount;
         $Amount -= $Input["discount_amount"];
         
@@ -703,7 +703,7 @@ class BookingController extends Controller
                 return json_encode(array("GrandTotal" => 0, "Tax" => 0, "SubTotal" => 0, "Discount" => 0, "Due" => 0, "Advance" => 0));
             }
 
-            $Amount = $this->rent_calculation($Input["days"], $GetPricing);
+            $Amount = $this->_rentCalculation($Input["days"], $GetPricing);
 
             Log::debug("Total : ".$Amount);
             Log::debug("discount : ".$Input["discount"]);
@@ -825,7 +825,6 @@ class BookingController extends Controller
         if(session("AdminID") == ""){
             return redirect("/");
         }
-        Log::debug($id);
         $Booking = Booking::find($id);
 
         Log::debug("close booking");
@@ -910,61 +909,33 @@ class BookingController extends Controller
 
         $Booking->cur_booking_vehicle_id = $BookingVehicle->id;
         $Booking->vehicle_id = $BookingVehicle->vehicle_id;
-        $Booking->advance_amount = $Input["advance_amount"];
-        $Booking->discount_amount = $Input["discount_amount"];
+        $Booking->advance_amount += $Input["more_advance"];
+        $Booking->discount_amount += $Input["more_discount"];
         $Booking->license_expiry_date = $licenseExpiry;
         $Booking->residence_expiry_date = $residencyCardExpiry;
         $Booking->residency_card_id = $Input["residency_card_id"];
 
-        // $Booking->advance_amount = $Input["advance_amount"];
-
-        // #changing Assign Date calculations.
-        // date_default_timezone_set("Asia/Muscat"); # setting current time zone
-        // $DayDiff = $this->time_difference (date("Y-m-d"), $Booking->pickup_date_time,"day");
-        // if($DayDiff != 0){
-        //    $ExtraAmount = $this->extraDays_calculation($DayDiff, $GetPricing);
-        //    $Booking->pickup_date_time = date("Y-m-d H:i:s");
-        //    $Booking->tarrif_detail += (int)$DayDiff;
-        //    $Booking->total +=  $ExtraAmount;
-        // }else{
-        //    $Booking->pickup_date_time = date("Y-m-d H:i:s");
-        // }
-        // $BookingVehicle->pickup_date_time = $Booking->pickup_date_time;
-        // $Booking->save();
-        // $BookingVehicle->save();
-
-        // $Booking = Booking::find($request->booking_id);
-        // $SubTotal = $Booking->total - $Input["discount_amount"];
-        // $TaxAmount = ($SubTotal * 5) / 100;
-        // $Amount = $SubTotal + $TaxAmount;
-
-        // $Booking->sub_total = $SubTotal;
-        // $Booking->grand_total = $Amount;
-
         if($Booking->status == 1){
             $Booking->pickup_date_time =  $BookingVehicle->pickup_date_time;
+            $this->_updateTariff($Booking);
             $this->_updateBillingDetails($Booking);
         }
         
         $Booking->status = 2;
-
-
-        //update tarrif
-        Log::debug("new tariff detail - ".$Booking->tarrif_detail);
 
         $Booking->save(); //save booking changes
 
         //upload car image files..
         if($request->file('car_image') && sizeof($request->file('car_image')) > 0){
             for($i = 0; $i < sizeof($request->file('car_image')); $i++ ){
+                $path = $request->file('car_image')[$i]->store('BookimngImages');
                 $BookingImages = new BookingImages();
                 $BookingImages->booking_id = $Booking->id;
-                $BookingImages->company_id = session("CompanyLinkID");
+                $BookingImages->company_id = $Booking->company_id;
                 // $BookingImages->vehicle_id = $Input["vehicle_id"];
                 $BookingImages->booking_vehicle_id = $BookingVehicle->id;
                 $BookingImages->type = "car_image";
 
-                $path = $request->file('car_image')[$i]->store('BookimngImages');
                 Log::debug($path);
                 $BookingImages->link = $path;
                 Log::debug("before save image");
@@ -972,6 +943,8 @@ class BookingController extends Controller
                 $BookingImages->save();
             }
         }
+        
+        // $this->_uploadBookingImage($Booking,$BookingVehicle,"car_image",$path);
 
         $data = array("Booking" => $Booking);
         Log::debug("bookingcontroller update - sending email");
@@ -983,6 +956,10 @@ class BookingController extends Controller
         $data = array();
         return json_encode(array("Status" => 1, "Message" => "Vehicle successfully assigned", "Data" => $data));
     }
+
+    // function _uploadBookingImage($Booking,$BookingVehicle,$type,$path){
+
+    // }
 
     public function dropOffVehicle(Request $request){ //TODO add implementation
         if(session("AdminID") == ""){
@@ -1030,9 +1007,9 @@ class BookingController extends Controller
             }
         }
         
-        $curVehicle = Vehicle::where("company_id",session("CompanyLinkID"))->where("id",$Input["cur_vehicle_id"])->first();
+        $curVehicle = Vehicle::where("company_id",session("CompanyLinkID"))->where("id",$CurrentBookingVehicle->vehicle_id)->first();
         if($Input["dmage"] == 1){
-             $curVehicle->status = 3;
+            $curVehicle->status = 3;
             $curVehicle->save();
         }
         Log::debug($curVehicle);
@@ -1040,35 +1017,25 @@ class BookingController extends Controller
         if(isset($Input["confirm_dropoff"]) && $Input["confirm_dropoff"] == 1){
             Log::debug("close booking");
             $Booking->dropoff_date = date('Y-m-d H:i:s'); // change to time recieved from browser
-
-            //update billing details
-            $total = $Booking->total;
-            $subTotal = $total - $Booking->discount_amount;
-
-            $TotalKm = 0;
-            $BookingVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))->where("booking_id",$Booking->id)->orderBy('created_at', 'desc')->get();
-            foreach ($BookingVehicle as $vehicle) {
-                $TotalKm += $vehicle->km_driven;
-            }
-            Log::debug($TotalKm);
-            $AllowedKM = $Booking->km_allocation * $Booking->tarrif_detail;
-            $ExtraKM = $TotalKm - $AllowedKM;
-            
-            if($ExtraKM > 0){
-                $Booking->additional_km_reunning = $ExtraKM ;
-                $ExtraAmount = ($Booking->additional_kilometers_amount * $ExtraKM);
-                $subTotal += $ExtraAmount;   
-            } else {
-                $Booking->additional_km_reunning = 0;
-            }
-            
-            $Booking->sub_total = $subTotal;
-            $TaxAmount = ($subTotal * 5) / 100;
-            //update status
+            $this->_updateTariff($Booking); //incase of early assign or late dropoff.. vice versa
             $Booking->drop_off_confirm = 1;
-
-            $this->_updateBillingDetails($Booking);
         }
+
+        //update additional km running..
+        $TotalKm = 0;
+        $BookingVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))->where("booking_id",$Booking->id)->orderBy('created_at', 'desc')->get();
+        foreach ($BookingVehicle as $vehicle) {
+            $TotalKm += $vehicle->km_driven;
+        }
+        Log::debug($TotalKm);
+
+        $AllowedKM = $Booking->km_allocation * (($Booking->tarrif_detail == 0)? 1 : $Booking->tarrif_detail) ;
+        $ExtraKM = $TotalKm - $AllowedKM;
+        $Booking->additional_km_reunning = ($ExtraKM < 0)?0 : $ExtraKM;
+
+        //computebilling
+        $this->_updateBillingDetails($Booking);
+
         $Booking->status = 5;
         $Booking->save();
 
@@ -1082,9 +1049,14 @@ class BookingController extends Controller
         }
         $Input = $request->all();
         Log::debug($Input);
-        $Booking = Booking::find($request->booking_id);
 
+        $Booking = Booking::find($request->booking_id);
         $Booking->discount_amount = $Input["discount_amount"] + $Input["more_discount"];
+
+        if($Booking->discount_amount > 0 && $Input["discount_note"] == ""){
+            return json_encode(array("Status" => 0, "Message" => "Discount note required on discounted bookings.", "Data" => null));
+        }
+
         $Booking->sub_total = $Input["sub_total"];
         $Booking->grand_total = $Input["grand_total"];
         $Booking->discount_note = $Input["discount_note"];
@@ -1173,6 +1145,14 @@ class BookingController extends Controller
         return $pdf->download('booking_'.$id.'.pdf');
     }
 
+    public function emailBooking($id){ 
+        $booking = Booking::find($id);
+        
+        // $pdf = Pdf::loadView('booking.view_pdf', compact('booking'));
+        // return $pdf->download('booking_'.$id.'.pdf');
+    }
+
+
     public function ReviewCustomer(Request $request){
         try{
             Log::debug("bookingcontroller ReviewCustomer - enter");
@@ -1193,7 +1173,7 @@ class BookingController extends Controller
             }
 
            // $Amount = $BasePrice * $Input["days"];
-            $Amount = $this->rent_calculation($Input["days"], $GetPricing);
+            $Amount = $this->_rentCalculation($Input["days"], $GetPricing);
             $TaxAmount = ($Amount * $Input["tax"]) / 100;
             $SubTotal = number_format($Amount, 2);
             $DiscountAmount = 0;
@@ -1210,7 +1190,7 @@ class BookingController extends Controller
         }
     }
     
-    function rent_calculation($Day, $GetPricing){
+    function _rentCalculation($Day, $GetPricing){
         $Amount = 0;
         $DailyBasePrice = $WeeklyBasePrice = $MonthlyBasePrice = 0;
         #$Day = $Input["days"];
@@ -1389,7 +1369,7 @@ class BookingController extends Controller
         return $UpdatedInput;
     }
 
-    protected function _updateBillingDetails($Booking){
+    protected function _updateTariff($Booking){
         $DopDate = new DateTime($Booking->dropoff_date);
         $pickupDate = new DateTime(substr($Booking->pickup_date_time, 0, 10));
         
@@ -1397,10 +1377,16 @@ class BookingController extends Controller
         $numberOfDays = $interval->days;
         if($numberOfDays==0){
             $Booking["tarrif_detail"] = 0;
-            $numberOfDays = 1;
-        } else 
+        } else {
             $Booking["tarrif_detail"] = $numberOfDays;
+        }
 
+        Log::debug("new tariff detail - ".$Booking->tarrif_detail);
+    }
+
+    protected function _updateBillingDetails($Booking){
+
+        $numberOfDays = ($Booking->tarrif_detail > 0)? $Booking->tarrif_detail : 1; //for biulling purpose
 
         $GetPricing = Pricing::where("car_type", $Booking->car_type)->first();
         Log::debug($GetPricing);
@@ -1417,13 +1403,16 @@ class BookingController extends Controller
             $MonthlyBasePrice = $GetPricing->monthly_pricing;
         }
 
-        $Amount = $this->rent_calculation($numberOfDays, $GetPricing);
-        $Total = $Amount;
-        
-        $Amount -= $Booking["discount_amount"]; 
-        // $Amount -= $Booking["advance_amount"];
-        $SubTotal = $Amount;           
-        
+        $Total = $this->_rentCalculation($numberOfDays, $GetPricing);
+
+        $Booking->total = $Total;  // this is rent
+        $SubTotal = $Total - $Booking["discount_amount"]; 
+
+        //additional km and additional charges..
+        $ExtraAmount = ($Booking->additional_kilometers_amount * $Booking->additional_km_reunning);
+        $SubTotal += $ExtraAmount;
+        $SubTotal += $Booking->additional_charges;
+
         $TaxAmount = ($SubTotal * 5) / 100;
         $GrandTotal = $SubTotal + $TaxAmount;
     
