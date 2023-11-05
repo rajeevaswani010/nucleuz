@@ -23,6 +23,7 @@ use App\Models\CustomerImages;
 use App\Models\BookingImages;
 use App\Models\Office;
 use App\Models\CarType;
+use App\Models\Admin;
 
 use Log;
 use DB;
@@ -267,6 +268,11 @@ class BookingController extends Controller
         // if($CheckInvite > 0){
         //     BookingInvite::where("email", $Input["email"])->delete();
         // }
+
+        if($BookingObj->discount_amount > 0){
+             $this->_sendDiscountEmail($BookingObj);
+         }
+
         Log::debug("bookingcontroller store - exit");
         return json_encode(array("Status" =>  1, "Message" => "Booking Recorded Successfully"));
     }
@@ -858,6 +864,11 @@ class BookingController extends Controller
         $this->_updateBillingDetails($Booking);
 
         $Booking->save();
+
+        if($Booking->discount_amount > 0){
+            $this->_sendDiscountEmail($Booking);
+        }
+        
         return redirect("booking/".$id."/edit");
 
     }
@@ -952,6 +963,10 @@ class BookingController extends Controller
             $m->from("no-reply@nucleuz.app", "Nucleuz");
             $m->to($Booking->customer->email)->subject("New Car Booking");
         });
+
+        if($Booking->discount_amount > 0){
+            $this->_sendDiscountEmail($Booking);
+        }
         
         $data = array();
         return json_encode(array("Status" => 1, "Message" => "Vehicle successfully assigned", "Data" => $data));
@@ -1477,5 +1492,22 @@ class BookingController extends Controller
         }
         Log::debug($getAllVehicleResp);
         return $getAllVehicleResp;
+    }
+
+    protected function _sendDiscountEmail($Booking){
+        Log::debug("bookingcontroller update - sending email to staff_id : ".$Booking->staff_id);
+        $data = array("Booking" => $Booking);
+
+        $LinkId = Admin::select("link_id")->where('admin_id',$Booking->staff_id)->first();
+        Log::debug($LinkId);
+
+        $AdminEmail = Admin::select("email")->where('link_id',$LinkId->link_id)->where("role", 2)->first();
+        Log::debug($AdminEmail);
+
+        Mail::send("EmailTemplates.Booking2", $data, function ($m) use($AdminEmail){
+            $m->from("no-reply@nucleuz.app", "Nucleuz");
+            $m->to($AdminEmail->email)->subject("Discount while booking car");
+        });
+
     }
 }
