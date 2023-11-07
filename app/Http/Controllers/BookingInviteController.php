@@ -78,7 +78,6 @@ class BookingInviteController extends Controller
         // echo '<pre>';print_r($Input);echo '</pre>';die();
 
         $Input["user_id"] = session("AdminID");
-        $Input["company_id"] = session("CompanyLinkID");
         $Office = BookingInvite::create($Input);
         $Office->link = URL("CustomerRegister")."/".base64_encode($Office->id."#".$Input["email"]);
         $Office->save();

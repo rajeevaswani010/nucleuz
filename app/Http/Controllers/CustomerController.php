@@ -17,6 +17,7 @@ use App\Models\Pricing;
 use App\Models\Office;
 use App\Export\CustomerExport;
 use App\Models\CustomerImages;
+use App\Models\CarType;
 
 use Log;
 use DB;
@@ -28,31 +29,29 @@ class CustomerController extends Controller
     public function register($id){
         $newStr = explode('#',base64_decode($id));
         Log::debug($newStr);
-        $Email = $newStr[1];
+
         $inviteId = $newStr[0];
+        $Email = $newStr[1];
+
         $CheckInvite = BookingInvite::where("email", $Email)->where("status", 0)->where("id",$inviteId)->count();
         if($CheckInvite == 0){
             return redirect("404");
         }else{
             $InviteObj = BookingInvite::where("email", $Email)->where("status", 0)->where("id",$inviteId)->first();
-            // $CustomerIfExits = Customer::where("email", $Email )->where("company_id",session("CompanyLinkID"))->where("first_name",$InviteObj->name)->count();
-            // if( $CustomerIfExits > 0 )
-            //     $Customer = Customer::where("email", $Email)->where("company_id",session("CompanyLinkID"))->first();
-            // else {
-                $Customer = new Customer();
-                $Customer->company_id = session("CompanyLinkID");
-                $Customer->email = $Email;
-                $Customer->first_name = $InviteObj->name;
-            // }
+            $Customer = new Customer();
+            $Customer->company_id = $InviteObj->company_id;
+            $Customer->email = $Email;
+            $Customer->first_name = $InviteObj->name;
 
             $Conuntry = Country::orderBy("name")->get();
             $VehicleTypes = DB::table('vehicles')
                         ->selectRaw('car_type as car_type')
-                        ->where("company_id",session("CompanyLinkID"))  //TODO remove session information from here.. store this info in invite only.. 
+                        ->where("company_id",$InviteObj->company_id )  //TODO remove session information from here.. store this info in invite only.. 
                         ->groupBy('car_type')
                         ->orderBy('car_type')
                         ->get();
-            
+
+            Log::debug($VehicleTypes);
             return view("CustomerRegister", compact("InviteObj", "Customer" , "Conuntry", "VehicleTypes"));
         }
     }
@@ -63,6 +62,7 @@ class CustomerController extends Controller
         $InviteId = $request->invite_id;
         Log::debug("invite id - ".$InviteId);
         $InviteObj = BookingInvite::where("email", $Input["email"])->where("status", 0)->where("id",$InviteId)->first();
+        Log::debug($InviteObj);
         if($InviteObj == NULL){
             return json_encode(array("Status" =>  0, "Message" => "ERROR: Invite Expired"));
         }
@@ -154,7 +154,7 @@ class CustomerController extends Controller
                     Log::debug("type - " . $filetype . " , i - ". $i);
                     $CustImages = new CustomerImages();
                     $CustImages->customer_id = $CustomerID;
-                    $CustImages->company_id = session("CompanyLinkID");
+                    $CustImages->company_id =  $InviteObj->company_id ;
                     $CustImages->type = $filetype;
 
                     $path = $request->file($filetype)[$i]->store('CustomersImages');
@@ -204,28 +204,28 @@ class CustomerController extends Controller
           #  }
     
             #$Day = $Input["tarrif_detail"] * $MultiplyDay;
-            $Day = $Input["tarrif_detail"] ;
-            $DopDate = date("Y-m-d H:i:s", strtotime("+".$Day." days", strtotime($Input["PickupDate"])));
+            // $Day = $Input["tarrif_detail"] ;
+            // $DopDate = date("Y-m-d H:i:s", strtotime("+".$Day." days", strtotime($Input["PickupDate"])));
             
-            $GetPricing = Pricing::where("car_type", $Input["vehicle_id"])->where("company_id", $InviteObj->company_id)->first();
+            // $GetPricing = Pricing::where("car_type", $Input["vehicle_id"])->where("company_id", $InviteObj->company_id)->first();
     
-            $DailyPrice = $WeeklyPrice = $MonthlyPrice = 0;
+            // $DailyPrice = $WeeklyPrice = $MonthlyPrice = 0;
             //if($Input["tarrif_type"] == "Daily"){
-                if(isset($GetPricing->daily_pricing)){
-                    $DailyPrice = $GetPricing->daily_pricing;
-                }
+                // if(isset($GetPricing->daily_pricing)){
+                //     $DailyPrice = $GetPricing->daily_pricing;
+                // }
             //}
     
             //if($Input["tarrif_type"] == "Weekly"){
-                if(isset($GetPricing->weekly_pricing)){
-                    $BasePrice = $GetPricing->weekly_pricing;
-                }
+                // if(isset($GetPricing->weekly_pricing)){
+                //     $BasePrice = $GetPricing->weekly_pricing;
+                // }
             //}
     
             //if($Input["tarrif_type"] == "Monthly"){
-                if(isset($GetPricing->monthly_pricing)){
-                    $MonthlyPrice = $GetPricing->monthly_pricing;
-                }
+                // if(isset($GetPricing->monthly_pricing)){
+                //     $MonthlyPrice = $GetPricing->monthly_pricing;
+                // }
            // }
     
             $InviteObj->customer_id = $CustomerID;
@@ -251,7 +251,7 @@ class CustomerController extends Controller
 
         } else {
             Log::info("invite object status not set error... ");
-            return json_encode(array("Status" =>  0, "Message" => "Registeration Fail. Contact company"));
+            return json_encode(array("Status" =>  0, "Message" => "Registeration Fail. Contact company for assistance."));
         }
 
         return json_encode(array("Status" =>  1, "Message" => "Registered Successfully"));
