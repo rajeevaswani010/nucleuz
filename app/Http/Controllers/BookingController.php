@@ -223,7 +223,7 @@ class BookingController extends Controller
         }
 
         //$Amount = $BasePrice * $Input["tarrif_detail"];
-        $Amount = $this->_rentCalculation($Day, $GetPricing);
+        $Amount = $this->_rentCalculation($Day, $GetPricing, session("CompanyLinkID"));
         $Total = $Amount;
         $Amount -= $Input["discount_amount"];
         
@@ -712,7 +712,7 @@ class BookingController extends Controller
                 return json_encode(array("GrandTotal" => 0, "Tax" => 0, "SubTotal" => 0, "Discount" => 0, "Due" => 0, "Advance" => 0));
             }
 
-            $Amount = $this->_rentCalculation($Input["days"], $GetPricing);
+            $Amount = $this->_rentCalculation($Input["days"], $GetPricing, session("CompanyLinkID"));
 
             Log::debug("Total : ".$Amount);
             Log::debug("discount : ".$Input["discount"]);
@@ -1174,25 +1174,27 @@ class BookingController extends Controller
 
     public function ReviewCustomer(Request $request){
         try{
-            Log::debug("bookingcontroller ReviewCustomer - enter");
             $Input = $request->all();
+            Log::debug($Input);
+
+            if( !isset($Input["days"]) || !isset($Input["vehicle"]) ){
+                Log::debug("isset fail");
+                $Data = array(
+                    "GrandTotal" => 0, 
+                    "Tax" => 0, 
+                    "SubTotal" => 0, 
+                    "Discount" => 0, 
+                    "Due" => 0, 
+                    "Advance" => 0
+                );
+                return json_encode(array("Status" =>  0, "Message" => "Input missing required arguments", "Data" => $Data ));
+            }
+
+            $CompanyId = $Input["company"];
             $GetPricing = Pricing::where("company_id", $Input["company"])->where("car_type", $Input["vehicle"])->first();
 
-            $DailyPrice = $WeeklyPrice = $MonthlyPrice = 0;
-            if(isset($GetPricing->daily_pricing)){
-                $DailyPrice = $GetPricing->daily_pricing;
-            }
-
-            if(isset($GetPricing->weekly_pricing)){
-                $WeeklyPrice = $GetPricing->weekly_pricing;
-            }
-
-            if(isset($GetPricing->monthly_pricing)){
-                $MonthlyPrice = $GetPricing->monthly_pricing;
-            }
-
            // $Amount = $BasePrice * $Input["days"];
-            $Amount = $this->_rentCalculation($Input["days"], $GetPricing);
+            $Amount = $this->_rentCalculation($Input["days"], $GetPricing, $CompanyId );
             $TaxAmount = ($Amount * $Input["tax"]) / 100;
             $SubTotal = number_format($Amount, 2);
             $DiscountAmount = 0;
@@ -1202,19 +1204,30 @@ class BookingController extends Controller
             $AdvanceAmount = 0;
             $DueAmount = number_format($Amount, 2);
             $Amount = number_format($Amount, 2);
-            Log::debug("bookingcontroller ReviewCustomer - exit");
-            return json_encode(array("GrandTotal" => $Amount, "Tax" => $TaxAmount, "SubTotal" => $SubTotal, "Discount" => $DiscountAmount, "Due" => number_format($DueAmount, 2), "Advance" => $AdvanceAmount));
-        }catch(\Exception $e){
+            
+            $Data = array("GrandTotal" => $Amount, "Tax" => $TaxAmount, "SubTotal" => $SubTotal, "Discount" => $DiscountAmount, "Due" => $DueAmount, "Advance" => $AdvanceAmount);
+            return json_encode(array("Status" =>  1, "Message" => "", "Data" => $Data ));
 
+        }catch(Exception $e){
+            Log::error("err: ".$e);    
+            $Data = array(
+                "GrandTotal" => 0, 
+                "Tax" => 0, 
+                "SubTotal" => 0, 
+                "Discount" => 0, 
+                "Due" => 0, 
+                "Advance" => 0
+            );
+            return json_encode(array("Status" =>  0, "Message" => "Exception while fetching pricing details", "Data" => $Data ));
         }
     }
     
-    function _rentCalculation($Day, $GetPricing){
+    function _rentCalculation($Day, $GetPricing, $CompanyId){
         $Amount = 0;
         $DailyBasePrice = $WeeklyBasePrice = $MonthlyBasePrice = 0;
         #$Day = $Input["days"];
         //$CalculationMethod = "Hybrid";
-        $CalculationMethod = Office::find(session("CompanyLinkID"))->billing_method;
+        $CalculationMethod = Office::find($CompanyId)->billing_method;
 
         if(isset($GetPricing->daily_pricing)){
             $DailyBasePrice = $GetPricing->daily_pricing;
@@ -1410,19 +1423,19 @@ class BookingController extends Controller
         $GetPricing = Pricing::where("car_type", $Booking->car_type)->first();
         Log::debug($GetPricing);
 
-        $DailyBasePrice = $WeeklyBasePrice = $MonthlyBasePrice = 0;
-        if(isset($GetPricing->daily_pricing)){
-            $DailyBasePrice = $GetPricing->daily_pricing;
-        }
-        if(isset($GetPricing->weekly_pricing)){
-            $WeeklyBasePrice = $GetPricing->weekly_pricing;
-        }
+        // $DailyBasePrice = $WeeklyBasePrice = $MonthlyBasePrice = 0;
+        // if(isset($GetPricing->daily_pricing)){
+        //     $DailyBasePrice = $GetPricing->daily_pricing;
+        // }
+        // if(isset($GetPricing->weekly_pricing)){
+        //     $WeeklyBasePrice = $GetPricing->weekly_pricing;
+        // }
 
-        if(isset($GetPricing->monthly_pricing)){
-            $MonthlyBasePrice = $GetPricing->monthly_pricing;
-        }
+        // if(isset($GetPricing->monthly_pricing)){
+        //     $MonthlyBasePrice = $GetPricing->monthly_pricing;
+        // }
 
-        $Total = $this->_rentCalculation($numberOfDays, $GetPricing);
+        $Total = $this->_rentCalculation($numberOfDays, $GetPricing, session("CompanyLinkID") );
 
         $Booking->total = $Total;  // this is rent
         $SubTotal = $Total - $Booking["discount_amount"]; 

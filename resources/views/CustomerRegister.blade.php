@@ -323,10 +323,14 @@
             success: function (data, textStatus, jqXHR) {
                 console.log(data);
                 JsData = JSON.parse(data);
-                $("#LoadSubTotal").html(JsData.SubTotal);
-                $("#LoadTax").html(JsData.Tax);
-                $("#LoadGrandTotal").html(JsData.GrandTotal);
-                $("#LoadDue").html(JsData.Due);
+                if(JsData.Status == 1){
+                    $("#LoadSubTotal").html(JsData.Data.SubTotal);
+                    $("#LoadTax").html(JsData.Data.Tax);
+                    $("#LoadGrandTotal").html(JsData.Data.GrandTotal);
+                    $("#LoadDue").html(JsData.Data.Due);
+                } else {
+                    console.log("fail to fetch tentative pricing details. err:"+JsData.Status+" msg:"+JsData.Message);
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
 
