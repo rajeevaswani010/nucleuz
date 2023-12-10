@@ -253,11 +253,12 @@ class BookingController extends Controller
             BookingInvite::where('id',$InviteId)->update(['status' => 2, 'link' => "", 'booking_id' => $BookingObj->id ]);
         }
 
+        $CompanyName = Office::find(session("CompanyLinkID"))->name;
         $BookingObj = Booking::find($BookingObj->id);
         $data = array("Booking" => $BookingObj);
         try {
-            Mail::send("EmailTemplates.Booking", $data, function ($m) use($BookingObj){
-                $m->from("no-reply@nucleuz.app", "Nucleuz");
+            Mail::send("EmailTemplates.Booking", $data, function ($m) use($BookingObj, $CompanyName){
+                $m->from("no-reply@nucleuz.app", $CompanyName);
                 $m->to($BookingObj->customer->email)->subject("New Car Booking");
             });
         } catch (Exception $e) {
@@ -568,18 +569,20 @@ class BookingController extends Controller
                 $BookingImages->save();
             }
         }
-                        
+
+        $CompanyName = Office::find(session("CompanyLinkID"))->name;
+
         if(isset($Input["final_amount_paid"])){
             $data = array("Booking" => $Booking);
-            Mail::send("EmailTemplates.BookingComplete", $data, function ($m) use($Booking){
-                $m->from("no-reply@nucleuz.app", "Nucleuz");
+            Mail::send("EmailTemplates.BookingComplete", $data, function ($m) use($Booking, $CompanyName){
+                $m->from("no-reply@nucleuz.app", $CompanyName);
                 $m->to($Booking->customer->email)->subject("New Car Booking");
             });
             
             if($Booking->discount_amount > 0){
             $data = array("Booking" => $Booking);
-                Mail::send("EmailTemplates.BookingComplete", $data, function ($m) use($Booking){
-                    $m->from("no-reply@nucleuz.app", "Nucleuz");
+                Mail::send("EmailTemplates.BookingComplete", $data, function ($m) use($Booking, $CompanyName){
+                    $m->from("no-reply@nucleuz.app", $CompanyName);
                     $m->to("info@nucleuz.app")->subject("Added Discount for this Booking");
                 });
             }
@@ -588,8 +591,8 @@ class BookingController extends Controller
         if(isset($Input["km_reading_pickup"])){
             $data = array("Booking" => $Booking);
             Log::debug("bookingcontroller update - sending email");
-            Mail::send("EmailTemplates.Booking2", $data, function ($m) use($Booking){
-                $m->from("no-reply@nucleuz.app", "Nucleuz");
+            Mail::send("EmailTemplates.Booking2", $data, function ($m) use($Booking, $CompanyName){
+                $m->from("no-reply@nucleuz.app", $CompanyName);
                 $m->to($Booking->customer->email)->subject("New Car Booking");
             });
         }
@@ -956,11 +959,11 @@ class BookingController extends Controller
         }
         
         // $this->_uploadBookingImage($Booking,$BookingVehicle,"car_image",$path);
-
+        $CompanyName = Office::find(session("CompanyLinkID"))->name;
         $data = array("Booking" => $Booking);
         Log::debug("bookingcontroller update - sending email");
-        Mail::send("EmailTemplates.Booking2", $data, function ($m) use($Booking){
-            $m->from("no-reply@nucleuz.app", "Nucleuz");
+        Mail::send("EmailTemplates.Booking2", $data, function ($m) use($Booking, $CompanyName ){
+            $m->from("no-reply@nucleuz.app", $CompanyName );
             $m->to($Booking->customer->email)->subject("New Car Booking");
         });
 
@@ -1081,15 +1084,16 @@ class BookingController extends Controller
         $Booking->save();
         
         $data = array("Booking" => $Booking);
-        Mail::send("EmailTemplates.BookingComplete", $data, function ($m) use($Booking){
-            $m->from("no-reply@nucleuz.app", "Nucleuz");
+        $CompanyName = Office::find(session("CompanyLinkID"))->name;
+        Mail::send("EmailTemplates.BookingComplete", $data, function ($m) use($Booking, $CompanyName){
+            $m->from("no-reply@nucleuz.app", $CompanyName);
             $m->to($Booking->customer->email)->subject("New Car Booking");
         });
         
         if($Booking->discount_amount > 0){
         $data = array("Booking" => $Booking);
-            Mail::send("EmailTemplates.BookingComplete", $data, function ($m) use($Booking){
-                $m->from("no-reply@nucleuz.app", "Nucleuz");
+            Mail::send("EmailTemplates.BookingComplete", $data, function ($m) use($Booking, $CompanyName){
+                $m->from("no-reply@nucleuz.app", $CompanyName);
                 $m->to("info@nucleuz.app")->subject("Added Discount for this Booking");
             });
         }
@@ -1503,9 +1507,9 @@ class BookingController extends Controller
 
         $AdminEmail = Admin::select("email")->where('link_id',$LinkId->link_id)->where("role", 2)->first();
         Log::debug($AdminEmail);
-
-        Mail::send("EmailTemplates.Booking2", $data, function ($m) use($AdminEmail){
-            $m->from("no-reply@nucleuz.app", "Nucleuz");
+        $CompanyName = Office::find(session("CompanyLinkID"))->name;
+        Mail::send("EmailTemplates.Booking2", $data, function ($m) use($AdminEmail, $CompanyName){
+            $m->from("no-reply@nucleuz.app", $CompanyName);
             $m->to($AdminEmail->email)->subject("Discount while booking car");
         });
 
