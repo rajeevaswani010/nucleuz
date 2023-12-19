@@ -17,7 +17,7 @@
         <div class="flex d-flex flex-column flex-sm-row align-items-center mb-24pt mb-md-0">
 
             <div class="mb-24pt mb-sm-0 mr-sm-24pt">
-                <h2 class="mb-0">Register</h2>
+                <h2 class="mb-0">{{ __("Register") }}</h2>
             </div>
         </div>
     </div>
@@ -37,12 +37,12 @@
 
     <div class="card">
         <div class="card-header">
-            <h4>Customer Details</h4>
+            <h4>{{ __("Customer Details") }}</h4>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-lg-2 mb-4">
-                    <label>Salutation <span class="text-danger">*</span></label>
+                    <label>{{ __("Salutation") }} <span class="text-danger">*</span></label>
                     <select class="form-control" name="title" id="title" required>
                         <option value="">Select</option>
                         <option>Mr.</option>
@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="col-lg-6 mb-4">
-                    <label>Name <span class="text-danger">*</span></label>
+                    <label>{{ __("Name") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="first_name" value="{{ $Customer->first_name }}" required>
                 </div>
 
@@ -72,7 +72,7 @@
                 </div> -->
 
                 <div class="col-lg-2 mb-4">
-                    <label>Gender <span class="text-danger">*</span></label>
+                    <label>{{ __("Gender") }} <span class="text-danger">*</span></label>
                     <select class="form-control" name="gender" id="gender" required>
                         <option value="">Select</option>
                         <option value="Male">Male</option>
@@ -81,7 +81,7 @@
                 </div>
 
                 <div class="col-lg-2 mb-4">
-                    <label>Nationality <span class="text-danger">*</span></label>
+                    <label>{{ __("Nationality") }} <span class="text-danger">*</span></label>
                     <select class="form-control" name="nationality" id="nationality" required>
                         <option value="">Select</option>
                         @foreach($Conuntry as $Cont)
@@ -91,19 +91,19 @@
                 </div>
 
                 <div class="col-lg-2 mb-4">
-                    <label>Date of Birth <span class="text-danger">*</span></label>
+                    <label>{{ __("Date of Birth") }} <span class="text-danger">*</span></label>
                     <input type="date" class="form-control" name="dob" value="{{ $Customer->dob }}" required>
                 </div>
 
 
                 <div class="col-lg-4 mb-4">
-                    <label>Email <span class="text-danger">*</span></label>
+                    <label>{{ __("Email") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="email" value="{{ $Customer->email }}" required
                         readonly>
                 </div>
 
                 <div class="col-lg-2 mb-4">
-                    <label>Country Code <span class="text-danger">*</span></label>
+                    <label>{{ __("Country Code") }} <span class="text-danger">*</span></label>
                     <select class="form-control" name="country_code" id="country_code" required>
                         <option value="">Select</option>
                         @foreach($Conuntry as $Cont)
@@ -114,25 +114,25 @@
                 </div>
 
                 <div class="col-lg-4 mb-4">
-                    <label>Mobile <span class="text-danger">*</span></label>
+                    <label>{{ __("Mobile") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="mobile" value="{{ $Customer->mobile }}" required>
                 </div>
 
                 <div class="col-lg-4 mb-4">
-                    <label>Insurance Details</label>
+                    <label>{{ __("Insurance Details") }}</label>
                     <!-- <input type="text" class="form-control" name="insurance" value="{{ $Customer->insurance }}"> -->
                     <textarea type="text" class="form-control" name="insurance"  rows="3"
                     required>{{ $Customer->insurance }}</textarea>
                 </div>
 
                 <div class="col-lg-4 mb-4">
-                    <label>Communication Address</label>
+                    <label>{{ __("Communication Address") }}</label>
                     <textarea type="text" class="form-control"   rows="3"
                         name="temp_address">{{ $Customer->temp_address }}</textarea>
                 </div>
 
                 <div class="col-lg-4 mb-4">
-                    <label>Permanent Address <span class="text-danger">*</span></label>
+                    <label>{{ __("Permanent Address") }} <span class="text-danger">*</span></label>
                     <textarea type="text" class="form-control" name="permanent_address"   rows="3"
                         required>{{ $Customer->permanent_address }}</textarea>
                 </div>
@@ -146,7 +146,7 @@
                     <div id="file_residency_card-gallery" class="gallery">
                     </div>
                 </div>
-                <div class="col-lg-1 mb-1"><b>OR</b></div>
+                <div class="col-lg-1 mb-1"><b>{{ __("OR") }}</b></div>
                 <div class="col-lg-2 mb-2">
                     <label for="subject" class="col-form-label text-dark">{{ __("Passport") }}</label>
                     <input type="file" multiple class="form-control font-style" name="passport_detail[]"
@@ -183,12 +183,12 @@
 
     <div class="card mt-3">
         <div class="card-header">
-            <h4>Booking Details</h4>
+            <h4>{{ __("Booking Details") }}</h4>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-lg-8 mb-8">
-                    <label>Vehicle <span class="text-danger">*</span></label>
+                    <label>{{ __("Vehicle") }} <span class="text-danger">*</span></label>
                     <select class="form-control" required id="VehicleData" onchange="fetchReviews()" name="vehicle_id">
                         <option value="">Select</option>
                         @foreach($VehicleTypes as $vehicle)
@@ -208,29 +208,29 @@
                 </div> -->
 
                 <div class="col-lg-4 mb-4">
-                    <label id="UpdateTextDay">No of Days <span class="text-danger">*</span></label>
+                    <label id="UpdateTextDay">{{ __("No of Days") }} <span class="text-danger">*</span></label>
                     <input type="number" step="0" class="form-control" name="tarrif_detail" required id="NoOfDays"
                         onblur="fetchReviews()">
                 </div>
 
                 <div class="col-lg-4 mb-5">
-                    <label>Date of Pickup <span class="text-danger">*</span></label>
+                    <label>{{ __("Date of Pickup") }} <span class="text-danger">*</span></label>
                     <input type="date" class="form-control" required name="PickupDate" id="pickupDate"
                         min="{{ date('Y-m-d') }}">
                 </div>
 
                 <div class="col-lg-3 mb-4">
-                    <label>Time of Pickup <span class="text-danger">*</span></label>
+                    <label>{{ __("Time of Pickup") }} <span class="text-danger">*</span></label>
                     <input type="time" class="form-control" required name="PickupTime" id="pickupTime">
                 </div>
 
                 <div class="col-lg-5 mb-3">
-                    <label>Location of Pickup <span class="text-danger">*</span></label>
+                    <label>{{ __("Location of Pickup") }} <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" required name="pickup_location">
                 </div>
 
                 <div class="col-lg-4 mb-4">
-                    <label>Payment Mode <span class="text-danger">*</span></label>
+                    <label>{{ __("Payment Mode") }} <span class="text-danger">*</span></label>
                     <select class="form-control" required name="payment_mode" onchange="PayMethod(this.value)">
                         <option value="">Select</option>
                         <option>Cash</option>
@@ -240,7 +240,7 @@
                 </div>
 
                 <div class="col-lg-4 mb-4" id="ShowCardDiv" style="display: none">
-                    <label>Card Details <span class="text-danger">*</span></label>
+                    <label>{{ __("NaCard Detailsme") }} <span class="text-danger">*</span></label>
                     <input type="file" class="form-control" name="card_details">
                 </div>
 
@@ -250,25 +250,25 @@
 
     <div class="card mt-3">
         <div class="card-header">
-            <h4>Tentative Billable Amount</h4>
+            <h4>{{ __("Tentative Billable Amount") }}</h4>
         </div>
         <div class="card-body">
             <div class="float-right" id="LoadSubTotal"><b>0.0</b></div>
-            <div class="float-right">Sub Total: &nbsp;</div>
+            <div class="float-right">{{ __("Sub Total") }}: &nbsp;</div>
             <div class="clearfix"></div>
 
             <div class="float-right" id="LoadTax"><b>0.0</b></div>
-            <div class="float-right">VAT: &nbsp;</div>
+            <div class="float-right">{{ __("VAT") }}: &nbsp;</div>
             <div class="clearfix"></div>
 
             <div class="float-right" id="LoadGrandTotal"><b>0.0</b></div>
-            <div class="float-right">Grand Total: &nbsp;</div>
+            <div class="float-right">{{ __("Grand Total") }}: &nbsp;</div>
             <div class="clearfix"></div>
 
             <hr>
 
             <div class="float-right" id="LoadDue"><b>0.0</b></div>
-            <div class="float-right">Estimated Amount: &nbsp;</div>
+            <div class="float-right">{{ __("Estimated Amount") }}: &nbsp;</div>
             <div class="clearfix"></div>
             <div class="float-right"><span style="float-right font-style:italic; color:red;">{{ __("*The above value may change at the time of vehicle return") }}</span> </div>
         </div>
@@ -279,7 +279,7 @@
 
     <div id="LoadingStatus" style="display: none" class="spinner-border text-primary" role="status"><span
             class="sr-only">Loading...</span></div>
-    <button class="btn btn-success mt-4" onClick="SaveManager()" id="LoginBtn">Submit</button>
+    <button class="btn btn-success mt-4" onClick="SaveManager()" id="LoginBtn">{{ __("Submit") }}</button>
     {!! Form::close() !!}
 </div>
 

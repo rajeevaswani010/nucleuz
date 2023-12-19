@@ -294,8 +294,14 @@
     "Upload documents":"تحميل المستندات",
     "Select Customer":"حدد العميل",
     "Drop-Off Today":"التسرب اليوم",
-    "DroppedOff":"انخفض",
+    "DroppedOFF":"انخفض",
     "*To Assign Vehicle, Pickup Date Should Be Today's Date, Still You Can Proceed, It Will Update Pickup As Today's Date":"*لتعيين مركبة، يجب أن  يكون تاريخ الاستلام هو تاريخ اليوم، ومع ذلكيمكنك المتابعة، وسيتم  تحديث الاستلام كتاريخ اليوم",
     "Residence Expiry Date":"تاريخ انتهاء الإقامة",
-    "Show Booking Data":"إظهار بيانات الحجز"
+    "Show Booking Data":"إظهار بيانات الحجز",
+    "Register":"يسجل",
+    "Estimated Amount":"القيمة المقدرة",
+    "Submit":"يُقدِّم",
+    "Communication Address":"عنوان الاتصال",
+    "Passport":"جواز سفر",
+    "OR":"أو"
 }
