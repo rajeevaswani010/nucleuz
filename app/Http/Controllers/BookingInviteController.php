@@ -11,6 +11,7 @@ use Log;
 
 use App\Models\BookingInvite;
 use App\Models\User;
+use App\Models\Office;
 
 class BookingInviteController extends Controller
 {
@@ -85,8 +86,9 @@ class BookingInviteController extends Controller
         $Input["link"] = $Office->link;
 
         $data = array("Name" => $Input["name"], "Link" => $Input["link"]);
-        Mail::send("EmailTemplates.BookingInvite", $data, function ($m) use($Input){
-            $m->from("no-reply@nucleuz.app", "Nucleuz");
+        $CompanyName = Office::find(session("CompanyLinkID"))->name;
+        Mail::send("EmailTemplates.BookingInvite", $data, function ($m) use($Input, $CompanyName){
+            $m->from("no-reply@nucleuz.app", $CompanyName);
             $m->to($Input['email'])->subject("Invite for Car Booking");
         });
 
@@ -113,8 +115,9 @@ class BookingInviteController extends Controller
             $Input["link"] = $Office->link;
 
             $data = array("Name" => $Input["name"], "Link" => $Input["link"]);
-            Mail::send("EmailTemplates.BookingInvite", $data, function ($m) use($Input){
-                $m->from("no-reply@nucleuz.app", "Nucleuz");
+            $CompanyName = Office::find(session("CompanyLinkID"))->name;
+            Mail::send("EmailTemplates.BookingInvite", $data, function ($m) use($Input, $CompanyName){
+                $m->from("no-reply@nucleuz.app", $CompanyName);
                 $m->to($Input['email'])->subject("Invite for Car Booking");
             });
             $response = array("status"=>"success");
