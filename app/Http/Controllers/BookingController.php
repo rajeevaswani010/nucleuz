@@ -1123,7 +1123,7 @@ class BookingController extends Controller
         }
 
         $Booking->dropoff_date = $newDropOff;
-        
+        $this->_updateTariff($Booking);
         //update billing.. 
         Log::debug($this->_updateBillingDetails($Booking));
         $Booking->save();
