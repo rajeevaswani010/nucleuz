@@ -260,7 +260,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                 <span id="errortext_p">                                                                    
                                                                 </span>
                                                             </div>
-                                                            <input type="submit" class="btn btn-success mt-4" value="Submit">
+                                                            <input type="submit" class="btn btn-success mt-4" value='{{ __("Submit") }}'>
                                                         </form>
                                                     </div>
                                             </div>
@@ -282,7 +282,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                             @csrf
                                                             <div class="row">
                                                                 <div class="col-lg-4 mb-3">
-                                                                    <label class="col-form-label text-dark">Current Vehicle <span class="text-danger">*</span></label>
+                                                                    <label class="col-form-label text-dark">{{ __("Current Vehicle") }} <span class="text-danger">*</span></label>
                                                                     <select class="form-control" readonly id="cur_vehicle_id" name="cur_vehicle_id">
                                                                         <option value="{{ $CurrentVehicle->id }}">
                                                                         {{ $CurrentVehicle->car_type }} / {{ $CurrentVehicle->make }}
@@ -329,7 +329,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                         </div>
                                                                 </div>
                                                             </div>
-                                                            <input type="submit" class="btn btn-success mt-4" value="Submit">
+                                                            <input type="submit" class="btn btn-success mt-4" value='{{ __("Submit") }}'>
                                                     </form>
                                                 </div>
                                             </div>
@@ -358,7 +358,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                     
                                                                 </div>
                                                             </div>
-                                                            <input type="submit" class="btn btn-success mt-4" value="Submit">
+                                                            <input type="submit" class="btn btn-success mt-4" value='{{ __("Submit") }}'>
                                                     </form>
                                                     </div>
                                             </div>
@@ -427,7 +427,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                                                 <td>{{ $DT->km_drop_time }}</td>
                                                                                 <td>{{ $DT->km_driven }}</td>
                                                                                 <td>
-                                                                                    <button class="btn btn-primary btn-tiny" onclick="viewVehicleImages({{ $DT->id }});">View</button>
+                                                                                    <button class="btn btn-primary btn-tiny" onclick="viewVehicleImages({{ $DT->id }});">{{ __("View") }}</button>
                                                                                 </td>
                                                                                 </tr>
                                                                             @endforeach
@@ -652,7 +652,7 @@ input[type="number"]::-webkit-outer-spin-button {
                                                         </div>
                                                     </div>
                                                     <div class="mb-2">
-                                                        <label>{{ __("VAT(5%)") }} <span class="text-danger">*</span></label>
+                                                        <label>{{ __("VAT") }}(5%) <span class="text-danger">*</span></label>
                                                         <input type="text" class="form-control" name="vat" readonly required value="" id="vat">
                                                     </div>
                                                     <div class="mb-2">
