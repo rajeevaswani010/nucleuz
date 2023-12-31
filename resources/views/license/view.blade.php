@@ -39,10 +39,11 @@
 <table class="table datatable">
 <thead>
 <tr>
-<th>License Key</th>
+<!--<th>License Key</th> -->
+<th>Company</th>
+<th>Admin Name</th>
 <th>Product Name</th>
 <th>License Expiry</th>
-<th>Company</th>
 <th>Status</th>
 <th>Created By</th>
 <th>Creation Date</th>
@@ -60,20 +61,27 @@
     <?php
     $productArr=DB::table('products')->where('id',$DT->license_module)->first();
     $company=DB::table('offices')->where('id',$DT->user_id)->first();
+    $admin=DB::table('admin')->where('admin_id',$DT->created_by)->first();
+    $adminObj=DB::table('admin')->where('link_id',$DT->id)->where('company_id',$DT->user_id)->first();
     ?>
     <tr class="font-style">
-    <td>{{ $DT->license_key }}</td>
-    <td>{{ $productArr->name }}</td>
-    <td>{{ date('d F Y', strtotime($DT->expiration_date)) }}</td>
-    
     @if(is_null($company))
     <td> --- </td>
     @else
     <td>{{ $company->name }}</td>
-    @endif  
+    @endif 
+        
+    @if(is_null($adminObj))
+    <td> --- </td>
+    @else
+    <td>{{ $adminObj->name }}</td>
+    @endif 
+    <!--<td>{{ $DT->license_key }}</td> -->
+    <td>{{ $productArr->name }}</td>
+    <td>{{ date('d F Y', strtotime($DT->expiration_date)) }}</td> 
     
     <td>{{ ucfirst($DT->status) }}</td>
-    <td>{{ $DT->created_by }}</td>
+    <td>{{ $admin->name }}</td>
     <td>{{ date('d F Y', strtotime($DT->created_at)) }}</td>
     <td>{{ date('d F Y', strtotime($DT->updated_at)) }}</td>
     <td class="Action">
