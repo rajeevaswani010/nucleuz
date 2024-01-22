@@ -173,7 +173,7 @@ class BookingController extends Controller
             return json_encode(array("Status" =>  0, "Message" => "Additional KM Amount Must Be > 0"));
         }
         
-        date_default_timezone_set("Asia/Muscat"); # setting current time zone
+        // date_default_timezone_set("Asia/Muscat"); # setting current time zone
         if($Input["PickupDate"]." ".$Input["PickupTime"] < date("Y-m-d H:i:s")){
             return json_encode(array("Status" =>  0, "Message" => "Pickup Date Can't Be in Past"));
         }
@@ -905,7 +905,7 @@ class BookingController extends Controller
         }
 
         // return json_encode(array("Status" => 0, "Message" => "Doing testing.. ", "Data" => array()));
-        date_default_timezone_set("Asia/Muscat"); # setting current time zone
+        // date_default_timezone_set("Asia/Muscat"); # setting current time zone
 
         $BookingVehicle = new BookingVehicle();
         $BookingVehicle->company_id = $Booking->company_id;
@@ -916,7 +916,8 @@ class BookingController extends Controller
         $BookingVehicle->model = $Vehicle->model;
         $BookingVehicle->variant = $Vehicle->variant;
         $BookingVehicle->reg_no = $Vehicle->reg_no;
-        $BookingVehicle->pickup_date_time = date('Y-m-d H:i:s');
+        
+        $BookingVehicle->pickup_date_time = $Input['pickup_date_time']; //date('Y-m-d H:i:s');  //sending time from browser         
         $BookingVehicle->km_reading_pickup = $Input["km_reading_pickup"];
         $BookingVehicle->save();
         Log::debug($BookingVehicle->id);
@@ -930,7 +931,7 @@ class BookingController extends Controller
         $Booking->residency_card_id = $Input["residency_card_id"];
 
         if($Booking->status == 1){
-            $Booking->pickup_date_time =  $BookingVehicle->pickup_date_time;
+            $Booking->pickup_date_time = $BookingVehicle->pickup_date_time;
             $this->_updateTariff($Booking);
             $this->_updateBillingDetails($Booking);
         }
@@ -998,12 +999,12 @@ class BookingController extends Controller
             return json_encode(array("Status" => 0, "Message" => "Booking Error. invalid input", "Data" => null));
         }
         
-        date_default_timezone_set("Asia/Muscat"); # setting current time zone
+        // date_default_timezone_set("Asia/Muscat"); # setting current time zone
 
         $CurrentBookingVehicle->km_drop_time = $Input["km_drop_time"];
         $CurrentBookingVehicle->dmage = $Input["dmage"];
         $CurrentBookingVehicle->km_driven = $CurrentBookingVehicle->km_drop_time - $CurrentBookingVehicle->km_reading_pickup;
-        $CurrentBookingVehicle->dropoff_date = date('Y-m-d H:i:s'); // change to time recieved from browser
+        $CurrentBookingVehicle->dropoff_date = $Input['dropoff_date']; //date('Y-m-d H:i:s'); // change to time recieved from browser
         $CurrentBookingVehicle->save();
 
         Log::debug($CurrentBookingVehicle);

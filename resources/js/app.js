@@ -201,5 +201,35 @@ function getFirstAndLastDateOfMonth(monthName) {
     };
   }
   
-  
+  function getCurrentDate(){
+    // Create a new Date object representing the current date and time
+    var currentDate = new Date();
+
+    // Get individual components of the date and time
+    var year = currentDate.getFullYear();
+    var month = currentDate.getMonth() + 1; // Months are zero-based (0 to 11), so add 1
+    var day = currentDate.getDate();
+    
+    var formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
+
+  function getCurrentDateTime(){
+    // Create a new Date object representing the current date and time
+    var currentDate = new Date();
+
+    // Get individual components of the date and time
+    var year = currentDate.getFullYear();
+    var month = currentDate.getMonth() + 1; // Months are zero-based (0 to 11), so add 1
+    var day = currentDate.getDate();
+    var hours = currentDate.getHours();
+    var minutes = currentDate.getMinutes();
+    var seconds = currentDate.getSeconds();
+
+    // Format the components if needed
+    var formattedDate = `${year}-${month}-${day}`;
+    var formattedTime = `${hours}:${minutes}:${seconds}`;
+
+    return formattedDate+" "+formattedTime;
+  }
   

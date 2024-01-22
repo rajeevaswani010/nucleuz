@@ -157,11 +157,11 @@
                     <div class="card-body">
                     <div class="row">
                         
-                    <div class="form-group col-6 mb-4">
+                    <div class="form-group col-lg-6 col-md-12 mb-4">
                         <fieldset class="border rounded-3 p-3 mb-4">
                             <legend class="float-none w-auto px-3">{{ __("Resident Card Details") }}</legend>
                             <div class="row">
-                            <div class="col-10">
+                            <div class="col-lg-10 col-md-10">
                                 <div id="residency_card" class="file-gallery">
                                     <!-- images will be added here..  -->
                                 </div>
@@ -172,11 +172,11 @@
                             </div>
                         </fieldset>
                     </div>
-                    <div class="form-group col-6 mb-4">
+                    <div class="form-group col-lg-6 col-md-12 mb-4">
                         <fieldset class="border rounded-3 p-3 mb-4">
                             <legend class="float-none w-auto px-3">{{ __("Passport Details") }}</legend>
                             <div class="row">
-                            <div class="col-10">
+                            <div class="col-lg-10 col-md-10">
                                 <div id="passport_detail" class="file-gallery">
                                     <!-- images will be added here..  -->
                                 </div>
@@ -187,11 +187,11 @@
                             </div>
                         </fieldset>
                     </div>
-                    <div class="form-group col-6 mb-4">
+                    <div class="form-group col-lg-6 col-md-12 mb-4">
                         <fieldset class="border rounded-3 p-3 mb-4">
                             <legend class="float-none w-auto px-3">{{ __("Driving License") }}</legend>
                             <div class="row">
-                            <div class="col-10">
+                            <div class="col-lg-10 col-md-10">
                                 <div id="driving_license" class="file-gallery">
                                     <!-- images will be added here..  -->
                                 </div>
@@ -202,11 +202,11 @@
                             </div>
                         </fieldset>
                     </div>
-                    <div class="form-group col-6 mb-4">
+                    <div class="form-group col-lg-6 col-md-12 mb-4">
                         <fieldset class="border rounded-3 p-3 mb-4">
                             <legend class="float-none w-auto px-3">{{ __("Visa") }}</legend>
                             <div class="row">
-                            <div class="col-10">
+                            <div class="col-lg-10 col-md-10">
                                 <div id="visa_detail" class="file-gallery">
                                     <!-- images will be added here..  -->
                                 </div>

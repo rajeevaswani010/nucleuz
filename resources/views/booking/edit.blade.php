@@ -1057,6 +1057,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
             var formdata = new FormData(this);
             formdata.append("booking_id",{{ $Booking->id }});
+            formdata.append("pickup_date_time", getCurrentDateTime() );
             console.log(formDataToJson(formdata));
 
             $.ajax({
@@ -1094,6 +1095,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
             var formdata = new FormData(this);
             formdata.append("booking_id",{{ $Booking->id }});
+            formdata.append("dropoff_date", getCurrentDateTime() );
             console.log(formDataToJson(formdata));
 
             $.ajax({
