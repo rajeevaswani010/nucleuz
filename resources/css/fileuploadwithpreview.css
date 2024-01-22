@@ -1,0 +1,69 @@
+file-upload-preview label.actual-btn-label{
+    background-color: indigo;
+    color: white;
+    padding: 0.5rem;
+    font-family: sans-serif;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+file-upload-preview  .fileinput-gallery {
+    height: 200px;
+    width: 100%;
+    padding: 10px;
+    /* background: grey; */
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+file-upload-preview > .gallery-item {
+    float: left;
+    padding-right: 10px;
+    height: 100%;
+}
+
+file-upload-preview .fileinput-gallery {
+	width: 100%;
+	/* height: 300px; */
+	/* padding: 10px; */
+	/* background: grey; */
+	/* text-align: center; */
+	display: inline-block;
+}
+
+file-upload-preview .gallery-item {
+	/* float: left; */
+	/* padding-right: 10px; */
+	/* height: 200px; */
+	padding: 6px;
+    margin: 10px;
+	display: inline-block;
+	text-align: center;
+    position: relative;
+    padding: 10px;
+}
+
+file-upload-preview .gallery-item .image {
+	display: inline-block;
+}
+
+file-upload-preview .gallery-item .image img {
+	height: 120px;
+	width: auto;
+	max-width: 100%;
+	box-shadow: 2px 4px 7px 1px gray;
+}
+
+file-upload-preview .gallery-item button {
+	margin-top: 5px;
+    border: solid thin #f0f0f0;
+    border-radius: 12%;
+    /* place-content: center; */
+    font-weight: bold;
+    position: absolute;
+    top: -20px;
+    right: -6px;
+    padding: 7px 10px 7px 10px;
+    border-radius: 50%;
+}

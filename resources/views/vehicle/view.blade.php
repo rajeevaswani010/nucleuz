@@ -23,6 +23,14 @@
     color: #fff
 }
 
+.avatar {
+  vertical-align: middle;
+  text-align: center;
+  width: auto;
+  height:100px;
+  /* border-radius: 50%; */
+}
+
 </style>
 
 <!-- [ Main Content ] start -->
@@ -120,9 +128,10 @@ $("#make").on("change",function(){
 <div class="card">
 <div class="card-body table-border-style">
 <div class="table-responsive">
-<table class="table datatable">
+<table class="table datatable table-hover">
 <thead>
 <tr>
+<th></th>
 <th>{{ __("Type") }}</th>
 <th>{{ __("Make") }}</th>
 <th>{{ __("Model") }}</th>
@@ -138,7 +147,15 @@ $("#make").on("change",function(){
     
     @foreach($Data as $DT)
    
-    <tr class="font-style">
+    <tr class="font-style" >
+    <td 
+        style="padding: 10px;text-align: center;">
+        @if($DT->car_image != null)
+        <img src="{{ $DT->car_image }}" class="avatar" alt="">
+        @else
+        <img src="{{ URL('public') }}/blank_car.png" class="avatar" alt="">
+        @endif
+    </td>
     <td>{{ $DT->car_type }}</td>
     <td>{{ $DT->make }}</td>
     <td>{{ $DT->model }}</td>

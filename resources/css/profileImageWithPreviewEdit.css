@@ -1,0 +1,47 @@
+profile-image-preview  {
+    position: relative;
+}
+
+profile-image-preview  label.actual-btn-label {
+    border-radius: 50%;
+}
+
+
+profile-image-preview  .profileimage .actual-btn-label {
+    background-color: indigo;
+    color: white;
+    padding: 0.5rem;
+    font-family: sans-serif;
+    /* border-radius: 0.3rem; */
+    cursor: pointer;
+    margin-top: 1rem;
+    position: absolute;
+    top: 70%;
+    left: 5%;
+    z-index: 10000000;
+    
+
+}
+
+.circular--square { border-top-left-radius: 50% 50%; border-top-right-radius: 50% 50%; border-bottom-right-radius: 50% 50%; border-bottom-left-radius: 50% 50%; }
+
+.circular--landscape { display: inline-block; position: relative; width: 200px; height: 200px; overflow: hidden; border-radius: 50%; } .circular--landscape img { width: auto; height: 100%; margin-left: -50px; }
+
+.circular--portrait { position: relative; width: 200px; height: 200px; overflow: hidden; border-radius: 50%; } .circular--portrait img { width: 100%; height: auto; }
+
+profile-image-preview .image-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background: gray; */
+    border: solid thin lightgray;
+    text-align: center;
+    border-radius: 50%;
+}
+
+
+profile-image-preview .image-preview img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}

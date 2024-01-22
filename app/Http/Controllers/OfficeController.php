@@ -163,7 +163,7 @@ class OfficeController extends Controller
             $path = $request->file('page')->store('pageImages');
             $Input['page'] = $path;
         }
-        //Log::debug($Input);
+        Log::debug($Input);
         $office = Office::where('id', $id)->update($Input);
         return redirect("office");
     }
@@ -197,6 +197,27 @@ class OfficeController extends Controller
         
         Office::find($id)->delete();
         return redirect("office");
+    }
+
+    public function setLogo(Request $request){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        $Input = $request->all();
+        $officeId = $Input["office_id"];
+
+        Log::debug($Input);
+
+        if($request->file('logo') != null){
+            $path = $request->file('logo')->store('officeImages');
+
+            $office = Office::where('id', $officeId)->update([
+                'logo' => $path
+            ]);
+            return json_encode(array("Status" =>  1, "Message" => "Logo changed successfully"));
+        } else {
+            return json_encode(array("Status" =>  0, "Message" => "Logo fail to change"));
+        }
     }
 
     public function getCurrentSettingsAsJson(){

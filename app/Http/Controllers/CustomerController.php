@@ -370,6 +370,14 @@ class CustomerController extends Controller
         $CustObj->mobile = $Input["mobile"];
         $CustObj->email = $Input["email"];
         $CustObj->insurance = $Input["insurance"];
+        $CustObj->passport_num = $Input["passport_num"];
+        $CustObj->passport_valid_upto = $Input["passport_valid_upto"];
+        $CustObj->id_num = $Input["id_num"];
+        $CustObj->id_valid_upto = $Input["id_valid_upto"];
+        $CustObj->driving_license_num = $Input["driving_license_num"];
+        $CustObj->driving_lic_valid_upto = $Input["driving_lic_valid_upto"];
+        $CustObj->driving_lic_issuedby = $Input["driving_lic_issuedby"];
+
 
         
         $CustObj->save();
@@ -410,6 +418,7 @@ class CustomerController extends Controller
 
         if ($id != null) {
             $Customer = Customer::find($id);
+            $Customer["images"] = CustomerImages::where("customer_id",$id)->where("company_id",session("CompanyLinkID"))->get();
             $Conuntry = Country::orderBy("name")->get();
 
             $ActiveAction = "customer";
@@ -570,7 +579,42 @@ class CustomerController extends Controller
         }
         $Input = $request->all();
         // Log::debug(sizeof($request->file('files'))); //just check what is there.. 
-        // Log::debug($Input); //just check what is there.. 
+        Log::debug($Input); //just check what is there.. 
+
+        $responseData = array();
+        $filetype = $Input['type'];
+        $customerId = $Input['customer_id'];
+
+        if($request->file('files') && sizeof($request->file('files')) > 0){
+            for($i = 0; $i < sizeof($request->file('files')); $i++ ){
+                $CustomerImages = new CustomerImages();
+                $CustomerImages->customer_id = $customerId;
+                $CustomerImages->company_id = session("CompanyLinkID");
+                $CustomerImages->type = $filetype;
+
+                $path = $request->file('files')[$i]->store('CustomersImages');
+                $CustomerImages->link = $path;
+                $CustomerImages->save();
+                
+                //add to response
+                if (!isset($responseData[$filetype])){
+                    $responseData[$filetype] = [];
+                }
+                $img_details = array("id" => $CustomerImages->id, "link" => $CustomerImages->link);
+                array_push($responseData[$filetype],$img_details);
+            }
+        }    
+
+        return json_encode(array("Status" =>  1, "Message" => "files updated successfully", "Data" => $responseData));
+    }
+
+    public function uploadFiles_old(Request $request){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        $Input = $request->all();
+        // Log::debug(sizeof($request->file('files'))); //just check what is there.. 
+        Log::debug($Input); //just check what is there.. 
 
         $responseData = array();
         $filetype = $Input['type'];
@@ -605,7 +649,7 @@ class CustomerController extends Controller
         }
         
         $Input = $request->all();
-        Log::debug($Input); //just check what is there.. 
+        // Log::debug($Input); //just check what is there.. 
     
         $CustImages = CustomerImages::where("company_id", session("CompanyLinkID"))
                         ->where('customer_id',$Input['customer_id'])

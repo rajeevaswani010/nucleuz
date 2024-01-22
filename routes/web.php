@@ -68,6 +68,7 @@ Route::get('dashboard', [DashboardController::class, 'index']);
 
 Route::resource('office', OfficeController::class);
 Route::post('office/getCurrentSettings', [OfficeController::class, 'getCurrentSettingsAsJson']);
+Route::post('office/setLogo', [OfficeController::class, 'setLogo']);
 Route::get('settings', [OfficeController::class, 'getSettings']);
 Route::post('settings', [OfficeController::class, 'updateSettings']);
 Route::resource('license', LicenseController::class);
@@ -106,6 +107,10 @@ Route::post('BookingExceed/{id}', [BookingController::class, 'BookingExceed']);
 Route::get('Booking/Get', [DashboardController::class, 'GetBookings']);
 
 Route::get('Vehicle/GetAllCarTypes', [VehicleController::class, 'GetAllCarTypes']);
+Route::post('Vehicle/setDisplayImage', [VehicleController::class,'setDisplayImage']);
+Route::post('Vehicle/setStatus', [VehicleController::class,'setVehicleStatus']);
+Route::post('Vehicle/uploadFiles', [VehicleController::class,'uploadFiles']);
+Route::post('Vehicle/deleteFile', [VehicleController::class,'deleteFile']);
 
 //===========my new code==================================//
 Route::get('bookingreciepts', [BookingController::class, 'BookingReciept']);

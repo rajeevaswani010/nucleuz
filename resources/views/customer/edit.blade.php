@@ -4,8 +4,13 @@
 
 
 <!-- [ Main Content ] start -->
+<link rel="stylesheet" href="{{ URL('resources/css/fileuploadwithpreview.css') }}">
+
+
+
 <script src="{{ URL('resources/js/multipleFileUpload.js') }}"></script>
 <script src="{{ URL('resources/js/customer.js') }}"></script>
+<script src="{{ URL('resources/js/fileuploadwithpreview.js') }}"></script>
 
 <div class="dash-container">
     <div class="dash-content">
@@ -34,7 +39,7 @@
                     <div class="card-header"><h4>{{ __('Customer Details') }}</h4></div>
                     <div class="card-body">
                     <div class="row mt-4">
-                        <div class="col-lg-1 mb-4">
+                        <div class="form-group col-lg-1 mb-4">
                             <label for="subject" class="col-form-label text-dark">{{ __("Salutation") }} <span class="text-danger">*</span></label>
                             <select class="form-control font-style" name="title" id="title" required>
                                 <option value="">{{ __("Select") }}</option>
@@ -49,7 +54,7 @@
                             </select>
                         </div>
 
-                        <div class="col-lg-6 mb-4">
+                        <div class="form-group col-lg-6 mb-4">
                             <label for="subject" class="col-form-label text-dark">{{ __("Name") }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control font-style" name="first_name" id="first_name" value="{{ @$Customer->first_name }}" required>
                         </div>
@@ -64,7 +69,7 @@
                             <input type="text" class="form-control font-style" name="last_name" id="last_name" value="{{ @$Customer->last_name }}" required>
                         </div> -->
 
-                        <div class="col-lg-2 mb-4">
+                        <div class="form-group col-lg-2 mb-4">
                             <label for="subject" class="col-form-label text-dark">{{ __("Gender") }} <span class="text-danger">*</span></label>
                             <select class="form-control font-style" name="gender" id="gender" required>
                                 <option value="">{{ __("Select") }}</option>
@@ -73,7 +78,7 @@
                             </select>
                         </div>
 
-                        <div class="col-lg-3 mb-4">
+                        <div class="form-group col-lg-3 mb-4">
                             <label for="subject" class="col-form-label text-dark">{{ __("Nationality") }} <span class="text-danger">*</span></label>
                             <select class="form-control font-style" name="nationality" id="nationality" required>
                                 <option value="">{{ __("Select") }}</option>
@@ -87,18 +92,18 @@
                         </script>
 
 
-                        <div class="col-lg-2 mb-4">
+                        <div class="form-group col-lg-2 mb-4">
                             <label for="subject" class="col-form-label text-dark">{{ __("Date of Birth") }} <span class="text-danger">*</span></label>
                             <input type="date" class="form-control font-style" name="dob" id="dob" value="{{ @$Customer->dob }}" required>
                         <!-- <input type="date" class="form-control font-style" name="dob" id="dob" value="{{ @$Customer->dob }}" required max="{{ date('Y-m-d', strtotime('-18 year')) }}"> -->
                         </div>
 
-                        <div class="col-lg-4 mb-4">
+                        <div class="form-group col-lg-4 mb-4">
                             <label for="subject" class="col-form-label text-dark">{{ __("Email") }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control font-style" name="email" id="email" value="{{ @$Customer->email }}" required>
                         </div>
                         
-                        <div class="col-lg-2 mb-4">
+                        <div class="form-group col-lg-2 mb-4">
                             <label for="subject" class="col-form-label text-dark">{{ __("Country Code") }} <span class="text-danger">*</span></label>
                             <select class="form-control font-style" name="country_code" id="country_code" title="select country code" required>
                                 <option value="">{{ __("Select") }}</option>
@@ -112,21 +117,21 @@
                         </script>
 
 
-                        <div class="col-lg-4 mb-4">
+                        <div class="form-group col-lg-4 mb-4">
                             <label for="subject" class="col-form-label text-dark">{{ __("Mobile") }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control font-style" name="mobile" id="mobile" value="{{ @$Customer->mobile }}" required>
                         </div>
-                        <div class="col-lg-4 mb-4">
+                        <div class="form-group col-lg-4 mb-4">
                             <label for="subject" class="col-form-label text-dark">{{ __("Insurance Details") }}</label>
                             <textarea type="text" class="form-control font-style" name="insurance" id="insurance">{{ @$Customer->insurance }}</textarea>
                         </div>
 
-                        <div class="col-lg-4 mb-4">
+                        <div class="form-group col-lg-4 mb-4">
                             <label for="subject" class="col-form-label text-dark">{{ __("Permanent Address") }} <span class="text-danger">*</span></label>
                             <textarea type="text" class="form-control font-style" name="permanent_address" id="permanent_address" required>{{ @$Customer->permanent_address }}</textarea>
                         </div>
 
-                        <div class="col-lg-4 mb-4">
+                        <div class="form-group col-lg-4 mb-4">
                             <label for="subject" class="col-form-label text-dark">{{ __("Temp Address") }}</label>
                             <textarea type="text" class="form-control font-style" name="temp_address" id="temp_address">{{ @$Customer->temp_address }}</textarea>
                         </div>
@@ -151,49 +156,68 @@
                     <div class="card-header"><h4>{{ __('Upload documents') }}</h4></div>
                     <div class="card-body">
                     <div class="row">
-                        <div class="col-3 mb-4">
-                            <div id="file_residency_card">
-                                <label for="subject" class="col-form-label text-dark">{{ __("Resident Card Details") }}</label>
-                                <input type="file" multiple class="form-control font-style file_input" name="residency_card[]" 
-                                        id="file_residency_card_input" capture onchange="uploadFiles(this, 'file_residency_card')"
-                                        accept=".jpg,.jpeg,.png" >
-                                <div id="file_gallery" class="gallery mt-2">
+                        
+                    <div class="form-group col-6 mb-4">
+                        <fieldset class="border rounded-3 p-3 mb-4">
+                            <legend class="float-none w-auto px-3">{{ __("Resident Card Details") }}</legend>
+                            <div class="row">
+                            <div class="col-10">
+                                <div id="residency_card" class="file-gallery">
+                                    <!-- images will be added here..  -->
                                 </div>
                             </div>
-                        </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadFiles" data-filetype="residency_card">Add Files</button>
+                            </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="form-group col-6 mb-4">
+                        <fieldset class="border rounded-3 p-3 mb-4">
+                            <legend class="float-none w-auto px-3">{{ __("Passport Details") }}</legend>
+                            <div class="row">
+                            <div class="col-10">
+                                <div id="passport_detail" class="file-gallery">
+                                    <!-- images will be added here..  -->
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadFiles" data-filetype="passport_detail">Add Files</button>
+                            </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="form-group col-6 mb-4">
+                        <fieldset class="border rounded-3 p-3 mb-4">
+                            <legend class="float-none w-auto px-3">{{ __("Driving License") }}</legend>
+                            <div class="row">
+                            <div class="col-10">
+                                <div id="driving_license" class="file-gallery">
+                                    <!-- images will be added here..  -->
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadFiles" data-filetype="driving_license">Add Files</button>
+                            </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="form-group col-6 mb-4">
+                        <fieldset class="border rounded-3 p-3 mb-4">
+                            <legend class="float-none w-auto px-3">{{ __("Visa") }}</legend>
+                            <div class="row">
+                            <div class="col-10">
+                                <div id="visa_detail" class="file-gallery">
+                                    <!-- images will be added here..  -->
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadFiles" data-filetype="visa_detail">Add Files</button>
+                            </div>
+                            </div>
+                        </fieldset>
+                    </div>
 
-                        <div class="col-3 mb-4">
-                            <div id="file_passport_detail">
-                                <label for="subject" class="col-form-label text-dark">{{ __("Passport Details") }}</label>
-                                <input type="file" multiple class="form-control font-style file_input" name="passport_detail[]" 
-                                        id="file_passport_detail_input" capture onchange="uploadFiles(this,'file_passport_detail')"
-                                        accept=".jpg,.jpeg,.png" >
-                                <div id="file_gallery" class="gallery mt-2">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 mb-4">
-                            <div id="file_driving_license">
-                                <label for="subject" class="col-form-label text-dark">{{ __("Driving License") }} <span class="text-danger">*</span></label>
-                                <input type="file" multiple class="form-control font-style file_input" name="driving_license[]" 
-                                        id="file_driving_license_input" capture onchange="uploadFiles(this,'file_driving_license')"
-                                        accept=".jpg,.jpeg,.png" >
-                                <div id="file_gallery" class="gallery mt-2">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 mb-4">
-                            <div id="file_visa_detail">
-                                <label for="subject" class="col-form-label text-dark">{{ __("Visa") }}</label>
-                                <input type="file" multiple class="form-control font-style file_input" name="visa_detail[]" 
-                                        id="file_visa_detail_input" capture onchange="uploadFiles(this,'file_visa_detail')"
-                                        accept=".jpg,.jpeg,.png" >
-                                <div id="file_gallery" class="gallery mt-2">
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     </div>
                 </div>
@@ -206,6 +230,30 @@
     <div id="LoadingStatus" style="display: none" class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div> -->
 
     <!-- <button class="btn btn-xs btn-primary" onClick="SaveManager()" id="LoginBtn">{{ __("Save") }}</button> -->
+    <div class="modal" id="uploadFiles" tabindex="-1" role="dialog" aria-labelledby="uploadFilesModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Upload Files</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <!-- <file-upload-preview id="car_conditions_image"></file-upload-preview> -->
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" style="float: left;" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="upload" class="btn btn-primary">Upload</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <script>
     var CustomerId = {{ $Customer->id }};
@@ -213,78 +261,140 @@
     //load images
     $(document).ready(function() {
         $(".gallery").empty(); //clear off all gallery images
+        var images = @json($Customer->images);
+
+        for(var image of images) {
+            console.log(image);
+            var gallery = document.querySelector('#'+image["type"]);
+
+            var div_gallery_item = document.createElement('div');
+            div_gallery_item.classList.add("gallery-item");
+            
+            var href = document.createElement('a');
+            href.classList.add("image");
+            href.setAttribute("target","_blank");
+            href.setAttribute("href",`{{ URL('public') }}/`+image["link"]);
+
+            const img = document.createElement('img');
+            img.setAttribute('src',`{{ URL('public') }}/`+image["link"]);
+            href.appendChild(img);
+
+            const delBtn = document.createElement('button');
+            delBtn.addEventListener('click', function(id){
+                deleteFile(
+                    (id)=>{  //on delete success handler.. 
+                        $('#'+id+".gallery-item").remove();
+                    }
+                );
+            });
+            delBtn.classList.add('del');
+            delBtn.classList.add('btn');
+            delBtn.classList.add('btn-danger');
+
+            div_gallery_item.appendChild(href);
+            div_gallery_item.appendChild(delBtn);
+            div_gallery_item.setAttribute("id",image["id"]);
+
+            gallery.appendChild(div_gallery_item);
+        }
 
         //get images
-        getImages(CustomerId);
+        // getImages(CustomerId);
     });
 
-        //get customer images.. args:{"customer_id":CustomerId}
-    function getImages(CustomerId){
-        var args = {"customer_id": CustomerId};
-        
-        doAjax (
-            "{{ URL('getCustomerImages') }}"
-            ,args
-            ,(JsData) => {
-                var data = JsData.Data;
-                for (var key in data) {
-                    for (var i = 0; i < data[key].length; i++) {
-                        var delHandlerArgs = {"id":data[key][i].id, "customer_id":CustomerId};
-                        addImageUrlToGallery(data[key][i], "file_"+key, deleteFile, delHandlerArgs);
-                    }
+    var uploadfiletype;
+
+    $('#uploadFiles').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        uploadfiletype = button.data('filetype'); // Extract value from data-filetype attribute
+        console.log("file-type: "+uploadfiletype);
+
+        $('#uploadFiles .modal-body').empty();
+        $('#uploadFiles .modal-body').append(`<file-upload-preview id="`+uploadfiletype+`"></file-upload-preview>`)                
+    });
+
+    $('#uploadFiles .modal-footer button#upload').click(function(){
+            console.log("upload btn clicked");
+
+            var fileinput = $('#uploadFiles .modal-body file-upload-preview input')[0]; //get first match. 
+
+            __uploadFiles(
+                "{{ URL('Customer/uploadFiles') }}"
+                ,fileinput
+                ,(formdata) => {
+                    formdata.append("customer_id", {{ $Customer->id }});
+                    formdata.append("type", uploadfiletype);
                 }
+                ,(JsData) => {
+                    hideloading();
+                    $('#uploadFiles').modal("hide");
+                    window.location.reload();
+                }
+                ,(JsData) => {
+                    toastr["error"](JsData.Message);
+                }
+            );
+    });
+
+    function deleteFile(onSuccessCb){
+                const image_id = event.srcElement.parentElement.getAttribute("id");
+
+                __doAjax (
+                    "{{ URL('Customer/deleteFile') }}"
+                    ,(formdata)=>{
+                        formdata.append('customer_id', {{ $Customer->id }});
+                        formdata.append('image_id',image_id);
+                    }
+                    ,(JsData) => {
+                        onSuccessCb(image_id);
+                        toastr["success"]("file deleted successfully")
+                    }
+                    ,(JsData) => {
+                        toastr["error"](JsData.Message);
+                    }
+                );
             }
-            ,(JsData) => {
-                alert("Fail to get images.Error:"+JsData.Status+" - "+JsData.Message);
-            }
-        );
-    }
+
+        //get customer images.. args:{"customer_id":CustomerId}
+    // function getImages(CustomerId){
+    //     var args = {"customer_id": CustomerId};
+        
+    //     doAjax (
+    //         "{{ URL('getCustomerImages') }}"
+    //         ,args
+    //         ,(JsData) => {
+    //             var data = JsData.Data;
+    //             for (var key in data) {
+    //                 for (var i = 0; i < data[key].length; i++) {
+    //                     var delHandlerArgs = {"id":data[key][i].id, "customer_id":CustomerId};
+    //                     addImageUrlToGallery(data[key][i], "file_"+key, deleteFile, delHandlerArgs);
+    //                 }
+    //             }
+    //         }
+    //         ,(JsData) => {
+    //             alert("Fail to get images.Error:"+JsData.Status+" - "+JsData.Message);
+    //         }
+    //     );
+    // }
 
     //delete customer file.. 
-    function deleteFile(args){
-        var formdata = new FormData();
-        formdata.append('customer_id', args.customer_id);
-        formdata.append('image_id',args.id);
+    // function deleteFile(args){
+    //     var formdata = new FormData();
+    //     formdata.append('customer_id', args.customer_id);
+    //     formdata.append('image_id',args.id);
 
-        //
-        doAjax (
-            "{{ URL('Customer/deleteFile') }}"
-            ,formDataToJson(formdata)
-            ,(JsData) => {
-                toastr["success"]("file deleted successfully")
-            }
-            ,(JsData) => {
-                toastr["error"](JsData.Message);
-            }
-        );
-    }
-
-
-    function uploadFiles(fileInput, parentDivId){
-        console.log("upload file called");
-        var type = parentDivId.slice(5);   // for 'file_residency_card' it will return 'residency_card'
-
-        __uploadFiles(
-            "{{ URL('Customer/uploadFiles') }}"
-            ,fileInput
-            ,(formdata) => {
-                formdata.append("customer_id", CustomerId);
-                formdata.append("type", type);
-            }
-            ,(JsData) => {
-                for (var key in JsData.Data) {
-                            for (var i = 0; i < JsData.Data[key].length; i++) {
-                                var delHandlerArgs = {"id":JsData.Data[key][i].id, "customer_id":CustomerId};
-                                addImageUrlToGallery(JsData.Data[key][i], "file_"+key, deleteFile, delHandlerArgs);
-                            }
-                }
-                toastr["success"]("file uploaded successfully")
-            }
-            ,(JsData) => {
-                toastr["error"](JsData.Message);
-            }
-        );
-    }
+    //     //
+    //     doAjax (
+    //         "{{ URL('Customer/deleteFile') }}"
+    //         ,formDataToJson(formdata)
+    //         ,(JsData) => {
+    //             toastr["success"]("file deleted successfully")
+    //         }
+    //         ,(JsData) => {
+    //             toastr["error"](JsData.Message);
+    //         }
+    //     );
+    // }
 
     $("#CustomerForm").bind('submit',function(e) {
         var formObj = $(this);

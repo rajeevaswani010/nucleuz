@@ -15,6 +15,7 @@ use App\Import\VehicleImport;
 use App\Models\Vehicle;
 use App\Models\Brand;
 use App\Models\CarType;
+use App\Models\VehicleImages;
 
 class VehicleController extends Controller
 {
@@ -133,6 +134,8 @@ class VehicleController extends Controller
         }
         
         $Data = Vehicle::find($id);
+        $Data["images"] = VehicleImages::where("vehicle_id",$id)->where("company_id",session("CompanyLinkID"))->get();
+        Log::debug($Data);
         $AllBrands = Brand::get();
         $AllCarTypes = CarType::get();
         $ActiveAction = "vehicle";
@@ -163,7 +166,7 @@ class VehicleController extends Controller
 
         if($request->file('car_condition_image') != null){
             $path = $request->file('car_condition_image')->store('VehicleImages');
-            $Input["car_condition_image"] = $path;
+            $Input["car_condition_image"] = $path;  
         }
         
         if($request->file('mulkiya_details') != null){
@@ -224,4 +227,97 @@ class VehicleController extends Controller
         }
 
     }
+
+    public function setDisplayImage(Request $request){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        $Input = $request->all();
+        Log::debug($Input); //just check what is there.. 
+        $vehicleId = $Input['vehicle_id'];
+
+        if($request->file('car_image') != null){
+            $path = $request->file('car_image')->store('VehicleImages');
+            Vehicle::where('id', $vehicleId)
+                ->where('company_id',session("CompanyLinkID"))
+                ->update([
+                    'car_image' => $path
+                ]
+            );
+
+            return json_encode(array("Status" =>  1, "Message" => "Vehicle pic changed successfully"));
+        } else {
+            return json_encode(array("Status" =>  0, "Message" => "Vehicle pic fail to change"));
+        }
+    }
+
+    public function setVehicleStatus(Request $request){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        $Input = $request->all();
+        Log::debug($Input); //just check what is there.. 
+        $vehicleId = $Input['vehicle_id'];
+        $status = $Input['status'];
+
+        Vehicle::where('id', $vehicleId)
+            ->where('company_id',session("CompanyLinkID"))
+            ->update([
+                'status' => $status
+            ]);
+
+        return json_encode(array("Status" =>  1, "Message" => "Vehicle status updated successfully"));
+    }
+
+    public function uploadFiles(Request $request){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        $Input = $request->all();
+        // Log::debug(sizeof($request->file('files'))); //just check what is there.. 
+        Log::debug($Input); //just check what is there.. 
+
+        $responseData = array();
+        $filetype = $Input['type'];
+        $vehicleId = $Input['vehicle_id'];
+
+        if($request->file('files') && sizeof($request->file('files')) > 0){
+            for($i = 0; $i < sizeof($request->file('files')); $i++ ){
+                $VehicleImages = new VehicleImages();
+                $VehicleImages->vehicle_id = $vehicleId;
+                $VehicleImages->company_id = session("CompanyLinkID");
+                $VehicleImages->type = $filetype;
+
+                $path = $request->file('files')[$i]->store('VehicleImages');
+                $VehicleImages->link = $path;
+                $VehicleImages->save();
+                
+                //add to response
+                if (!isset($responseData[$filetype])){
+                    $responseData[$filetype] = [];
+                }
+                $img_details = array("id" => $VehicleImages->id, "link" => $VehicleImages->link);
+                array_push($responseData[$filetype],$img_details);
+            }
+        }    
+
+        return json_encode(array("Status" =>  1, "Message" => "files updated successfully", "Data" => $responseData));
+    }
+
+    public function deleteFile(Request $request){
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+        
+        $Input = $request->all();
+        Log::debug($Input); //just check what is there.. 
+    
+        $vehicleImg = VehicleImages::where("company_id", session("CompanyLinkID"))
+                        ->where('vehicle_id',$Input['vehicle_id'])
+                        ->where('id',$Input['image_id'])
+                        ->delete();
+
+        return json_encode(array("Status" =>  1, "Message" => "file deleted successfully"));
+    }
+
 }

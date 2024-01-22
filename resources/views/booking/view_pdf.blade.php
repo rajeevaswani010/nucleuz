@@ -1,19 +1,34 @@
+@php
+    require_once('../../../fpdf/fpdf.php');
+    require_once('../../../fpdf/fpdi2/src/autoload.php');
 
-<h1>Booking#{{ $booking->id }}</h1>
+    // initiate FPDI
+    $pdf = new \setasign\Fpdi\Fpdi();
+    // add a page
+    $pdf->AddPage();
+    // set the source file
+    // $pdf->setSourceFile('./PdfDocument.pdf');
+    // // import page 1
+    // $tplIdx = $pdf->importPage(1);
+    // // use the imported page and place it at position 10,10 with a width of 100 mm
+    // $pdf->useTemplate($tplIdx, 8, 8, 200);
 
+    // now write some text above the imported page
+    $pdf->SetFont('Helvetica');
+    $pdf->SetTextColor(255, 0, 0);
 
-<div style="float: left; width: 45%;">
-    <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; height: 400px;">
-        <div style="flex: 1 1 auto; padding: 1rem 1rem;">
-            <h2>{{ $booking->customer->title }} {{ $booking->customer->first_name }}</h2>
-            <div class="mt-4"><b>{{ __("Gender") }}</b> {{ $booking->customer->gender }}</div>
-            <div class="mt-2"><b>{{ __("DOB") }}</b> {{ date("d/m/Y", strtotime($booking->customer->dob)) }}</div>
-            <div class="mt-2"><b>{{ __("Nationality") }}</b> {{ $booking->customer->nationality }}</div>
-            <div class="mt-2"><b>{{ __("Email") }}</b> {{ $booking->customer->email }}</div>
-            <div class="mt-2"><b>{{ __("Mobile") }}</b> {{ $booking->customer->mobile }}</div>
-            <div class="mt-2"><b>{{ __("Insurance Details") }}</b> {{ $booking->customer->insurance }}</div>
-            <div class="mt-2"><b>{{ __("Permanent Address") }}</b> {{ $booking->customer->permanent_address }}</div>
-            <div class="mt-2"><b>{{ __("Temp Address") }}</b> {{ $booking->customer->temp_address }}</div>
-        </div>
-    </div>
-</div>
+    $pdf->SetXY(25, 74);
+    $pdf->Write(0, 'Rajeev Aswani');
+
+    $pdf->SetXY(25, 80);
+    $pdf->Write(0, 'ITSC Co. Ltd.');
+
+    $pdf->SetXY(25, 87);
+    $pdf->Write(0, 'P90720');
+
+    $pdf->SetXY(25, 93);
+    $pdf->Write(0, '105118074');
+
+    $pdf->Output('I', 'generated.pdf');
+
+@endphp

@@ -17,7 +17,7 @@ return [
     |
     */
 
-    'default' => env('LOG_CHANNEL', 'daily'),
+    'default' => env('LOG_CHANNEL', 'custom_log'),
 
     /*
     |--------------------------------------------------------------------------
@@ -55,6 +55,29 @@ return [
             'driver' => 'stack',
             'channels' => ['single'],
             'ignore_exceptions' => false,
+        ],
+
+        'custom_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/laravel.log'),
+	        'level' => env('LOG_LEVEL', 'info'),
+            'days' => 1,
+            'replace_placeholders' => true,
+            'permission' => 0777,
+            'processors' => [
+                // Simple syntax...
+                // Monolog\Processor\IntrospectionProcessor::class
+         
+                // With options...
+               [
+                   'processor' => Monolog\Processor\IntrospectionProcessor::class,
+                   'with' => [
+                        'Monolog\\',
+                        'Illuminate\\',
+                   ],
+               ],
+            ],    	    
+            // 'tap' => [App\Logging\CustomizeLogFormatter::class]
         ],
 
         'single' => [

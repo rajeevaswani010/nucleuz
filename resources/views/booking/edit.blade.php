@@ -114,7 +114,7 @@ input[type="number"]::-webkit-outer-spin-button {
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-body ">
-                        <div class="row">
+                        <div class="row mb-4">
 
                             <div class="float-left col-8"><h1>{{ __("Booking Details") }} : #{{ $Booking->id }}</h1>
                             </div>
@@ -140,27 +140,30 @@ input[type="number"]::-webkit-outer-spin-button {
                                 @endif
                             </div>
             
-                            <div class="row">
+                            <div class="row" style="display:flex;">
                                 @if($Booking->status != 4)
                                         @if( ($Booking->status == 1 || $Booking->status == 5) 
                                             && $Booking->drop_off_confirm !=1 
                                             && $Booking->dropoff_date > date('Y-m-d') 
                                         ) <!-- if booking drop off date crosses current date.. do not show assign btn. -->
 
-                                                <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="assignVehicle();">{{ __("Assign") }}</button></div>
+                                                <div class="inline-block-div mt-3 mr-3"><button class="btn btn-primary" onclick="assignVehicle();">{{ __("Assign") }}</button></div>
                                                 <!-- <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="changeDates();">{{ __("Change Dates") }}</button></div> -->
                                         
                                         @elseif($Booking->status == 2 )                                        
-                                                <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="dropOffVehicle();">{{ __("DropOFF") }}</button></a></div>
-                                                <div class="inline-block-div mt-3 mb-3 mr-3"><button class="btn btn-primary" onclick="changeDropOFF();">{{ __("Change DropOFF Date") }}</button></div>
+                                                <div class="inline-block-div mt-3 mr-3"><button class="btn btn-primary" onclick="dropOffVehicle();">{{ __("DropOFF") }}</button></a></div>
+                                                <div class="inline-block-div mt-3 mr-3"><button class="btn btn-primary" onclick="changeDropOFF();">{{ __("Change DropOFF Date") }}</button></div>
                                         @endif
 
                                         @if($Booking->status == 5 && $Booking->drop_off_confirm == 0 )
-                                            <div class="inline-block-div mt-3 mb-3 mr-3"><a href="{{ URL('BookingClose') }}/{{ $Booking->id }}" onClick="return confirmSubmit('Are you sure to close this booking')"><button class="btn btn-danger">{{ __("Close Booking") }}</button></a></div>
+                                            <div class="inline-block-div mt-3 mr-3"><a href="{{ URL('BookingClose') }}/{{ $Booking->id }}" onClick="return confirmSubmit('Are you sure to close this booking')"><button class="btn btn-danger">{{ __("Close Booking") }}</button></a></div>
                                         @endif
                                         @if($Booking->status == 1)
-                                            <div class="inline-block-div mt-3 mb-3 mr-3"><a href="{{ URL('BookingCancel') }}/{{ $Booking->id }}" onClick="return confirmSubmit('Are you sure to cancel this booking')"><button class="btn btn-danger">{{ __("Cancel Booking") }}</button></a></div>
+                                            <div class="inline-block-div mt-3 mr-3"><a href="{{ URL('BookingCancel') }}/{{ $Booking->id }}" onClick="return confirmSubmit('Are you sure to cancel this booking')"><button class="btn btn-danger">{{ __("Cancel Booking") }}</button></a></div>
                                         @endif
+                                        <div class="inline-block-div mt-3 right-content" style="flex-grow: 100;">
+                                            <a href="{{ URL('/booking/pdf/') }}/{{ $Booking->id }}" target="_blank"><button class="btn btn-primary">{{ __("Print Booking") }}</button></a>
+                                        </div>
                                 @endif    
                             </div>                
                             <div class="clearfix">&nbsp;</div>
@@ -800,9 +803,6 @@ input[type="number"]::-webkit-outer-spin-button {
                                     <div class="clearfix">&nbsp;</div>
                                     <div class="clearfix">&nbsp;</div>
 
-                                <div class="mt-3 mb-3 mr-3">
-                                    <a href="{{ URL('/booking/pdf/') }}/{{ $Booking->id }}"><button class="btn btn-primary"  style="float:right;">{{ __("Print Booking") }}</button></a>
-                                </div>
                                 <!-- <div class="mt-3 mb-3 mr-3">
                                     <a href="{{ URL('/booking/email/') }}/{{ $Booking->id }}"><button class="btn btn-primary"  style="float:right;margin-right:5px;">{{ __("Send Email Again") }}</button></a>
                                 </div> -->

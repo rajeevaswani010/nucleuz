@@ -24,8 +24,10 @@ use App\Models\BookingImages;
 use App\Models\Office;
 use App\Models\CarType;
 use App\Models\Admin;
+use App\Classes\PdfUtil;
+use App\Classes\BookingPdf;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use DB;
 
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -90,7 +92,7 @@ class BookingController extends Controller
 
     public function BookingInvoice(){
         //$bookingreciept = Booking::where([["advance_amount","!=",0]])->whereNotNull('advance_amount')->get();
-        $bookingreciept = Booking::where("company_id", session("CompanyLinkID"))->orderBy("id", "DESC")->get();
+        $bookingreciept = Booking::select()->where("company_id", session("CompanyLinkID"))->orderBy("id", "DESC")->get();
         $ActiveAction = "bookinginvoice";
         return view('booking.invoice', compact("bookingreciept","ActiveAction"));
     }
@@ -255,7 +257,7 @@ class BookingController extends Controller
 
         $CompanyName = Office::find(session("CompanyLinkID"))->name;
         $BookingObj = Booking::find($BookingObj->id);
-        $data = array("Booking" => $BookingObj);
+        $data = array("Booking" => $BookingObj, "testdata" => 1234 );
         try {
             Mail::send("EmailTemplates.Booking", $data, function ($m) use($BookingObj, $CompanyName){
                 $m->from("no-reply@nucleuz.app", $CompanyName);
@@ -363,12 +365,12 @@ class BookingController extends Controller
         Log::debug($Booking);
         $BookingVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))->where("booking_id",$id)->orderBy('created_at', 'desc')->get();
         Log::debug($BookingVehicle);
+        Log::debug(sprintf('%s:%u: %s', __CLASS__, __LINE__, $BookingVehicle));
+
         $CurrentVehicle = null;
         if($Booking->cur_booking_vehicle_id != null){
             $CurrentVehicle = BookingVehicle::where("company_id",session("CompanyLinkID"))->where("booking_id",$id)->where("id",$Booking->cur_booking_vehicle_id)->first();
-            // $CurrentVehicle = Vehicle::where("company_id",session("CompanyLinkID"))->where("id",$CurrentVehicleId->vehicle_id)->get();
-            Log::debug("current vehicle - ");
-            Log::debug($CurrentVehicle);
+            Log::debug(sprintf('%s:%u :- %s', __CLASS__, __LINE__, "current vehicle - ".$CurrentVehicle));
         }
 
         $CustomerImages = CustomerImages::select("type","link")->where('customer_id',$Booking->customer_id)->get();
@@ -380,7 +382,6 @@ class BookingController extends Controller
             }
             array_push($CustImagesArr[$type], $imageRow->link);
         }
-        // Log::debug($CustImagesArr);
 
         $BookingImages = BookingImages::select("type","link")->where('booking_id',$Booking->id)->get();
         $BookingImagesArr = [];
@@ -394,7 +395,6 @@ class BookingController extends Controller
         // Log::debug($BookingImagesArr);
 
         $ActiveAction = "booking";
-        Log::debug("bookingcontroller edit - exit");
         return view('booking.edit', compact("Booking", "BookingVehicle", "CurrentVehicle", "CustImagesArr", "BookingImagesArr", "ActiveAction"));
     }
 
@@ -1158,10 +1158,37 @@ class BookingController extends Controller
     }
 
     public function exportPdf($id){ //TODO add implementation
-        $booking = Booking::find($id);
+        if(session("AdminID") == ""){
+            return redirect("/");
+        }
+
+        $companyname = Office::find(session("CompanyLinkID"))->name;;
+
+        $classname = ucwords(preg_replace(array('/\s+/','/\./'), '_', $companyname))."_PdfUtil";
+        Log::debug($classname);
+
+        $str = "App\\Classes\\".$classname;  //searches for the pdf util based on company name... 
+        if (class_exists($str)) {
+            $pdfUtil = new $str;
+        } else {
+            $pdfUtil = new PdfUtil();
+        }
+
+        $pdfUtil->printBookingDetails($this->getDetailsToFill($id));
+        $pdfUtil->output();
+    }
+
+    private function getDetailsToFill($bookingId){
+        $booking = Booking::find($bookingId);
+        $details = array(
+                "booking" => $booking,
+                "vehicle" => BookingVehicle::where("company_id",$booking->company_id)->where("booking_id",$booking->id)->orderBy('created_at', 'desc')->first(),
+                "customer" => Customer::find($booking->customer_id),
+                "office" => Office::find($booking->company_id)
+        );
+        Log::debug($details);
         
-        $pdf = Pdf::loadView('booking.view_pdf', compact('booking'));
-        return $pdf->download('booking_'.$id.'.pdf');
+        return $details;
     }
 
     public function emailBooking($id){ 

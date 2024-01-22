@@ -120,6 +120,16 @@
 
     <script>
 
+        @isset($company_logo) 
+        console.log( '{{ $company_logo }}' );
+        @endisset
+        @isset($company_name) 
+        console.log( '{{ $company_name }}' );
+        @endisset
+        @isset($company_addr) 
+        console.log( '{{ $company_addr }}' );
+        @endisset
+
         //a navtive event bus for communication between main section and side / upper tabs. Also notifications.. 
         const myEventBus = (function(){
             this.domObj = new Comment('my-event-bus'); //this dom element is used as an anchor for event bus callbacks.
@@ -144,9 +154,12 @@
     <!-- app css -->
     <link rel="stylesheet" href="{{ URL('resources/css/components.css') }}">
     <link rel="stylesheet" href="{{ URL('resources/css/app.css') }}">
+    <link rel="stylesheet" href="{{ URL('resources/css/profileImageWithPreviewEdit.css') }}">
 
     <script src="{{ URL('resources/js/components.js') }}"></script>
+    <script src="{{ URL('resources/js/profileImageWithPreviewEdit.js') }}"></script>
     <script src="{{ URL('resources/js/app.js') }}"></script>
+    <script src="{{ URL('resources/js/multipleFileUpload.js') }}"></script>
     <script src="{{ URL('resources/js/notifications.js') }}"></script>
     </head>
 <body class="theme-4">
@@ -162,7 +175,11 @@
     <div class="navbar-wrapper">
         <div class="m-header main-logo">
             <a href="{{ URL('dashboard') }}" class="b-brand">
+            @isset($company_logo)
+            <img src="{{ URL('public') }}/{{ $company_logo }}" alt="projecterp" class="logo logo-lg" id="logo">
+            @else
             <img src="{{ URL('public') }}/logo.png" alt="projecterp" class="logo logo-lg" id="logo">
+            @endisset
             </a>
         </div>
         <div class="navbar-content">
@@ -391,8 +408,8 @@
 
 
 </ul>
-                        </div>
-</div>
+            </div>
+    </div>
 </nav>
 <!-- [ navigation menu ] end -->
 <!-- [ Header ] start -->
