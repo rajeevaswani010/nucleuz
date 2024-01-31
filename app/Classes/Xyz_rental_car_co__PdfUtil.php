@@ -139,10 +139,4 @@ class Xyz_rental_car_co__PdfUtil extends PdfUtil
 
     }
 
-    public function output(){
-        $this->fpdf->Output();
-        exit;
-    }
-
-
 }

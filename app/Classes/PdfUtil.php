@@ -159,5 +159,9 @@ class PdfUtil
     public function getFpdf() {
         return $this->fpdf;
     }
-
+    
+    public function output(){
+        $this->fpdf->Output();
+        exit;
+    }
 }
