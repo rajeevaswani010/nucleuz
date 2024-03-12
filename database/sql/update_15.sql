@@ -9,7 +9,7 @@ ALTER TABLE `vehicles`
     ;
 
 ALTER TABLE `vehicles`
-    ADD UNIQUE KEY `unique_company_vehicle` (`company_id`,`reg_no`)\
+    ADD UNIQUE KEY `unique_company_vehicle` (`company_id`,`reg_no`)
     ;
 
 
