@@ -2,52 +2,63 @@
 <!DOCTYPE html>
 <html lang="en" dir="">
 <meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}">
+
+<!-- head Starts -->
 <head>
     <title>{{ $ActiveAction ? $ActiveAction : 'Dashboard' }} </title>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.0/html5shiv.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script> -->
 
     <!-- Meta -->
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="icon" href="https://nucleuz.app/public/favicon.png" type="image" sizes="16x16">
 
 
-    <link rel="stylesheet" href="{{ URL('public/newasserts/plugins/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ URL('public/newasserts/plugins/bootstrap/css/bootstrap.min.css') }}">
 
-    <script src="{{ URL('public/newasserts/plugins/jquery/jquery-3.5.1.slim.min.js') }}"></script>
+    <script src="{{ URL('public/newasserts/plugins/jquery/jquery-3.5.1.slim.min.js') }}">
+    </script>
     <script src="{{ URL('public/newasserts/plugins/popper/popper.min.js') }}"></script>
-    <script src="{{ URL('public/newasserts/plugins/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ URL('public/newasserts/plugins/bootstrap/js/bootstrap.min.js') }}">
+    </script>
 
     <!-- Favicon icon -->
 
     <!-- Calendar-->
-    <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/plugins/main.css') }}">
-    <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/plugins/style.css') }}">
-    <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/plugins/flatpickr.min.css') }}">
-    <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/plugins/animate.min.css') }}">
+    <!-- <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/plugins/main.css') }}"> -->
+    <link rel="stylesheet"
+        href="{{ URL('public/newasserts/assets/css/plugins/style.css') }}">
+    <!-- <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/plugins/flatpickr.min.css') }}"> -->
+    <link rel="stylesheet"
+        href="{{ URL('public/newasserts/assets/css/plugins/animate.min.css') }}">
 
     <!-- font css -->
-    <link rel="stylesheet" href="{{ URL('public/newasserts/assets/fonts/tabler-icons.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ URL('public/newasserts/assets/fonts/tabler-icons.min.css') }}">
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/fonts/feather.css') }}">
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/fonts/fontawesome.css') }}">
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/fonts/material.css') }}">
 
     <!--bootstrap switch-->
-    <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/plugins/bootstrap-switch-button.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ URL('public/newasserts/assets/css/plugins/bootstrap-switch-button.min.css') }}">
 
     <!-- toastr css -->
     <link rel="stylesheet" href="{{ URL('public/newasserts/plugins/toastr/toastr.css') }}">
 
     <!-- vendor css -->
-    <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/style.css') }}" id="main-style-link">
+    <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/style.css') }}"
+        id="main-style-link">
     <link rel="stylesheet" href="{{ URL('public/newasserts/assets/css/customizer.css') }}">
-    <link rel="stylesheet" href="{{ URL('public/newasserts/css/custom.css') }}" id="main-style-link">
+    <link rel="stylesheet" href="{{ URL('public/newasserts/css/custom.css') }}"
+        id="main-style-link">
 
     <script src="{{ URL('public/newasserts/js/jquery.min.js') }}"></script>
     <script src="{{ URL('public/newasserts/plugins/toastr/toastr.min.js') }}"></script>
-    
+
     <script>
         toastr.options = {
             "closeButton": false,
@@ -66,44 +77,11 @@
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut"
         }
-
-        //current user settings are fetched and loaded here.. 
-    // let settings = {};
-    // $.ajax({
-    //     url: "{{ URL('office/getCurrentSettings') }}",
-    //     method: "POST",
-    //     headers: {
-    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //             },
-    //     contentType: false,
-    //     cache: false,
-    //     processData:false,
-    //     encode: true,
-    //     data:{},
-    //     success: function( data, textStatus, jqXHR ) {
-    //         JsData = JSON.parse(data);
-    //         if(JsData.Status == 0){
-    //             console.log("unable to fetch settings for the user.. ");
-    //         }else{
-    //             console.log(JsData);
-    //             settings.logo = JsData.Data.logo;
-    //             //populate other data also.. 
-    //             if(JsData.Data.logo != null)
-    //                 $('img#logo').attr("src","{{ URL('public') }}/"+JsData.Data.logo);
-    //             console.log(settings);
-    //         }
-    //     },
-    //     error: function( jqXHR, textStatus, errorThrown ) {
-    //         console.log("unable to fetch settings for the user.. ");
-    //     }
-    // })
-
     </script>
 
     <!-- pusher event listener script..  -->
     <script src="{{ URL('public/newasserts/plugins//pusher/pusher.min.js') }}"></script>
     <script>
-
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
 
@@ -112,43 +90,32 @@
         });
 
         var channel = pusher.subscribe('popup-channel');
-        channel.bind('user-register', function(data) {
+        channel.bind('user-register', function (data) {
             alert(JSON.stringify(data));
         });
-
     </script>
 
     <script>
 
-        @isset($company_logo) 
-        console.log( '{{ $company_logo }}' );
-        @endisset
-        @isset($company_name) 
-        console.log( '{{ $company_name }}' );
-        @endisset
-        @isset($company_addr) 
-        console.log( '{{ $company_addr }}' );
-        @endisset
-
         //a navtive event bus for communication between main section and side / upper tabs. Also notifications.. 
-        const myEventBus = (function(){
-            this.domObj = new Comment('my-event-bus'); //this dom element is used as an anchor for event bus callbacks.
+        const myEventBus = (function () {
+            this.domObj = new Comment(
+            'my-event-bus'); //this dom element is used as an anchor for event bus callbacks.
 
-            this.subscribe = function(event, fn, options){
+            this.subscribe = function (event, fn, options) {
                 this.domObj.addEventListener(event, fn, options);
             }
 
-            this.publish = function(event){
+            this.publish = function (event) {
                 this.domObj.dispatchEvent(event);
             }
-            
-            this.getEventListener = function(){
+
+            this.getEventListener = function () {
                 return this.domObj;
             }
-            
+
             return this;
         })();
-
     </script>
 
     <!-- app css -->
@@ -161,7 +128,9 @@
     <script src="{{ URL('resources/js/app.js') }}"></script>
     <script src="{{ URL('resources/js/multipleFileUpload.js') }}"></script>
     <script src="{{ URL('resources/js/notifications.js') }}"></script>
-    </head>
+</head>
+<!-- head Ends -->
+
 <body class="theme-4">
 
 <!-- [ Pre-loader ] start -->
@@ -651,7 +620,6 @@ aria-expanded="false"
     /* padding: 40px; */
     border-radius: 5px;
 }
-
 </style>
 
 <!-- [ Header ] end -->
@@ -659,6 +627,7 @@ aria-expanded="false"
 <!-- [ Main Content ] start -->
 @yield("content")
 <!-- [ Main Content ] end -->
+
 <footer class="dash-footer">
     <div class="footer-wrapper">
         <div class="py-1">

@@ -13,7 +13,7 @@ File: style.css
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap");
+@import url("./font.google.css");
 
 :root {
     --bs-blue: #51459d;
@@ -59,9 +59,10 @@ File: style.css
     --bs-body-color-rgb: 41, 50, 64;
     --bs-body-bg-rgb: 248, 249, 253;
     --bs-font-sans-serif: "Open Sans", sans-serif;
+    --bs-font-poppins: "Poppins", poppins;
     --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
-    --bs-body-font-family: var(--bs-font-sans-serif);
+    --bs-body-font-family: var(--bs-font-poppins);
     --bs-body-font-size: 0.875rem;
     --bs-body-font-weight: 400;
     --bs-body-line-height: 1.5;

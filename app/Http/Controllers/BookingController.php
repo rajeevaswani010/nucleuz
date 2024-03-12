@@ -173,7 +173,7 @@ class BookingController extends Controller
             return json_encode(array("Status" =>  0, "Message" => "Additional KM Amount Must Be > 0"));
         }
         
-        // date_default_timezone_set("Asia/Muscat"); # setting current time zone
+        date_default_timezone_set("Asia/Muscat"); # setting current time zone
         if($Input["PickupDate"]." ".$Input["PickupTime"] < date("Y-m-d H:i:s")){
             return json_encode(array("Status" =>  0, "Message" => "Pickup Date Can't Be in Past"));
         }
@@ -905,7 +905,7 @@ class BookingController extends Controller
         }
 
         // return json_encode(array("Status" => 0, "Message" => "Doing testing.. ", "Data" => array()));
-        // date_default_timezone_set("Asia/Muscat"); # setting current time zone
+        date_default_timezone_set("Asia/Muscat"); # setting current time zone
 
         $BookingVehicle = new BookingVehicle();
         $BookingVehicle->company_id = $Booking->company_id;
@@ -999,7 +999,7 @@ class BookingController extends Controller
             return json_encode(array("Status" => 0, "Message" => "Booking Error. invalid input", "Data" => null));
         }
         
-        // date_default_timezone_set("Asia/Muscat"); # setting current time zone
+        date_default_timezone_set("Asia/Muscat"); # setting current time zone
 
         $CurrentBookingVehicle->km_drop_time = $Input["km_drop_time"];
         $CurrentBookingVehicle->dmage = $Input["dmage"];

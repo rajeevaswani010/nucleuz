@@ -179,16 +179,17 @@ input[type="number"]::-webkit-outer-spin-button {
                                                     <div class="card-body">
                                                         <form id="assignVehicleForm"  method="POST">
                                                             @csrf
-                                                            <div class="row">                            
-                                                                <div class="col-lg-2 mb-12">
+                                                            <div class="row">                       
+                                                                     <!-- for now hidden.. in future releas sthis support will be provided  -->
+                                                                <div class="col-lg-2 mb-12" hidden> 
                                                                     <label>Type <span class="text-danger">*</span></label>
-                                                                    <select class="form-control" id="car_type" name="car_type">
+                                                                    <select class="form-control" id="car_type" name="car_type" >
                                                                         <option value="">{{ __("-Select-") }}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-lg-8 mb-12">
                                                                     <label>Vehicle <span class="text-danger">*</span></label>
-                                                                    <select class="form-control" id="VehicleData" name="vehicle_id">
+                                                                    <select class="form-control" id="VehicleData" name="vehicle_id" >
                                                                         <option value="">{{ __("Select") }}</option>
                                                                     </select>
                                                                 </div>

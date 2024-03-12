@@ -71,6 +71,34 @@
         right: 0;
         bottom: 0;
     }
+
+    .quick-actions-menu .slide-menu {
+        position: fixed;
+        top: 70%;
+        right: 0;
+        width:50px;
+    }
+
+    .quick-actions-menu .menu {
+        position: fixed;
+        top: 50%;
+        right: 0;
+        width: 100px;
+        background-color: #f8f9fa;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Style for menu items */
+    .quick-actions-menu .menu ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .quick-actions-menu .menu li {
+        margin-bottom: 10px;
+    }
+    
 </style>
 
 <script src="{{ URL('public/newasserts/js/fullcalendar-6.1.8/dist/index.global.min.js') }}">
@@ -610,6 +638,21 @@
     </div>
 </div>
 <!-- [ Main Content ] end -->
+
+<!-- sticky side menu Quick actions-->
+<!-- <div class="quick-actions-menu">
+    <button class="slide-menu">arrow</button>
+    <div class="menu">
+        <button>close</button>
+        <ul>
+            <li><a href="#">Book a car</a></li>
+            <li><a href="#">Add Customer</a></li>
+            <li><a href="#">Check Vehicle Availability</a></li>
+        </ul>
+    </div>
+</div> -->
+
+
 
 
 
